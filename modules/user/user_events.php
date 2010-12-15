@@ -20,7 +20,7 @@ final class User_Events {
 	{
 		return array(
 			'User' => CAFFEINE_MODULES_PATH . 'user/blocks/',
-			'User_Admin' => CAFFEINE_MODULES_PATH . 'user/blocks/'
+			'User_Admin' => CAFFEINE_MODULES_PATH . 'user/blocks/admin/'
 		);
 	}
 

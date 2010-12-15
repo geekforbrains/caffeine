@@ -14,7 +14,8 @@ final class Auth_Events {
 	 * ------------------------------------------------------------------------
 	 */
 	public static function view_block_paths() {
-		return array('Auth_Admin' => CAFFEINE_MODULES_PATH . 'auth/blocks/');
+		return array('Auth_Admin' => CAFFEINE_MODULES_PATH . 
+			'auth/blocks/admin/');
 	}
 
 	/**
