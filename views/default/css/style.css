@@ -1,0 +1,39 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+#page {
+	width: 50%;
+	margin: 0 auto;
+}
+
+#header {
+	float: left;
+	width: 100%;
+	padding: 5px 20px;
+	background-color: #cecece;
+}
+
+#sidebar, #content {
+	float: left;
+	padding: 10px 20px;
+}
+
+#sidebar {
+	border-right: 1px solid #cecece;
+}
+
+#footer {
+	text-align: right;
+	width: 100%;
+	padding-top: 10px;
+	border-top: 1px solid #cecece;
+	clear: both;
+}
+
+#caffeine-debug {
+	margin-top: 40px;
+	width: 100%;
+	border-collapse: collapse;
+}
