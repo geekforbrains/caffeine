@@ -111,7 +111,16 @@ final class Page_Events {
 						'size' => 'big',
 						'not null' => true
 					)
-				)
+				),
+
+				'indexes' => array(
+					'parent_id' => array('parent_id'),
+					'site_id' => array('site_id'),
+					'user_id' => array('user_id'),
+					'slug' => array('slug')
+				),
+
+				'primary key' => array('id')
 			)
 		);
 	}
