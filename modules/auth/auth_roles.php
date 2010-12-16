@@ -82,4 +82,32 @@ class Auth_Roles extends Database {
 		return false;
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Deletes a role based on its ID.
+	 *
+	 * @param $role_id
+	 *		The role to be deleted.
+	 *
+	 * @return boolean
+	 *		Returns true if a role with that ID was found, and was deleted.
+	 *		False otherwise.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function delete($role_id)
+	{
+		if(self::get_by_id($role_id))
+		{
+			self::query('DELETE FROM {auth_role_permissions} WHERE role_id = %s',
+				$role_id);
+
+			self::query('DELETE FROM {auth_roles} WHERE id = %s', $role_id);
+			
+			if(self::affected_rows() > 0)
+				return true;
+		}
+
+		return false;
+	}
+
 }

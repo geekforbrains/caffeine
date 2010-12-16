@@ -79,4 +79,22 @@ class Auth_Admin {
 		);
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Deleted a role based on its ID.
+	 *
+	 * @param $role_id
+	 *		The role to be deleted.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function delete($role_id)
+	{
+		if(Auth_Roles::delete($role_id))
+			Message::store('success', 'Role deleted successfully.');
+		else
+			Message::store('error', 'Error deleting role. Please try again.');
+
+		Router::redirect('admin/auth/manage');
+	}
+
 }

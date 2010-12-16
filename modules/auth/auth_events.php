@@ -44,6 +44,10 @@ final class Auth_Events {
 			'admin/auth/edit/%d' => array(
 				'callback' => array('Auth_Admin', 'edit'),
 				'visible' => false
+			),
+			'admin/auth/delete/%d' => array(
+				'callback' => array('Auth_Admin', 'delete'),
+				'visible' => false
 			)
 		);	
 	}
