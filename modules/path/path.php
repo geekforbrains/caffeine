@@ -137,21 +137,28 @@ class Path {
 	 * -------------------------------------------------------------------------
 	 * Checks the current path against registered callbacks. If a callback is
 	 * found for the path, it is called. Otherwise, a 404 page is displayed.
+	 *
+	 * When calling a callback, if boolean false is returned, the default 404
+	 * page is displayed. This allows other modules to attempt to load a page
+	 * dynamically, and decide wether to show a 404 or not.
 	 * -------------------------------------------------------------------------
 	 */
     protected static function _call_path($path_data)
     {
+		$success = false; // Used for tracking dynamic 404's
+
 		if($path_data)
 		{
 			Caffeine::debug(1, 'Path', 'Calling path callback: %s::%s',
 				$path_data['callback'][0], $path_data['callback'][1]);
 	
 			if(isset($path_data['params']))
-				call_user_func_array($path_data['callback'], $path_data['params']);
+				$success = call_user_func_array($path_data['callback'], $path_data['params']);
 			else
-				call_user_func($path_data['callback']);
+				$success = call_user_func($path_data['callback']);
 
-			return;
+			if($success !== false)
+				return;
 		}
 
 		View::load('Path', '404');

@@ -32,7 +32,7 @@ final class Page_Events {
 			// Front
 			'page/%s' => array(
 				'callback' => array('Page', 'load'),
-				'auth' => 'view pages'
+				'auth' => true
 			),
 
 			// Admin
@@ -109,6 +109,12 @@ final class Page_Events {
 					'content' => array(
 						'type' => 'text',
 						'size' => 'big',
+						'not null' => true
+					),
+					'timestamp' => array(
+						'type' => 'int',
+						'size' => 'normal',
+						'unsigned' => true,
 						'not null' => true
 					)
 				),
