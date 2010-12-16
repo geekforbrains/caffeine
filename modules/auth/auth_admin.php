@@ -19,7 +19,7 @@ class Auth_Admin {
 	 */
 	public static function manage()
 	{
-		View::load('Auth_Admin', 'auth_manage', 
+		View::load('Auth_Admin', 'auth_admin_manage', 
 			array('roles' => Auth_Roles::get_all()));
 	}
 
@@ -46,7 +46,7 @@ class Auth_Admin {
                 Message::set('error', 'A role with that name already exists.');
         }
         
-		View::load('Auth_Admin', 'auth_create',
+		View::load('Auth_Admin', 'auth_admin_create',
 			array('permissions' => array()));
 	}
 
@@ -70,7 +70,7 @@ class Auth_Admin {
 			Message::set('success', 'Role permissions updated successfully.');
 		}
 
-		View::load('Auth_Admin', 'auth_edit',
+		View::load('Auth_Admin', 'auth_admin_edit',
 			array(
 				'role' => Auth_Roles::get_by_id($id),
 				'role_perms' => Auth_Permissions::get_by_role($id),

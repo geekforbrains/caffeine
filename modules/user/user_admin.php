@@ -27,7 +27,7 @@ class User_Admin extends User_Model {
 				Message::set('error', 'Invalid login details.');
 		}
 		
-		View::load('User', 'user_login');
+		View::load('User_Admin', 'user_admin_login');
 	}
 
 	public static function logout() 
@@ -40,7 +40,7 @@ class User_Admin extends User_Model {
 
 	public static function manage()
 	{
-		View::load('User_Admin', 'user_manage',
+		View::load('User_Admin', 'user_admin_manage',
 			array('users' => User::get_all()));
 	}
 
@@ -64,7 +64,7 @@ class User_Admin extends User_Model {
 			}
 		}
 
-		View::load('User_Admin', 'user_create');
+		View::load('User_Admin', 'user_admin_create');
 	}
 
 	public static function edit($user_id)
@@ -78,7 +78,7 @@ class User_Admin extends User_Model {
 			Message::set('success', 'User roles updated successfully.');
 		}
 
-		View::load('User_Admin', 'user_edit',
+		View::load('User_Admin', 'user_admin_edit',
 			array(
 				'user' => User::get_by_id($user_id),
 				'avail_roles' => Auth_Roles::get_all()
