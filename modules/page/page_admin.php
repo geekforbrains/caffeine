@@ -31,9 +31,7 @@ class Page_Admin extends Page_Model {
 			$user = User::get_current();
 
 			$status = self::add(
-				$_POST['parent_id'],
-				$user['site_id'],
-				$user['id'],
+				$_POST['parent_cid'],
 				$_POST['title'],
 				String::tagify($_POST['title']),
 				$_POST['content']
@@ -60,13 +58,13 @@ class Page_Admin extends Page_Model {
 	 *		The ID of the page to edit.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function edit($page_id) 
+	public static function edit($cid) 
 	{
 		if($_POST)
 		{
 			$status = self::update(
-				$page_id,
-				$_POST['parent_id'],
+				$cid,
+				$_POST['parent_cid'],
 				$_POST['title'],
 				String::tagify($_POST['title']),
 				$_POST['content']
@@ -83,7 +81,7 @@ class Page_Admin extends Page_Model {
 
 		View::load('Page_Admin', 'page_admin_edit',
 			array(
-				'page' => self::get_by_id($page_id),
+				'page' => self::get_by_cid($cid),
 				'pages' => self::get_all()
 			)
 		);
@@ -97,9 +95,9 @@ class Page_Admin extends Page_Model {
 	 *		The ID of the page to delete.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function delete($page_id) 
+	public static function delete($cid) 
 	{
-		if(self::del($page_id))
+		if(self::del($cid))
 			Message::store('success', 'Page deleted successfully.');
 		else
 			Message::store('error', 'Error deleting page. Please try again.');

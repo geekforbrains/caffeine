@@ -26,13 +26,13 @@ class Blog_Admin_Categories {
         View::load('Blog_Admin', 'blog_admin_categories_create');
     }
     
-    public static function edit($id) 
+    public static function edit($cid) 
     {
         if($_POST)
         {
             if(!Blog_Categories::exists($_POST['name']))
             {
-                Blog_Categories::update($_POST['id'], $_POST['name'],
+                Blog_Categories::update($cid, $_POST['name'],
                     String::tagify($_POST['name']));
                     
                 Message::store('success', 'Category updated successfully.');
@@ -43,12 +43,12 @@ class Blog_Admin_Categories {
         }
         
         View::load('Blog_Admin', 'blog_admin_categories_edit',
-            array('category' => Blog_Categories::get_by_id($id)));
+            array('category' => Blog_Categories::get_by_cid($cid)));
     }
     
-    public static function delete($id) 
+    public static function delete($cid) 
     {
-        Blog_Categories::delete($id);
+        Blog_Categories::delete($cid);
         Message::store('success', 'Category deleted successfully.');
         Router::redirect('admin/blog/categories/manage');
     }

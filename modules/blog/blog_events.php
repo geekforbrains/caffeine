@@ -104,25 +104,9 @@ final class Blog_Events {
         return array(
             'blog_posts' => array(
                 'fields' => array(
-                    'id' => array(
-                        'type' => 'auto increment',
-                        'unsigned' => true,
-                        'not null' => true
-                    ),
-					'site_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
-						'not null' => true
-					),
-                    'user_id' => array(
+                    'cid' => array(
                         'type' => 'int',
-						'size' => 'normal',
-                        'unsigned' => true,
-                        'not null' => true
-                    ),
-                    'category_id' => array(
-                        'type' => 'int',
+						'size' => 'big',
                         'unsigned' => true,
                         'not null' => true
                     ),
@@ -131,45 +115,33 @@ final class Blog_Events {
                         'length' => 255,
                         'not null' => true
                     ),
-                    'content' => array(
-                        'type' => 'text',
-                        'size' => 'big',
-                        'not null' => true
-                    ),
                     'slug' => array(
                         'type' => 'varchar',
                         'length' => 255,
                         'not null' => true
                     ),
-                    'created' => array(
-                        'type' => 'int',
-                        'unsigned' => true,
+                    'content' => array(
+                        'type' => 'text',
+                        'size' => 'big',
                         'not null' => true
                     )
                 ),
                 
                 'indexes' => array(
-                    'user_id' => array('user_id'),
-                    'category_id' => array('category_id'),
                     'slug' => array('slug')
                 ),
                 
-                'primary key' => array('id')
+                'primary key' => array('cid')
             ),
             
             'blog_categories' => array(
                 'fields' => array(
-                    'id' => array(
-                        'type' => 'auto increment',
+                    'cid' => array(
+                        'type' => 'int',
+						'size' => 'big',
                         'unsigned' => true,
                         'not null' => true,
                     ),
-					'site_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
-						'not null' => true
-					),
                     'name' => array(
                         'type' => 'varchar',
                         'length' => 255,
@@ -186,59 +158,7 @@ final class Blog_Events {
                     'slug' => array('slug')
                 ),
                 
-                'primary key' => array('id')
-            ),
-            
-            'blog_comments' => array(
-                'fields' => array(
-                    'id' => array(
-                        'type' => 'auto increment',
-                        'unsigned' => true,
-                        'not null' => true,
-                    ),
-					'site_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
-						'not null' => true
-					),
-                    'post_id' => array(
-                        'type' => 'int',
-                        'unsigned' => true,
-                        'not null' => true
-                    ),
-                    'author' => array(
-                        'type' => 'varchar',
-                        'length' => 255,
-                        'default' => ''
-                    ),
-                    'email' => array(
-                        'type' => 'varchar',
-                        'length' => 255,
-                        'default' => ''
-                    ),
-                    'website' => array(
-                        'type' => 'text',
-                        'size' => 'tiny',
-                        'default' => ''
-                    ),
-                    'comment' => array(
-                        'type' => 'text',
-                        'size' => 'normal',
-                        'not null' => true
-                    ),
-                    'created' => array(
-                        'type' => 'int',
-                        'unsigned' => true,
-                        'not null' => true
-                    )
-                ),
-                
-                'indexes' => array(
-                    'post_id' => array('post_id')
-                ),
-                
-                'primary key' => array('id')
+                'primary key' => array('cid')
             )
         );
     }

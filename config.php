@@ -7,7 +7,7 @@
 define('CAFFEINE_TIMEZONE', 'UTC'); // Default UTC
 define('CAFFEINE_DEBUG', true);
 define('CAFFEINE_DEBUG_VERBOSITY', 3); // 1 = Low, 2 = Medium, 3 = High
-define('CAFFEINE_DEBUG_IGNORE', 'caffeine, database'); // A list of comma seperated classes to ignore in debug
+define('CAFFEINE_DEBUG_IGNORE', 'caffeine'); // A list of comma seperated classes to ignore in debug
 define('CAFFEINE_DEBUG_WATCH', ''); // A list of comma seperated classes to watch, overrides ignore
 define('CAFFEINE_ERROR_REPORTING', E_ALL | E_STRICT);
 

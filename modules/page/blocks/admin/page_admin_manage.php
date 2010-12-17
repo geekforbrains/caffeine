@@ -2,13 +2,13 @@
 
 <?php if($pages): ?>
 	<?php foreach($pages as $page): ?>
-		<a href="<?php echo Router::url('admin/page/edit/%d', $page['id']); ?>">
+		<a href="<?php echo Router::url('admin/page/edit/%d', $page['cid']); ?>">
 			<?php echo $page['title']; ?>
 		</a>
 		-
-		<a href="<?php echo Router::url('admin/page/delete/%d', $page['id']); ?>">
+		<a href="<?php echo Router::url('admin/page/delete/%d', $page['cid']); ?>">
 			Delete
-		</a>
+		</a><br />
 	<?php endforeach; ?>
 <?php else: ?>
 	<i>No pages</i>

@@ -1,17 +1,18 @@
 <h2>Edit Page: <?php echo $page['title']; ?></h2>
 
-<form method="post" action="<?php echo Router::url('admin/page/edit/%d', $page['id']); ?>">
+<form method="post" action="<?php echo Router::url('admin/page/edit/%d', $page['cid']); ?>">
 	Title: <input type="text" name="title" value="<?php echo $page['title']; ?>" /><br />
+
 	Parent: 
-		<select name="parent_id">
+		<select name="parent_cid">
 			<option value="0">None</option>
 			<?php foreach($pages as $p): ?>
-				<option value="<?php echo $p['id']; ?>" 
-					<?php echo ($p['id'] == $page['parent_id']) ? 'selected="selected"' : ''; ?>>
+				<option value="<?php echo $p['cid']; ?>">
 					<?php echo $p['title']; ?>
 				</option>
 			<?php endforeach; ?>
 		</select><br />
+
 	Content: <textarea name="content"><?php echo $page['content']; ?></textarea>
 
 	<input type="submit" name="submit" value="Publish" />

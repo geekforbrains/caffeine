@@ -74,25 +74,9 @@ final class Page_Events {
 		return array(
 			'pages' => array(
 				'fields' => array(
-					'id' => array(
-						'type' => 'auto increment',
-						'unsigned' => true,
-						'not null' => true
-					),
-					'parent_id' => array(
+					'cid' => array(
 						'type' => 'int',
-						'unsigned' => true,
-						'not null' => true
-					),
-					'site_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
-						'not null' => true
-					),
-					'user_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
@@ -110,23 +94,14 @@ final class Page_Events {
 						'type' => 'text',
 						'size' => 'big',
 						'not null' => true
-					),
-					'timestamp' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
-						'not null' => true
 					)
 				),
 
 				'indexes' => array(
-					'parent_id' => array('parent_id'),
-					'site_id' => array('site_id'),
-					'user_id' => array('user_id'),
 					'slug' => array('slug')
 				),
 
-				'primary key' => array('id')
+				'primary key' => array('cid')
 			)
 		);
 	}

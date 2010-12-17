@@ -2,11 +2,10 @@
 
 <form method="post" action="<? echo Router::url('admin/blog/posts/create') ?>">
     
-    <select name="category_id">
-        <option value="">Choose One</a>
+    <select multiple="multiple" name="categories[]">
         <? foreach($categories as $category): ?>
         
-            <option value="<? echo $category['id'] ?>">
+            <option value="<? echo $category['cid'] ?>">
                 <? echo $category['name'] ?>
             </option>
             

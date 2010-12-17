@@ -21,12 +21,10 @@ class Blog_Admin_Posts {
 			$user = User::get_current();
 
             Blog_Posts::create(
-				$user['site_id'],
-				$user['id'],
-                $_POST['category_id'], 
                 $_POST['title'], 
                 $_POST['content'],
-                String::tagify($_POST['title'])
+                String::tagify($_POST['title']),
+				$_POST['categories']
             );
             
             Message::store('notify', 'Post created successfully.');
@@ -37,11 +35,11 @@ class Blog_Admin_Posts {
             array('categories' => Blog_Categories::get_all()));
     }
     
-    public static function edit($id) 
+    public static function edit($cid) 
     {
         if($_POST)
         {
-            Blog_Posts::update($id, $_POST['title'], $_POST['content'],
+            Blog_Posts::update($cid, $_POST['title'], $_POST['content'],
                 String::tagify($_POST['title']));
             
             Message::store('notify', 'Post updated successfully.');
@@ -49,12 +47,12 @@ class Blog_Admin_Posts {
         }
         
         View::load('Blog_Admin', 'blog_admin_posts_edit',
-            array('post' => Blog_Posts::get_by_id($id)));
+            array('post' => Blog_Posts::get_by_cid($cid)));
     }
     
-    public static function delete($id) 
+    public static function delete($cid) 
     {
-        Blog_Posts::delete($id);
+        Blog_Posts::delete($cid);
         
         Message::store('notify', 'Post deleted successfully.');
         Router::redirect('admin/blog/posts/manage');

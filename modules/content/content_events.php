@@ -46,12 +46,6 @@ final class Content_Events {
 						'unsigned' => true,
 						'not null' => true
 					),
-					'parent_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
-						'not null' => true
-					),
 					'type_id' => array(
 						'type' => 'int',
 						'size' => 'normal',
@@ -85,15 +79,35 @@ final class Content_Events {
 				),
 
 				'indexes' => array(
-					'parent_id' => array('parent_id'),
 					'type_id' => array('type_id'),
 					'site_id' => array('site_id'),
 					'user_id' => array('user_id')
 				),
 
 				'primary key' => array('id')
-			)
-						
+			),
+
+			'content_relatives' => array(
+				'fields' => array(
+					'parent_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'child_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					)
+				),
+
+				'indexes' => array(
+					'parent_cid' => array('parent_cid'),
+					'child_cid' => array('child_cid')
+				)
+			)		
 		);
 	}
 

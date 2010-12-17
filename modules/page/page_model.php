@@ -36,11 +36,13 @@ class Page_Model extends Database {
 	 *		is returned. Otherwise boolean false is returned.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_by_id($page_id) 
+	public static function get_by_cid($cid) 
 	{
-		self::query('SELECT * FROM {pages} WHERE id = %s', $page_id);
+		self::query('SELECT * FROM {pages} WHERE cid = %s', $cid);
+
 		if(self::num_rows() > 0)
 			return self::fetch_array();
+
 		return false;
 	}
 
@@ -57,11 +59,13 @@ class Page_Model extends Database {
 	 *		is returned. Otherwise boolean false is returned.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_by_slug($page_slug) 
+	public static function get_by_slug($slug) 
 	{
-		self::query('SELECT * FROM {pages} WHERE slug LIKE %s', $page_slug);
+		self::query('SELECT * FROM {pages} WHERE slug LIKE %s', $slug);
+
 		if(self::num_rows() > 0)
 			return self::fetch_array();
+
 		return false;
 	}
 
@@ -93,28 +97,23 @@ class Page_Model extends Database {
 	 *		Returns true if the creation was successful. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function add($parent_id, $site_id, $user_id, $title,
-		$slug, $content)
+	public static function add($parent_cid, $title, $slug, $content)
 	{
+		$cid = Content::create(PAGE_TYPE, $parent_cid);
+
 		self::query('
 			INSERT INTO {pages} (
-				parent_id,
-				site_id,
-				user_id,
+				cid,
 				title,
 				slug,
-				content,
-				timestamp
+				content
 			) VALUES (
-				%s, %s, %s, %s, %s, %s, %s
+				%s, %s, %s, %s
 			)', 
-			$parent_id, 
-			$site_id, 
-			$user_id, 
+			$cid,
 			$title, 
 			$slug,
-			$content, 
-			time()
+			$content
 		);
 
 		if(self::affected_rows() > 0)
@@ -147,21 +146,22 @@ class Page_Model extends Database {
 	 *		Returns true if the update was successful. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function update($page_id, $parent_id, $title, $slug, $content) 
+	public static function update($cid, $parent_cid, $title, $slug, $content) 
 	{
 		self::query('
 			UPDATE {pages} SET
-				parent_id = %s,
 				title = %s,
 				slug = %s,
-				content = %s,
-				timestamp = %s
+				content = %s
 			WHERE
-				id = %s
-		', $parent_id, $title, $slug, $content, time(), $page_id);
+				cid = %s
+		', $title, $slug, $content, $cid);
 
 		if(self::affected_rows() > 0)
+		{
+			Content::update($cid);
 			return true;
+		}
 
 		return false;
 	}
@@ -177,11 +177,16 @@ class Page_Model extends Database {
 	 *		Returns true if the page was deleted successfully. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function del($page_id) 
+	public static function del($cid) 
 	{
-		self::query('DELETE FROM {pages} WHERE id = %s', $page_id);
+		self::query('DELETE FROM {pages} WHERE cid = %s', $cid);
+
 		if(self::affected_rows() > 0)
+		{
+			Content::delete($cid);
 			return true;
+		}
+
 		return false;
 	}
 

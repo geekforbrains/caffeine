@@ -2,15 +2,17 @@
 
 <form method="post" action="<?php echo Router::url('admin/page/create'); ?>">
 	Title: <input type="text" name="title" /><br />
+
 	Parent: 
-		<select name="parent_id">
+		<select name="parent_cid">
 			<option value="0">None</option>
 			<?php foreach($pages as $page): ?>
-				<option value="<?php echo $page['id']; ?>">
+				<option value="<?php echo $page['cid']; ?>">
 					<?php echo $page['title']; ?>
 				</option>
 			<?php endforeach; ?>
 		</select><br />
+
 	Content: <textarea name="content"></textarea><br />
 	
 	<input type="submit" name="submit" value="Save as Draft" />

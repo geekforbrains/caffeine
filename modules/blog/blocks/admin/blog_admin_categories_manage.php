@@ -3,11 +3,11 @@
 <? if($categories): ?>
     <? foreach($categories as $category): ?>
     
-        <a href="<? echo Router::url('admin/blog/categories/edit/%d', $category['id']) ?>">
+        <a href="<? echo Router::url('admin/blog/categories/edit/%d', $category['cid']) ?>">
             <? echo $category['name'] ?>
         </a>
         -
-        <a href="<? echo Router::url('admin/blog/categories/delete/%d', $category['id']) ?>">
+        <a href="<? echo Router::url('admin/blog/categories/delete/%d', $category['cid']) ?>">
             Delete
         </a>
         <br />
