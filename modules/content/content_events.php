@@ -89,13 +89,13 @@ final class Content_Events {
 
 			'content_relatives' => array(
 				'fields' => array(
-					'parent_cid' => array(
+					'cid' => array(
 						'type' => 'int',
 						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
-					'child_cid' => array(
+					'relative_cid' => array(
 						'type' => 'int',
 						'size' => 'big',
 						'unsigned' => true,
@@ -104,8 +104,8 @@ final class Content_Events {
 				),
 
 				'indexes' => array(
-					'parent_cid' => array('parent_cid'),
-					'child_cid' => array('child_cid')
+					'cid' => array('cid'),
+					'relative_cid' => array('relative_cid')
 				)
 			)		
 		);

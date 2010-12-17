@@ -97,7 +97,7 @@ class Content extends Database {
 	 */
 	public static function delete($cid)
 	{
-		self::query('DELETE FROM {content_relatives} WHERE parent_cid = %s', $cid);
+		self::query('DELETE FROM {content_relatives} WHERE cid = %s', $cid);
 		self::query('DELETE FROM {content} WHERE id = %s', $cid);
 
 		if(self::affected_rows() > 0)
@@ -153,7 +153,7 @@ class Content extends Database {
 		}
 		else
 		{
-			self::query('INSERT INTO {content_relatives} (parent_cid, child_cid)
+			self::query('INSERT INTO {content_relatives} (cid, relative_cid)
 				VALUES (%s, %s)', $cid, $relatives);
 		}
 	}

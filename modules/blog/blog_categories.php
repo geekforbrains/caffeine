@@ -13,7 +13,7 @@ class Blog_Categories extends Database {
 			SELECT DISTINCT
 				bc.*
 			FROM {blog_categories} bc
-				LEFT JOIN {content_relatives} cr ON cr.parent_cid = %s
+				LEFT JOIN {content_relatives} cr ON cr.cid = %s
 			ORDER BY
 				bc.name
 			ASC

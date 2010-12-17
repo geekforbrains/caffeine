@@ -22,8 +22,8 @@ class Blog_Posts extends Database {
 			SELECT
 				bp.*
 			FROM {blog_posts} bp
-				LEFT JOIN {content_relatives} cr ON cr.parent_cid = bp.cid
-				LEFT JOIN {blog_categories} bc ON bc.cid = cr.child_cid
+				LEFT JOIN {content_relatives} cr ON cr.cid = bp.cid
+				LEFT JOIN {blog_categories} bc ON bc.cid = cr.relative_cid
 			WHERE
 				bc.slug = %s
 			', 
