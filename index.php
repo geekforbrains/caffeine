@@ -330,7 +330,11 @@ final class Caffeine {
 		}
 	}
 
-	// TODO
+	/**
+	 * -------------------------------------------------------------------------
+	 * Callback for the Caffeine::event_priority event.
+	 * -------------------------------------------------------------------------
+	 */
 	private static function callback_event_priority($class, $data)
 	{
 		foreach($data as $event => $priority)
@@ -358,7 +362,7 @@ final class Caffeine {
 		Caffeine::debug(1, 'Caffeine', 'Checking if the "%s" site directory
 			exists', self::$_site);
 
-		$path = CAFFEINE_SITES_PATH . self::$_site;
+		$path = CAFFEINE_SITES_PATH . self::$_site . '/';
 		if(file_exists($path))
 		{
 			Caffeine::debug(2, 'Caffeine', 'Setting site path to: %s', $path);
@@ -384,7 +388,14 @@ final class Caffeine {
 			
 			// First check for config file, load if found
 			$module_config = sprintf(CAFFEINE_CONFIG_FILE_FORMAT, $module);
-			$config_path = CAFFEINE_MODULES_PATH . $module . '/' . $module_config . CAFFEINE_EXT;
+			$config_path = CAFFEINE_MODULES_PATH . $module .'/'. $module_config . CAFFEINE_EXT;
+
+			// Check for config override in sites module dir
+			$site_config_path = self::$_site_path . CAFFEINE_MODULES_DIR . 
+				$module .'/'. $module_config . CAFFEINE_EXT;
+
+			if(file_exists($site_config_path))	
+				$config_path = $site_config_path;
 			
 			if(file_exists($config_path))
 			{

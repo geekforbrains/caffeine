@@ -130,6 +130,10 @@ class View {
 		return Router::url(self::$_theme_dir . $path);
 	}
 
+	public static function theme_path() {
+		return self::$_theme_path;
+	}
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Checks if a theme exists either in the current site directory or in the

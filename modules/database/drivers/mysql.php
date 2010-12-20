@@ -15,17 +15,22 @@ class Database {
     private static $_aliases = array();
     private static $_active_alias = null;
     private static $_type_map = array(
-        'auto increment' => 'INT',
         'varchar' => 'VARCHAR',
         'char' => 'CHAR',
         'float' => 'FLOAT',
         'double' => 'DOUBLE',
         'datetime' => 'DATETIME',
+        'auto increment' => array(
+            'tiny' => 'TINYINT',
+            'small' => 'SMALLINT',
+            'normal' => 'INT',
+            'big' => 'BIGINT'
+		),
         'int' => array(
             'tiny' => 'TINYINT',
             'small' => 'SMALLINT',
             'normal' => 'INT',
-            'big' => 'BIGINT',
+            'big' => 'BIGINT'
         ),
         'text' => array(
             'tiny' => 'TINYTEXT',
@@ -289,9 +294,6 @@ class Database {
             
             foreach($table_data['fields'] as $field => $field_data)
             {
-                // id int unsigned not null auto_increment
-                // blog_post text not null
-                
                 // Add the field name
                 $sql .= $field . ' ';
                 
