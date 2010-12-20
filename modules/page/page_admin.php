@@ -29,12 +29,14 @@ class Page_Admin extends Page_Model {
 		if($_POST)
 		{
 			$user = User::get_current();
+			$published = isset($_POST['publish']) ? 1 : 0;
 
 			$status = self::add(
 				$_POST['parent_cid'],
 				$_POST['title'],
 				String::tagify($_POST['title']),
-				$_POST['content']
+				$_POST['content'],
+				$published
 			);
 
 			if($status)
@@ -62,12 +64,18 @@ class Page_Admin extends Page_Model {
 	{
 		if($_POST)
 		{
+			if(isset($_POST['delete']))
+				self::delete($cid);
+				
+			$published = isset($_POST['publish']) ? 1 : 0;
+
 			$status = self::update(
 				$cid,
 				$_POST['parent_cid'],
 				$_POST['title'],
 				String::tagify($_POST['title']),
-				$_POST['content']
+				$_POST['content'],
+				$published
 			);
 
 			if($status)

@@ -94,11 +94,18 @@ final class Page_Events {
 						'type' => 'text',
 						'size' => 'big',
 						'not null' => true
+					),
+					'published' => array(
+						'type' => 'int',
+						'size' => 'tiny',
+						'unsigned' => true,
+						'not null' => true
 					)
 				),
 
 				'indexes' => array(
-					'slug' => array('slug')
+					'slug' => array('slug'),
+					'published' => array('published')
 				),
 
 				'primary key' => array('cid')

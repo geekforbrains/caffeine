@@ -15,7 +15,7 @@
 
 	Content: <textarea name="content"><?php echo $page['content']; ?></textarea>
 
-	<input type="submit" name="submit" value="Publish" />
-	<input type="submit" name="submit" value="Un-Publish" />
-	<input type="submit" name="submit" value="Delete" />
+	<input type="submit" name="publish" value="Publish" />
+	<input type="submit" name="draft" value="Un-Publish" />
+	<input type="submit" name="delete" value="Delete" />
 </form>

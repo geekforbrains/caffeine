@@ -15,6 +15,6 @@
 
 	Content: <textarea name="content"></textarea><br />
 	
-	<input type="submit" name="submit" value="Save as Draft" />
-	<input type="submit" name="submit" value="Publish" />
+	<input type="submit" name="draft" value="Save as Draft" />
+	<input type="submit" name="publish" value="Publish" />
 </form>

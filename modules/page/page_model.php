@@ -10,16 +10,26 @@ class Page_Model extends Database {
 	
 	/**
 	 * -------------------------------------------------------------------------
-	 * Returns an array of all available pages. This is just a straigh return
+	 * Returns an array of all available pages. This is just a straight return
 	 * from the database. They aren't sorted by parent.
+	 *
+	 * @param $published
+	 *		Determines to get published, or un-published posts. By default this
+	 *		method will return all pages, regardless of publish status. Set
+	 *		to "1" for published pages and "0" for draft pages.
 	 *
 	 * @return array
 	 *		An associative array of pages.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_all()
+	public static function get_all($published = null)
 	{
-		self::query('SELECT * FROM {pages} ORDER BY title ASC');
+		if(!is_null($published))
+			self::query('SELECT * FROM {pages} WHERE published = %s 
+				ORDER BY title ASC', $published);
+		else
+			self::query('SELECT * FROM {pages} ORDER BY title ASC');
+
 		return self::fetch_all();
 	}
 
@@ -54,14 +64,20 @@ class Page_Model extends Database {
 	 * @param $page_slug
 	 *		The slug of the page to get.
 	 *
+	 * @param $published
+	 *		Determines whether to get published or un-published post. This will
+	 *		almost always be "1" because draft posts should never be accessed
+	 *		via their slug, but rather their ID. Still, flexibility is nice.
+	 *
 	 * @return mixed.
 	 *		If a page with the given slug exists, a single associative array
 	 *		is returned. Otherwise boolean false is returned.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_by_slug($slug) 
+	public static function get_by_slug($slug, $published = 1) 
 	{
-		self::query('SELECT * FROM {pages} WHERE slug LIKE %s', $slug);
+		self::query('SELECT * FROM {pages} WHERE slug LIKE %s AND
+			published = %s', $slug, $published);
 
 		if(self::num_rows() > 0)
 			return self::fetch_array();
@@ -97,7 +113,7 @@ class Page_Model extends Database {
 	 *		Returns true if the creation was successful. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function add($parent_cid, $title, $slug, $content)
+	public static function add($parent_cid, $title, $slug, $content, $published)
 	{
 		$cid = Content::create(PAGE_TYPE, $parent_cid);
 
@@ -106,14 +122,16 @@ class Page_Model extends Database {
 				cid,
 				title,
 				slug,
-				content
+				content,
+				published
 			) VALUES (
-				%s, %s, %s, %s
+				%s, %s, %s, %s, %s
 			)', 
 			$cid,
 			$title, 
 			$slug,
-			$content
+			$content,
+			$published
 		);
 
 		if(self::affected_rows() > 0)
@@ -146,16 +164,17 @@ class Page_Model extends Database {
 	 *		Returns true if the update was successful. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function update($cid, $parent_cid, $title, $slug, $content) 
+	public static function update($cid, $parent_cid, $title, $slug, $content, $published)
 	{
 		self::query('
 			UPDATE {pages} SET
 				title = %s,
 				slug = %s,
-				content = %s
+				content = %s,
+				published = %s
 			WHERE
 				cid = %s
-		', $title, $slug, $content, $cid);
+		', $title, $slug, $content, $published, $cid);
 
 		if(self::affected_rows() > 0)
 		{
