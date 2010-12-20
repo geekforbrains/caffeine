@@ -19,12 +19,14 @@ class Blog_Admin_Posts {
         if($_POST)
         {
 			$user = User::get_current();
+			$published = isset($_POST['publish']) ? 1 : 0;
 
             Blog_Posts::create(
                 $_POST['title'], 
                 $_POST['content'],
                 String::tagify($_POST['title']),
-				$_POST['categories']
+				$_POST['categories'],
+				$published
             );
             
             Message::store('notify', 'Post created successfully.');
@@ -39,8 +41,21 @@ class Blog_Admin_Posts {
     {
         if($_POST)
         {
-            Blog_Posts::update($cid, $_POST['title'], $_POST['content'],
-                String::tagify($_POST['title']));
+			if(isset($_POST['delete']))
+			{
+				self::delete($cid);
+				return;
+			}	
+
+			$published = isset($_POST['publish']) ? 1 : 0;
+
+            Blog_Posts::update(
+				$cid, 
+				$_POST['title'], 
+				$_POST['content'],
+                String::tagify($_POST['title']),
+				$published
+			);
             
             Message::store('notify', 'Post updated successfully.');
             Router::redirect('admin/blog/posts/manage');

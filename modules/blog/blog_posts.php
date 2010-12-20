@@ -1,17 +1,24 @@
 <?php
 class Blog_Posts extends Database {
 
-    public static function get_all()
+    public static function get_all($published = null)
     {
-		self::query('
-			SELECT
-				bp.*
-			FROM {blog_posts} bp
-				LEFT JOIN {content} c ON c.id = bp.cid
-			ORDER BY
-				c.created
-			DESC
-		');
+		if(!is_null($published))
+			self::query('
+				SELECT bp.*
+				FROM {blog_posts} bp
+					LEFT JOIN {content} c ON c.id = bp.cid
+				WHERE bp.published = %s
+				ORDER BY c.created DESC
+			', $published);
+
+		else
+			self::query('
+				SELECT bp.*
+				FROM {blog_posts} bp
+					LEFT JOIN {content} c ON c.id = bp.cid
+				ORDER BY c.created DESC
+			');
 
 		return self::_get_categories(self::fetch_all());
     }
@@ -45,7 +52,7 @@ class Blog_Posts extends Database {
         return self::_get_categories(self::fetch_array());
     }
     
-    public static function create($title, $content, $slug, $categories = array())
+    public static function create($title, $content, $slug, $categories = array(), $published)
     {
 		$cid = Content::create(BLOG_TYPE_POST, $categories);
 
@@ -54,14 +61,16 @@ class Blog_Posts extends Database {
 				cid,
                 title, 
                 content, 
-                slug
+                slug,
+				published
             ) VALUES (
-				%s, %s, %s, %s
+				%s, %s, %s, %s, %s
 			)', 
 			$cid,
 			$title,
 			$content,
-			$slug
+			$slug,
+			$published
         );
 
 		if(self::affected_rows() > 0)
@@ -70,17 +79,18 @@ class Blog_Posts extends Database {
 		return false;
     }
     
-    public static function update($cid, $title, $content, $slug)
+    public static function update($cid, $title, $content, $slug, $published)
     {
         self::query('
             UPDATE {blog_posts} SET
                 title = %s,
                 content = %s,
-                slug = %s
+                slug = %s,
+				published = %s
             WHERE
                 cid = %s
             ', 
-            $title, $content, $slug, $cid
+            $title, $content, $slug, $published, $cid
         );
 
 		if(self::affected_rows() > 0)
