@@ -35,4 +35,17 @@ class String {
             preg_replace('#[-\s]+#', ' ', strtolower($string)))), $splitter);
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Takes a string with the tokens %, %s, %d and converts them to regex
+	 * patterns for anything, only words and only number respectively. 
+	 * -------------------------------------------------------------------------
+	 */
+	public static function regify($string)
+	{
+		return str_replace('%', '(.*?)',
+			str_replace('%d', '([0-9]+)', 
+			str_replace('%s', '([A-Za-z\-]+)', $string)));
+	}
+
 }

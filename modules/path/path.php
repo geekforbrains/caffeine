@@ -17,8 +17,9 @@
  *
  *      Example:
  *          return array(
- *              'my/path/%s' => array(
+ *              'my/path/%[s|d]' => array(
  *                  'title' => 'My Path',
+ *					'alias' => 'load/this/path/instead',
  *                  'callback' => array('MyClass', 'my_method'),
  *                  'visible' => boolean,
  *					'auth' => 'permission name'
@@ -30,16 +31,31 @@ class Path {
 
 	// Stores loaded paths and metadata
     protected static $_paths 	= array();
+	protected static $_current	= null;
+	
+	/**
+	 * -------------------------------------------------------------------------
+	 * Returns the current path to be called. This is not the same as the path
+	 * returned by the Router::current_path().
+	 * -------------------------------------------------------------------------
+	 */
+	public static function current() {
+		return self::$_current;
+	}
 
-	public static function get_paths() {
+	public static function paths() {
 		return self::$_paths;
 	}
 
-	public static function get_path($path) 
+	public static function path_data($path) 
 	{
 		if(!strlen($path))
 			$path = PATH_DEFAULT;
 
+		if(isset(self::$_paths[$path]['alias']))
+			$path = self::$_paths[$path]['alias'];
+
+		self::$_current = $path;
 		Caffeine::debug(1, 'Path', 'Searching callback data for path: %s', $path);
 
 		// First attempt direct path to callback
@@ -101,7 +117,7 @@ class Path {
 	 */
 	protected static function _auth_path($current_path)
 	{
-		$path_data = self::get_path($current_path);
+		$path_data = self::path_data($current_path);
 
 		if(!$path_data)
 		{
