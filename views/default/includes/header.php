@@ -12,5 +12,5 @@
 	</div>
 	
 	<div id="sidebar">
-		<?php echo Menu::display(); ?>
+		<?php echo Menu::build(); ?>
 	</div>

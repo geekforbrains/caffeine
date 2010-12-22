@@ -24,8 +24,7 @@ final class Blog_Events {
             // Front
             'blog' => array(
                 'title' => 'Blog',
-                'callback' => array('Blog', 'posts'),
-				'auth' => true,
+				'alias' => 'blog/posts'
             ),
             'blog/posts' => array(
                 'callback' => array('Blog', 'posts'),
@@ -44,13 +43,11 @@ final class Blog_Events {
             // Admin Posts
             'admin/blog' => array(
                 'title' => 'Blog',
-                'callback' => array('Blog_Admin_Posts', 'manage'),
-				'auth' => 'manage blog posts'
+				'alias' => 'admin/blog/posts/manage'
             ),
             'admin/blog/posts' => array(
                 'title' => 'Posts',
-                'callback' => array('Blog_Admin_Posts', 'manage'),
-				'auth' => 'manage blog posts',
+				'alias' => 'admin/blog/posts/manage'
             ),
             'admin/blog/posts/manage' => array(
                 'title' => 'Manage Posts',
@@ -74,8 +71,7 @@ final class Blog_Events {
             // Admin Categories
             'admin/blog/categories' => array(
                 'title' => 'Categories',
-                'callback' => array('Blog_Admin_Categories', 'manage'),
-				'auth' => 'manage blog categories'
+				'alias' => 'admin/blog/categories/manage'
             ),
             'admin/blog/categories/manage' => array(
                 'title' => 'Manage Categories',

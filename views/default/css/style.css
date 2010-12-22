@@ -37,3 +37,6 @@ html, body {
 	width: 100%;
 	border-collapse: collapse;
 }
+
+ul.menu-closed {display: none;}
+ul.menu-open li.menu-active a.menu-active {font-weight: bold;}

@@ -38,8 +38,7 @@ final class Page_Events {
 			// Admin
 			'admin/page' => array(
 				'title' => 'Pages',
-				'callback' => array('Page_Admin', 'manage'),
-				'auth' => 'manage pages'
+				'alias' => 'admin/page/manage'
 			),
 			'admin/page/manage' => array(
 				'title' => 'Manage Pages',

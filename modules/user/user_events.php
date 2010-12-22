@@ -35,8 +35,7 @@ final class User_Events {
 			),
 			'admin/user' => array(
 				'title' => 'Users',
-				'callback' => array('User_Admin', 'manage'),
-				'auth' => 'manage users'
+				'alias' => 'admin/user/manage'
 			),
 			'admin/user/manage' => array(
 				'title' => 'Manage Users',

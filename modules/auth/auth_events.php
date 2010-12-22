@@ -28,8 +28,7 @@ final class Auth_Events {
 		return array(
 			'admin/auth' => array(
 				'title' => 'Roles',
-				'callback' => array('Auth_Admin', 'manage'),
-				'auth' => 'manage roles'
+				'alias' => 'admin/auth/manage'
 			),
 			'admin/auth/manage' => array(
 				'title' => 'Manage Roles',
