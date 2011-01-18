@@ -6,7 +6,7 @@
  * @version 1.0
  * =============================================================================
  */
-class Page_Model extends Database {
+class Page_Model {
 	
 	/**
 	 * -------------------------------------------------------------------------
@@ -25,12 +25,12 @@ class Page_Model extends Database {
 	public static function get_all($published = null)
 	{
 		if(!is_null($published))
-			self::query('SELECT * FROM {pages} WHERE published = %s 
+			Database::query('SELECT * FROM {pages} WHERE published = %s 
 				ORDER BY title ASC', $published);
 		else
-			self::query('SELECT * FROM {pages} ORDER BY title ASC');
+			Database::query('SELECT * FROM {pages} ORDER BY title ASC');
 
-		return self::fetch_all();
+		return Database::fetch_all();
 	}
 
 	/**
@@ -48,10 +48,10 @@ class Page_Model extends Database {
 	 */
 	public static function get_by_cid($cid) 
 	{
-		self::query('SELECT * FROM {pages} WHERE cid = %s', $cid);
+		Database::query('SELECT * FROM {pages} WHERE cid = %s', $cid);
 
-		if(self::num_rows() > 0)
-			return self::fetch_array();
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
 
 		return false;
 	}
@@ -76,11 +76,11 @@ class Page_Model extends Database {
 	 */
 	public static function get_by_slug($slug, $published = 1) 
 	{
-		self::query('SELECT * FROM {pages} WHERE slug LIKE %s AND
+		Database::query('SELECT * FROM {pages} WHERE slug LIKE %s AND
 			published = %s', $slug, $published);
 
-		if(self::num_rows() > 0)
-			return self::fetch_array();
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
 
 		return false;
 	}
@@ -115,29 +115,16 @@ class Page_Model extends Database {
 	 */
 	public static function add($parent_cid, $title, $slug, $content, $published)
 	{
-		$cid = Content::create(PAGE_TYPE, $parent_cid);
+		$cid = Content::create(PAGE_TYPE);
 
-		self::query('
-			INSERT INTO {pages} (
-				cid,
-				title,
-				slug,
-				content,
-				published
-			) VALUES (
-				%s, %s, %s, %s, %s
-			)', 
-			$cid,
-			$title, 
-			$slug,
-			$content,
-			$published
-		);
-
-		if(self::affected_rows() > 0)
-			return true;
-
-		return false;
+		return Database::insert('pages', array(
+			'cid' => $cid,
+			'parent_cid' => $parent_cid,
+			'title' => $title,
+			'slug' => $slug,
+			'content' => $content,
+			'published' => $published
+		));
 	}
 
 	/**
@@ -166,23 +153,18 @@ class Page_Model extends Database {
 	 */
 	public static function update($cid, $parent_cid, $title, $slug, $content, $published)
 	{
-		self::query('
-			UPDATE {pages} SET
-				title = %s,
-				slug = %s,
-				content = %s,
-				published = %s
-			WHERE
-				cid = %s
-		', $title, $slug, $content, $published, $cid);
+		Content::update($cid);
 
-		if(self::affected_rows() > 0)
-		{
-			Content::update($cid);
-			return true;
-		}
-
-		return false;
+		Database::update('pages',
+			array(
+				'parent_cid' => $parent_cid,
+				'title' => $title,
+				'slug' => $slug,
+				'content' => $content,
+				'published' => $published
+			),
+			array('cid' => $cid)
+		);
 	}
 	
 	/**
@@ -196,17 +178,15 @@ class Page_Model extends Database {
 	 *		Returns true if the page was deleted successfully. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function del($cid) 
+	public static function delete($cid) 
 	{
-		self::query('DELETE FROM {pages} WHERE cid = %s', $cid);
+		Content::delete($cid);
+		
+		// Update all child pages to have no parent
+		Database::update('pages', array('parent_cid' => 0),
+			array('parent_cid' => $cid));
 
-		if(self::affected_rows() > 0)
-		{
-			Content::delete($cid);
-			return true;
-		}
-
-		return false;
+		return Database::delete('pages', array('cid' => $cid));
 	}
 
 }

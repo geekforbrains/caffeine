@@ -79,6 +79,12 @@ final class Page_Events {
 						'unsigned' => true,
 						'not null' => true
 					),
+					'parent_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
 					'title' => array(
 						'type' => 'varchar',
 						'length' => 255,
@@ -103,6 +109,7 @@ final class Page_Events {
 				),
 
 				'indexes' => array(
+					'parent_cid' => array('parent_cid'),
 					'slug' => array('slug'),
 					'published' => array('published')
 				),

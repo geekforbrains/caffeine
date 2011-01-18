@@ -7,15 +7,21 @@
 		<select name="parent_cid">
 			<option value="0">None</option>
 			<?php foreach($pages as $p): ?>
-				<option value="<?php echo $p['cid']; ?>">
-					<?php echo $p['title']; ?>
-				</option>
+			
+				<?php if($p['cid'] != $page['cid']): ?>
+					<option value="<?php echo $p['cid']; ?>"
+						<?php if($p['cid'] == $page['parent_cid']) echo 'selected="selected"'; ?>>
+						<?php echo $p['title']; ?>
+					</option>
+				<?php endif; ?>
+
 			<?php endforeach; ?>
 		</select><br />
 
-	Content: <textarea name="content"><?php echo $page['content']; ?></textarea>
+	Content: <textarea name="content"><?php echo $page['content']; ?></textarea><br />
 
-	<input type="submit" name="publish" value="Publish" />
-	<input type="submit" name="draft" value="Un-Publish" />
+	Published: <input type="checkbox" name="published" <?php if($page['published'] > 0) echo 'checked="checked"'; ?> /><br />
+
+	<input type="submit" name="update" value="Update" />
 	<input type="submit" name="delete" value="Delete" />
 </form>

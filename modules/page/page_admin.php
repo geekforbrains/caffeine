@@ -6,7 +6,7 @@
  * @version 1.0
  * =============================================================================
  */
-class Page_Admin extends Page_Model {
+class Page_Admin {
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -16,7 +16,7 @@ class Page_Admin extends Page_Model {
 	public static function manage() 
 	{
 		View::load('Page_Admin', 'page_admin_manage',
-			array('pages' => self::get_all()));
+			array('pages' => Page_Model::get_all()));
 	}
 
 	/**
@@ -31,7 +31,7 @@ class Page_Admin extends Page_Model {
 			$user = User::get_current();
 			$published = isset($_POST['publish']) ? 1 : 0;
 
-			$status = self::add(
+			$status = Page_Model::add(
 				$_POST['parent_cid'],
 				$_POST['title'],
 				String::tagify($_POST['title']),
@@ -41,15 +41,15 @@ class Page_Admin extends Page_Model {
 
 			if($status)
 			{
-				Message::store('success', 'Page created successfully.');
+				Message::store(MSG_OK, 'Page created successfully.');
 				Router::redirect('admin/page/manage');
 			}
 			else
-				Message::set('error', 'Error creating page. Please try again.');
+				Message::set(MSG_ERR, 'Error creating page. Please try again.');
 		}
 
 		View::load('Page_Admin', 'page_admin_create',
-			array('pages' => self::get_all()));
+			array('pages' => Page_Model::get_all()));
 	}
 
 	/**
@@ -65,11 +65,14 @@ class Page_Admin extends Page_Model {
 		if($_POST)
 		{
 			if(isset($_POST['delete']))
+			{
 				self::delete($cid);
+				return;
+			}
 				
-			$published = isset($_POST['publish']) ? 1 : 0;
+			$published = isset($_POST['published']) ? 1 : 0;
 
-			$status = self::update(
+			Page_Model::update(
 				$cid,
 				$_POST['parent_cid'],
 				$_POST['title'],
@@ -78,19 +81,14 @@ class Page_Admin extends Page_Model {
 				$published
 			);
 
-			if($status)
-			{
-				Message::store('success', 'Page updated successfully.');
-				Router::redirect('admin/page/manage');
-			}
-			else
-				Message::set('error', 'Error updating page. Please try again.');
+			Message::store(MSG_OK, 'Page updated successfully.');
+			Router::redirect('admin/page/manage');
 		}
 
 		View::load('Page_Admin', 'page_admin_edit',
 			array(
-				'page' => self::get_by_cid($cid),
-				'pages' => self::get_all()
+				'page' => Page_Model::get_by_cid($cid),
+				'pages' => Page_Model::get_all()
 			)
 		);
 	}
@@ -105,10 +103,10 @@ class Page_Admin extends Page_Model {
 	 */
 	public static function delete($cid) 
 	{
-		if(self::del($cid))
-			Message::store('success', 'Page deleted successfully.');
+		if(Page_Model::delete($cid))
+			Message::store(MSG_OK, 'Page deleted successfully.');
 		else
-			Message::store('error', 'Error deleting page. Please try again.');
+			Message::store(MSG_ERR, 'Error deleting page. Please try again.');
 
 		Router::redirect('admin/page/manage');
 	}
