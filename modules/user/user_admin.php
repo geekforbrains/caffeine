@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * User_Admin
@@ -8,6 +8,11 @@
  */
 class User_Admin extends User_Model {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function login()
 	{
 		if($_POST)
@@ -30,6 +35,11 @@ class User_Admin extends User_Model {
 		View::load('User_Admin', 'user_admin_login');
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function logout() 
 	{
 		unset($_SESSION['user']);
@@ -37,13 +47,22 @@ class User_Admin extends User_Model {
 		Router::redirect(USER_LOGOUT_REDIRECT);
 	}
 
-
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function manage()
 	{
 		View::load('User_Admin', 'user_admin_manage',
 			array('users' => User::get_all()));
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function create()
 	{
 		if($_POST)
@@ -67,6 +86,11 @@ class User_Admin extends User_Model {
 		View::load('User_Admin', 'user_admin_create');
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function edit($user_id)
 	{
 		if($_POST)
@@ -85,6 +109,5 @@ class User_Admin extends User_Model {
 			)
 		);
 	}
-
 
 }

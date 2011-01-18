@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Database
@@ -39,8 +39,11 @@ class Database {
             'big' => 'LONGTEXT'
         ),
         'blob' => array(
+			'tiny' => 'TINYBLOB',
+			'small' => 'TINYBLOB',
             'normal' => 'BLOB',
-            'big' => 'LONGBLOG'
+			'medium' => 'MEDIUMBLOB',
+            'big' => 'LONGBLOB'
         )
     );
 
@@ -257,7 +260,7 @@ class Database {
             if(is_string($a))
                 $a = "'".$a."'";
         }
-            
+
         // Inject arguments
         $query = call_user_func_array('sprintf', 
             array_merge(array($sql), $args));
@@ -276,6 +279,51 @@ class Database {
         
         return $result;
     }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * A short-hand method for running simple insert queries.
+	 *
+	 * @param $table
+	 * 		The name of the table to run the insert on.
+	 *
+	 * @param $data
+	 *		An array of key value pairs to be inserted. The key is the column
+	 *		name in the table, and the value is the value to be inserted into
+	 *		the key column.
+	 *
+	 * @return boolean
+	 *		Returns true if the insert was successful. False otherwise.
+	 *
+	 * TODO: This code needs refactoring. Its a little sloppy.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function insert($table, $data)
+	{
+		$keys = array();
+		$vals = array(); 
+		$tmps = array();
+
+		foreach($data as $key => $val)
+		{
+			$keys[] = $key;
+			$vals[] = $val;
+			$tmps[] = '%s'; // Used to pass the number of values to the query
+		}
+
+		$query = sprintf('INSERT INTO {%s} (%s) VALUES (%s)',
+			$table,
+			implode(',', $keys),
+			implode(',', $tmps)
+		);
+
+		array_unshift($vals, $query);
+		call_user_func_array(array('Database', 'query'), $vals);
+
+		if(self::affected_rows() > 0)
+			return true;
+		return false;
+	}
     
     /**
      * -------------------------------------------------------------------------

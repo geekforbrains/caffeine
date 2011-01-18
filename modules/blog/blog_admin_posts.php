@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Blog_Admin_Posts
@@ -8,12 +8,22 @@
  */
 class Blog_Admin_Posts {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function manage() 
     {
         View::load('Blog_Admin', 'blog_admin_posts_manage',
             array('posts' => Blog_Posts::get_all()));
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function create() 
     {
         if($_POST)
@@ -37,6 +47,11 @@ class Blog_Admin_Posts {
             array('categories' => Blog_Categories::get_all()));
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function edit($cid) 
     {
         if($_POST)
@@ -65,6 +80,11 @@ class Blog_Admin_Posts {
             array('post' => Blog_Posts::get_by_cid($cid)));
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function delete($cid) 
     {
         Blog_Posts::delete($cid);

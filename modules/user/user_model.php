@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * User_Model
@@ -8,6 +8,11 @@
  */
 class User_Model extends Database {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function check_login($username, $pass, $site)
 	{
 		self::query('
@@ -27,6 +32,11 @@ class User_Model extends Database {
 		return false;
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function update_roles($user_id, $roles)
 	{
 		// Clear old rows
@@ -38,6 +48,11 @@ class User_Model extends Database {
 				(%s, %s)', $user_id, $role);
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function username_exists($username)
 	{
 		self::query('SELECT id FROM {user_accounts} WHERE username LIKE %s', 
@@ -48,6 +63,11 @@ class User_Model extends Database {
 		return false;
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function add_user($username, $pass, $email, $site)
 	{
 		$site_id = self::get_site_id($site);
@@ -68,6 +88,11 @@ class User_Model extends Database {
 		}
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function get_site_id($site) 
 	{
 		self::query('SELECT id FROM {user_sites} WHERE site = %s', $site);
@@ -76,4 +101,5 @@ class User_Model extends Database {
 
 		return false;
 	}
+
 }

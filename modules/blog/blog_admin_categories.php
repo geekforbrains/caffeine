@@ -1,12 +1,29 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
+/**
+ * =============================================================================
+ * Blog_Admin_Categories
+ * @author Gavin Vickery <gdvickery@gmail.com>
+ * @version 1.0
+ * =============================================================================
+ */
 class Blog_Admin_Categories {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function manage() 
     {
         View::load('Blog_Admin', 'blog_admin_categories_manage',
             array('categories' => Blog_Categories::get_all()));
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function create() 
     {
         if($_POST)
@@ -26,6 +43,11 @@ class Blog_Admin_Categories {
         View::load('Blog_Admin', 'blog_admin_categories_create');
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function edit($cid) 
     {
         if($_POST)
@@ -46,6 +68,11 @@ class Blog_Admin_Categories {
             array('category' => Blog_Categories::get_by_cid($cid)));
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function delete($cid) 
     {
         Blog_Categories::delete($cid);

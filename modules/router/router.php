@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Router
@@ -30,15 +30,29 @@ class Router {
         return self::$_path;
     }
     
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
     public static function current_url() {
         return self::url(self::$_path);
     }
     
-    // TODO
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
     public static function base() {
         return self::$_base;
     }
 
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
 	public static function subdomain($tld_count = ROUTER_TLD_COUNT) 
 	{
 		$host_bits = explode('.', 
@@ -93,7 +107,11 @@ class Router {
         return false;
     }
     
-    // TODO
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
     public static function segments() {
         return self::$_segments;
     }
@@ -138,4 +156,10 @@ class Router {
         self::$_segments = strlen(self::$_path) ? explode('/', self::$_path) : array();
     }
 
+}
+
+// Shorthand function for Router::url
+function l($path) {
+	$args = func_get_args();
+	echo call_user_func_array(array('Router', 'url'), $args);
 }

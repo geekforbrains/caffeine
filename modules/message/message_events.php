@@ -1,16 +1,29 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
+/**
+ * =============================================================================
+ * Message_Events
+ * @author Gavin Vickery <gdvickery@gmail.com>
+ * @version 1.0
+ * =============================================================================
+ */
 final class Message_Events extends Message {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Implements the Caffeine::bootstrap event.
+	 * -------------------------------------------------------------------------
+	 */
     public static function caffeine_bootstrap() {
         self::_move_stored();
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Implements the View::block_paths event.
+	 * -------------------------------------------------------------------------
+	 */
     public static function view_block_paths() {
         return array('Message' => CAFFEINE_MODULES_PATH . 'message/blocks/');
-    }
-    
-    public static function view_block_callbacks() {
-        return array('messages' => array('Message', 'display_messages'));
     }
 
 }

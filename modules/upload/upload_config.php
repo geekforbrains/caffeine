@@ -1,8 +1,8 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Path Configurations
+ * Upload Constants
  * =============================================================================
  */
-define('PATH_DEFAULT', 'admin/crm');
-define('PATH_ACCESS_DENIED_REDIRECT', 'admin/login');
+define('UPLOAD_DIR', 'uploads/');
+define('UPLOAD_PATH', CAFFEINE_FILES_PATH . UPLOAD_DIR);

@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * ============================================================================
  * User_Events
@@ -8,6 +8,11 @@
  */
 final class User_Events {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Implements the Caffeine::init event.
+	 * -------------------------------------------------------------------------
+	 */
 	public static function caffeine_init()
 	{
 		if(USER_CREATE_ROOT)
@@ -16,6 +21,11 @@ final class User_Events {
 		User::load();
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Implements the View::block_paths event.
+	 * -------------------------------------------------------------------------
+	 */
 	public static function view_block_paths() 
 	{
 		return array(
@@ -24,6 +34,11 @@ final class User_Events {
 		);
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Implements the Path::callbacks event.
+	 * -------------------------------------------------------------------------
+	 */
 	public static function path_callbacks()
 	{
 		$paths = array(
@@ -66,6 +81,11 @@ final class User_Events {
 		return $paths;
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Implements the Caffeine::init event.
+	 * -------------------------------------------------------------------------
+	 */
 	public static function database_install()
 	{
 		return array(

@@ -1,11 +1,11 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Database Configurations
  * =============================================================================
  */
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'caffeine');
+define('DATABASE_NAME', 'crm');
 define('DATABASE_USER', 'username');
 define('DATABASE_PASS', 'password');
 define('DATABASE_PREFIX', '');

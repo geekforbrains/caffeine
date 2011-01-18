@@ -1,6 +1,18 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
+/**
+ * =============================================================================
+ * Blog_Posts
+ * @author Gavin Vickery <gdvickery@gmail.com>
+ * @version 1.0
+ * =============================================================================
+ */
 class Blog_Posts extends Database {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_all($published = null)
     {
 		if(!is_null($published))
@@ -23,6 +35,11 @@ class Blog_Posts extends Database {
 		return self::_get_categories(self::fetch_all());
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_all_by_category_slug($slug)
     {
 		self::query('
@@ -40,18 +57,33 @@ class Blog_Posts extends Database {
 		return self::_get_categories(self::fetch_all());
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_by_slug($slug)
     {
         self::query('SELECT * FROM {blog_posts} WHERE slug = %s', $slug);
         return self::_get_categories(self::fetch_array());
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_by_cid($cid)
     {
         self::query('SELECT * FROM {blog_posts} WHERE cid = %s', $cid);
         return self::_get_categories(self::fetch_array());
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function create($title, $content, $slug, $categories = array(), $published)
     {
 		$cid = Content::create(BLOG_TYPE_POST, $categories);
@@ -79,6 +111,11 @@ class Blog_Posts extends Database {
 		return false;
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function update($cid, $title, $content, $slug, $published)
     {
         self::query('
@@ -102,6 +139,11 @@ class Blog_Posts extends Database {
 		return false;
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function delete($cid)
     {
         self::query('DELETE FROM {blog_posts} WHERE cid = %s', $cid);
@@ -115,6 +157,11 @@ class Blog_Posts extends Database {
 		return false;
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	private static function _get_categories($rows)
 	{
 		// Check if we are getting for multiple rows

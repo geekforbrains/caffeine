@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Content
@@ -31,12 +31,11 @@ class Content extends Database {
 	public static function create($type, $relatives = null) 
 	{
 		$user = User::get_current();	
-		$type_id = self::_get_type_id($type);
 		$timestamp = time();
 
 		self::query('
 			INSERT INTO {content} (
-				type_id,
+				type,
 				site_id,
 				user_id,
 				created,
@@ -44,7 +43,7 @@ class Content extends Database {
 			) VALUES (
 				%s, %s, %s, %s, %s
 			)', 
-			$type_id,
+			$type,
 			$user['site_id'],
 			$user['id'],
 			$timestamp,
@@ -108,27 +107,66 @@ class Content extends Database {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Gets the ID for the given type. If the type doesn't exist, its created
-	 * and the new ID is returned.
-	 *
-	 * @param $type
-	 *		The content type to get an ID for.
-	 *
-	 * @return int
-	 *		Returns the ID of the given content type.
+	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	private static function _get_type_id($type)
+	public static function relative_exists($cid, $relative_cid)
 	{
-		self::query('SELECT id FROM {content_types} WHERE type = %s', $type);
+		self::query('SELECT cid FROM {content_relatives} WHERE
+			cid = %s AND relative_cid = %s', $cid, $relative_cid);
 
 		if(self::num_rows() > 0)
-			return self::fetch_single('id');
-		else
+			return true;
+		return false;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	public static function add_relative($cid, $relative_cid)
+	{
+		self::query('SELECT * FROM {content_relatives} WHERE
+			cid = %s AND relative_cid = %s', $cid, $relative_cid);
+
+		if(self::num_rows() == 0)
 		{
-			self::query('INSERT INTO {content_types} (type) VALUES (%s)', $type);
-			return self::insert_id();
+			self::query('INSERT INTO {content_relatives} (cid, relative_cid)
+				VALUES (%s, %s)', $cid, $relative_cid);
+
+			if(self::affected_rows() > 0)
+				return true;
+			return false;
 		}
+
+		return true;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	public static function remove_relative($cid, $relative_cid)
+	{
+		self::query('DELETE FROM {content_relatives} WHERE
+			cid = %s AND relative_cid = %s', $cid, $relative_cid);
+
+		if(self::affected_rows() > 0)
+			return true;
+		return false;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	public static function update_relatives($cid, $relatives)
+	{
+		self::query('DELETE FROM {content_relatives} WHERE cid = %s', $cid);
+		self::_add_relatives($cid, $relatives);
 	}
 
 	/**

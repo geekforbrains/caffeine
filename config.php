@@ -23,6 +23,8 @@ define('CAFFEINE_EVENTS_FILE_FORMAT', '%s_events');
 define('CAFFEINE_CONFIG_FILE_FORMAT', '%s_config');
  
 define('CAFFEINE_ROOT', str_replace('\\', '/', realpath('.')) . '/');
+define('CAFFEINE_FILES_DIR', 'files/');
+define('CAFFEINE_FILES_PATH', CAFFEINE_ROOT . CAFFEINE_FILES_DIR);
 define('CAFFEINE_MODULES_DIR', 'modules/');
 define('CAFFEINE_MODULES_PATH', CAFFEINE_ROOT . CAFFEINE_MODULES_DIR);
 define('CAFFEINE_SITES_DIR', 'sites/');

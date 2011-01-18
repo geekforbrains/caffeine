@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Menu
@@ -157,44 +157,33 @@ class Menu {
 	 */
 	private static function _html($sorted, $attr)
 	{
+		$html = '<ul';
 
-		$ul_open = false;
-		$li_html = '';
+		foreach($attr as $k => $v)
+			$html .= ' '.$k.'="'.$v.'"';
+
+		$html .= '>';
 
 		foreach($sorted as $item)
 		{
-			$class = (stristr(Path::current(), $item['path'])) ? ' class="menu-active"' : '';
+			$class = (stristr(Path::current(), $item['path'])) ? ' class="active"' : '';
 
-			if(strlen($class))
-				$ul_open = true;
-
-			$li_html .= '<li' .$class. '>';
-			$li_html .= '<a' .$class. ' href="' .Router::url($item['path']). '">';
-			$li_html .= $item['title'];
-			$li_html .= '</a>';
+			$html .= '<li' .$class. '>';
+			$html .= '<a href="' .Router::url($item['path']). '">';
+			$html .= strlen($class) ? '<strong>' : ''; 
+			$html .= $item['title'];
+			$html .= strlen($class) ? '</strong>' : ''; 
+			$html .= '</a>';
 
 			if($item['children'])
-				$li_html .= self::_html($item['children'], $attr);
+				$html .= self::_html($item['children'], $attr);
 
-			$li_html .= '</li>';
+			$html .= '</li>';
 		}
 
-		$ul_html = '<ul';
-		$ul_class = ($ul_open) ? 'menu-open' : 'menu-closed';
+		$html .= '</ul>';
 
-		foreach($attr as $k => $v)
-			if($k == 'class')
-				$ul_class .= ' ' . $v;
-			else
-				$html .= ' '.$k.'="'.$v.'"';
-
-		$ul_html .= ' class="' .$ul_class. '"';
-
-		$ul_html .= '>';
-		$ul_html .= $li_html;
-		$ul_html .= '</ul>';
-
-		return $ul_html;
+		return $html;
 	}
     
 	/**

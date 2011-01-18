@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Admin_Events
@@ -32,7 +32,7 @@ final class Admin_Events {
             'admin' => array(
                 'title' => 'Admin',
                 'callback' => array('Admin', 'redirect'),
-				'auth' => true
+				'auth' => 'read blog posts'
             )
         );
     }

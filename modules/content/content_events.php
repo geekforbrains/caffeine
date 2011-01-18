@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
  * Content_Events
@@ -17,27 +17,6 @@ final class Content_Events {
 	public static function database_install()
 	{
 		return array(
-			'content_types' => array (
-				'fields' => array(
-					'id' => array(
-						'type' => 'auto increment',
-						'unsigned' => true,
-						'not null' => true
-					),
-					'type' => array(
-						'type' => 'varchar',
-						'length' => 255,
-						'not null' => true
-					)
-				),
-
-				'indexes' => array(
-					'type' => array('type')
-				),
-
-				'primary key' => array('id')
-			),
-
 			'content' => array(
 				'fields' => array(
 					'id' => array(
@@ -46,10 +25,9 @@ final class Content_Events {
 						'unsigned' => true,
 						'not null' => true
 					),
-					'type_id' => array(
-						'type' => 'int',
-						'size' => 'normal',
-						'unsigned' => true,
+					'type' => array(
+						'type' => 'varchar',
+						'length' => 255,
 						'not null' => true
 					),
 					'site_id' => array(
@@ -79,7 +57,7 @@ final class Content_Events {
 				),
 
 				'indexes' => array(
-					'type_id' => array('type_id'),
+					'type' => array('type'),
 					'site_id' => array('site_id'),
 					'user_id' => array('user_id')
 				),

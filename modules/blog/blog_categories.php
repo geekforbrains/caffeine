@@ -1,12 +1,29 @@
-<?php
+<?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
+/**
+ * =============================================================================
+ * Blog_Categories
+ * @author Gavin Vickery <gdvickery@gmail.com>
+ * @version 1.0
+ * =============================================================================
+ */
 class Blog_Categories extends Database {
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_all()
     {
         self::query('SELECT * FROM {blog_categories} ORDER BY name ASC');
         return self::fetch_all();
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function get_all_by_post_cid($cid)
 	{
 		self::query('
@@ -22,12 +39,22 @@ class Blog_Categories extends Database {
 		return self::fetch_all();
 	}
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_by_cid($cid)
     {
 		self::query('SELECT * FROM {blog_categories} WHERE cid = %s', $cid);
         return self::fetch_array();
     }
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_by_slug($slug)
     {
         self::query('SELECT * FROM {blog_categories} WHERE slug LIKE %s',
@@ -35,6 +62,11 @@ class Blog_Categories extends Database {
         return self::fetch_array();
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function exists($name)
     {   
         self::query('SELECT cid FROM {blog_categories} WHERE name LIKE %s', $name);
@@ -43,6 +75,11 @@ class Blog_Categories extends Database {
         return false;
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function create($name, $slug)
     {
 		$cid = Content::create(BLOG_TYPE_CATEGORY);
@@ -52,12 +89,22 @@ class Blog_Categories extends Database {
 			(%s, %s, %s)', $cid, $name, $slug);
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function delete($cid)
     {
         self::query('DELETE FROM {blog_categories} WHERE cid = %s', $cid);
 		Content::delete($cid);
     }
     
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function update($cid, $name, $slug)
     {
         self::query('
