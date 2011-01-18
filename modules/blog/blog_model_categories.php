@@ -1,12 +1,12 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Blog_Categories
+ * Blog_Model_Categories
  * @author Gavin Vickery <gdvickery@gmail.com>
  * @version 1.0
  * =============================================================================
  */
-class Blog_Categories extends Database {
+class Blog_Model_Categories {
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -15,8 +15,13 @@ class Blog_Categories extends Database {
 	 */
     public static function get_all()
     {
-        self::query('SELECT * FROM {blog_categories} ORDER BY name ASC');
-        return self::fetch_all();
+        Database::query('
+			SELECT *
+			FROM {blog_categories}
+			ORDER BY name ASC
+		');
+
+        return Database::fetch_all();
     }
 
 	/**
@@ -26,17 +31,24 @@ class Blog_Categories extends Database {
 	 */
 	public static function get_all_by_post_cid($cid)
 	{
-		self::query('
+		Database::query('	
 			SELECT DISTINCT
 				bc.*
 			FROM {blog_categories} bc
-				LEFT JOIN {content_relatives} cr ON cr.cid = %s
-			ORDER BY
-				bc.name
-			ASC
-		', $cid);
+				JOIN {blog_post_categories} bpc ON bpc.category_cid = bc.cid
+			WHERE
+				bpc.post_cid = %s
+			',
+			$cid
+		);
 
-		return self::fetch_all();
+		$categories = array();
+		$rows = Database::fetch_all();
+		
+		foreach($rows as $row)
+			$categories[$row['cid']] = $row;
+
+		return $categories;
 	}
     
 	/**
@@ -46,8 +58,8 @@ class Blog_Categories extends Database {
 	 */
     public static function get_by_cid($cid)
     {
-		self::query('SELECT * FROM {blog_categories} WHERE cid = %s', $cid);
-        return self::fetch_array();
+		Database::query('SELECT * FROM {blog_categories} WHERE cid = %s', $cid);
+        return Database::fetch_array();
     }
 
 	/**
@@ -57,9 +69,10 @@ class Blog_Categories extends Database {
 	 */
     public static function get_by_slug($slug)
     {
-        self::query('SELECT * FROM {blog_categories} WHERE slug LIKE %s',
+        Database::query('SELECT * FROM {blog_categories} WHERE slug LIKE %s',
             $slug);
-        return self::fetch_array();
+
+        return Database::fetch_array();
     }
     
 	/**
@@ -69,8 +82,10 @@ class Blog_Categories extends Database {
 	 */
     public static function exists($name)
     {   
-        self::query('SELECT cid FROM {blog_categories} WHERE name LIKE %s', $name);
-        if(self::num_rows() > 0)
+        Database::query('SELECT cid FROM {blog_categories} WHERE name LIKE %s', 
+			$name);
+
+        if(Database::num_rows() > 0)
             return true;
         return false;
     }
@@ -84,9 +99,11 @@ class Blog_Categories extends Database {
     {
 		$cid = Content::create(BLOG_TYPE_CATEGORY);
 
-        self::query('
-			INSERT INTO {blog_categories} (cid, name, slug) VALUES 
-			(%s, %s, %s)', $cid, $name, $slug);
+		return Database::insert('blog_categories', array(
+			'cid' => $cid,
+			'name' => $name,
+			'slug' => $slug
+		));
     }
     
 	/**
@@ -96,8 +113,9 @@ class Blog_Categories extends Database {
 	 */
     public static function delete($cid)
     {
-        self::query('DELETE FROM {blog_categories} WHERE cid = %s', $cid);
 		Content::delete($cid);
+		Database::delete('blog_post_categories', array('category_cid' => $cid));
+		return Database::delete('blog_categories', array('cid' => $cid));
     }
     
 	/**
@@ -107,17 +125,15 @@ class Blog_Categories extends Database {
 	 */
     public static function update($cid, $name, $slug)
     {
-        self::query('
-            UPDATE {blog_categories} SET
-                name = %s,
-                slug = %s
-            WHERE
-                cid = %s
-            ',
-            $name, $slug, $cid
-        );
-
 		Content::update($cid);
+
+		return Database::update('blog_categories',
+			array(
+				'name' => $name,
+				'slug' => $slug
+			),
+			array('cid' => $cid)
+		);
     }
 
 }

@@ -1,9 +1,9 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Admin Configurations
+ * Message Configurations
  * =============================================================================
  */
-define('ADMIN_THEME', 'default');
-define('ADMIN_DEFAULT_PATH', 'admin/blog');
-
+define('MSG_OK', 'success');
+define('MSG_INFO', 'info');
+define('MSG_ERR', 'error');

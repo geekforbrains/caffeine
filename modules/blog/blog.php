@@ -16,7 +16,7 @@ class Blog {
     public static function posts() 
     {
         View::load('Blog', 'blog_posts', 
-            array('posts' => Blog_Posts::get_all()));
+            array('posts' => Blog_Model_Posts::get_all()));
     }
     
     /**
@@ -28,8 +28,8 @@ class Blog {
     {
         View::load('Blog', 'blog_posts',
             array(
-                'category' => Blog_Categories::get_by_slug($slug),
-                'posts' => Blog_Posts::get_all_by_category_slug($slug)
+                'category' => Blog_Model_Categories::get_by_slug($slug),
+                'posts' => Blog_Model_Posts::get_all_by_category_slug($slug)
             )
         );
     }
@@ -45,7 +45,7 @@ class Blog {
             Router::redirect('blog');
           
         View::load('Blog', 'blog_post',
-            array('post' => Blog_Posts::get_by_slug($slug)));
+            array('post' => Blog_Model_Posts::get_by_slug($slug)));
     }
     
     /**
@@ -60,7 +60,7 @@ class Blog {
             Router::redirect('blog');
             
         View::load('Blog', 'blog_post_comments', 
-            array('comments' => Blog_Posts::get_comments($slug)));
+            array('comments' => Blog_Model_Posts::get_comments($slug)));
     }
     
     /**
@@ -71,7 +71,7 @@ class Blog {
     public static function categories()
     {
         View::load('Blog', 'blog_categories', 
-            array('categories' => Blog_Categories::get_all()));
+            array('categories' => Blog_Model_Categories::get_all()));
     }
 
 }

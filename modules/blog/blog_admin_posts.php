@@ -16,7 +16,7 @@ class Blog_Admin_Posts {
     public static function manage() 
     {
         View::load('Blog_Admin', 'blog_admin_posts_manage',
-            array('posts' => Blog_Posts::get_all()));
+            array('posts' => Blog_Model_Posts::get_all()));
     }
     
 	/**
@@ -31,20 +31,26 @@ class Blog_Admin_Posts {
 			$user = User::get_current();
 			$published = isset($_POST['publish']) ? 1 : 0;
 
-            Blog_Posts::create(
+            $cid = Blog_Model_Posts::create(
                 $_POST['title'], 
                 $_POST['content'],
                 String::tagify($_POST['title']),
-				$_POST['categories'],
 				$published
             );
+
+			if($cid)
+			{
+				Blog_Model_Posts::add_to_category($cid, $_POST['category_cid']);
             
-            Message::store('notify', 'Post created successfully.');
-            Router::redirect('admin/blog/posts/manage');
+				Message::store(MSG_OK, 'Post created successfully.');
+				Router::redirect('admin/blog/posts/manage');
+			}
+			else
+				Message::set(MSG_ERR, 'Unkown error creating post. Please try again.');
         }
         
         View::load('Blog_Admin', 'blog_admin_posts_create',
-            array('categories' => Blog_Categories::get_all()));
+            array('categories' => Blog_Model_Categories::get_all()));
     }
     
 	/**
@@ -62,22 +68,28 @@ class Blog_Admin_Posts {
 				return;
 			}	
 
-			$published = isset($_POST['publish']) ? 1 : 0;
+			$published = isset($_POST['published']) ? 1 : 0;
 
-            Blog_Posts::update(
+           	Blog_Model_Posts::update(
 				$cid, 
 				$_POST['title'], 
 				$_POST['content'],
                 String::tagify($_POST['title']),
 				$published
 			);
-            
-            Message::store('notify', 'Post updated successfully.');
-            Router::redirect('admin/blog/posts/manage');
+
+			Blog_Model_Posts::update_categories($cid, $_POST['category_cid']);
+
+			Message::store(MSG_OK, 'Post updated successfully.');
+			Router::redirect('admin/blog/posts/manage');
         }
         
         View::load('Blog_Admin', 'blog_admin_posts_edit',
-            array('post' => Blog_Posts::get_by_cid($cid)));
+            array(
+				'post' => Blog_Model_Posts::get_by_cid($cid),
+				'categories' => Blog_Model_Categories::get_all()
+			)
+		);
     }
     
 	/**
@@ -87,9 +99,9 @@ class Blog_Admin_Posts {
 	 */
     public static function delete($cid) 
     {
-        Blog_Posts::delete($cid);
+        Blog_Model_Posts::delete($cid);
         
-        Message::store('notify', 'Post deleted successfully.');
+        Message::store(MSG_OK, 'Post deleted successfully.');
         Router::redirect('admin/blog/posts/manage');
     }
 

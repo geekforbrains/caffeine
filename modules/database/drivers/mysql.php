@@ -324,6 +324,84 @@ class Database {
 			return true;
 		return false;
 	}
+
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
+	public static function update($table, $data, $where = null)
+	{
+		// Stores replacement values
+		$reps = array();
+
+		// Build set values
+		$sets = '';
+		foreach($data as $k => $v)
+		{
+			$sets .= $k .' = %s, ';
+			$reps[] = $v;
+		}
+		$sets = rtrim($sets, ', ');
+
+		// Build where values
+		$wheres = '';
+		if($where)
+		{
+			$wheres = ' WHERE ';
+			foreach($where as $k => $v)
+			{
+				$wheres .= $k .' = %s AND ';
+				$reps[] = $v;
+			}
+			$wheres = rtrim($wheres, 'AND ');
+		}
+
+		self::query(
+			'UPDATE {' .$table. '} SET ' .$sets . $wheres,
+			$reps
+		);
+
+		if(self::affected_rows() > 0)
+			return true;
+		return false;
+	}
+
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
+	public static function delete($table, $where = null) 
+	{
+		$reps = array();
+
+		$wheres = '';
+		if($where)
+		{
+			$wheres = 'WHERE ';
+			foreach($where as $k => $v)
+			{
+				$wheres .= $k . ' = %s AND ';
+				$reps[] = $v;
+			}
+			$wheres = rtrim($wheres, 'AND ');
+		}
+
+		if($where)
+		{
+			self::query(
+				'DELETE FROM {' . $table . '} ' . $wheres,
+				$reps
+			);
+		}
+		else
+			self::query('TRUNCATE {' . $table . '}');
+
+		if(self::affected_rows() > 0)
+			return true;
+		return false;
+	}
     
     /**
      * -------------------------------------------------------------------------

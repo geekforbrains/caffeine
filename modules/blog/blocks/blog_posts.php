@@ -8,7 +8,7 @@
 
 			<div class="blog-post">
 				<h1>
-					<a href="<?=Router::url('blog/post/%s', $post['slug'])?>">
+					<a href="<?=Router::url('blog/%s', $post['slug'])?>">
 						<? echo $post['title']?>
 					</a>
 				</h1>

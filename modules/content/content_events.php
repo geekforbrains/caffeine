@@ -8,7 +8,6 @@
  */
 final class Content_Events {
 
-
 	/**
 	 * -------------------------------------------------------------------------
 	 * Implements the Database::install event.
@@ -59,33 +58,13 @@ final class Content_Events {
 				'indexes' => array(
 					'type' => array('type'),
 					'site_id' => array('site_id'),
-					'user_id' => array('user_id')
+					'user_id' => array('user_id'),
+					'created' => array('created'),
+					'updated' => array('updated')
 				),
 
 				'primary key' => array('id')
-			),
-
-			'content_relatives' => array(
-				'fields' => array(
-					'cid' => array(
-						'type' => 'int',
-						'size' => 'big',
-						'unsigned' => true,
-						'not null' => true
-					),
-					'relative_cid' => array(
-						'type' => 'int',
-						'size' => 'big',
-						'unsigned' => true,
-						'not null' => true
-					)
-				),
-
-				'indexes' => array(
-					'cid' => array('cid'),
-					'relative_cid' => array('relative_cid')
-				)
-			)		
+			)
 		);
 	}
 

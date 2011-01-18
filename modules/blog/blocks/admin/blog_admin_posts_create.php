@@ -1,8 +1,8 @@
 <h2>Create Post</h2>
 
-<form method="post" action="<? echo Router::url('admin/blog/posts/create') ?>">
+<form method="post" action="<?php l('admin/blog/posts/create'); ?>">
     
-    <select multiple="multiple" name="categories[]">
+    <select multiple="multiple" name="category_cid[]">
         <? foreach($categories as $category): ?>
         
             <option value="<? echo $category['cid'] ?>">

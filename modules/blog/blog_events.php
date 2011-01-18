@@ -39,13 +39,13 @@ final class Blog_Events {
                 'visible' => false,
 				'auth' => true,
             ),
-            'blog/post/%s' => array(
-                'callback' => array('Blog', 'post'),
-				'auth' => true,
-            ),
             'blog/category/%s' => array(
                 'callback' => array('Blog', 'posts_by_category'),
 				'auth' => true
+            ),
+            'blog/%s' => array(
+                'callback' => array('Blog', 'post'),
+				'auth' => true,
             ),
             
             // Admin Posts
@@ -101,7 +101,6 @@ final class Blog_Events {
             )
         ); 
     }
-	*/
     
 	/**
 	 * -------------------------------------------------------------------------
@@ -149,6 +148,28 @@ final class Blog_Events {
                 
                 'primary key' => array('cid')
             ),
+
+			'blog_post_categories' => array(
+				'fields' => array(
+					'post_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'category_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					)
+				),
+
+				'indexes' => array(
+					'post_cid' => array('post_cid'),
+					'category_cid' => array('category_cid')
+				)
+			),
             
             'blog_categories' => array(
                 'fields' => array(
