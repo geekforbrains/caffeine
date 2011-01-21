@@ -105,7 +105,7 @@ class User_Admin extends User_Model {
 		View::load('User_Admin', 'user_admin_edit',
 			array(
 				'user' => User::get_by_id($user_id),
-				'avail_roles' => Auth_Roles::get_all()
+				'avail_roles' => Auth_Model_Roles::get_all()
 			)
 		);
 	}

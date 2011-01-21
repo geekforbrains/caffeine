@@ -20,7 +20,7 @@ class Auth_Admin {
 	public static function manage()
 	{
 		View::load('Auth_Admin', 'auth_admin_manage', 
-			array('roles' => Auth_Roles::get_all()));
+			array('roles' => Auth_Model_Roles::get_all()));
 	}
 
 	/**
@@ -32,9 +32,9 @@ class Auth_Admin {
 	{
         if($_POST)
         {
-            if(!Auth_Roles::exists($_POST['role']))
+            if(!Auth_Model_Roles::exists($_POST['role']))
             {
-              	if(Auth_Roles::create(User::site_id(), $_POST['role']))
+              	if(Auth_Model_Roles::create(User::site_id(), $_POST['role']))
 				{
                 	Message::store('success', 'Role created successfully.');
                 	Router::redirect('admin/auth/manage');
@@ -62,7 +62,7 @@ class Auth_Admin {
 			if(!isset($_POST['perms']))
 				$_POST['perms'] = array();
 
-			Auth_Permissions::update(
+			Auth_Model_Permissions::update(
 				$_POST['role_id'],
 				$_POST['perms']
 			);
@@ -72,9 +72,9 @@ class Auth_Admin {
 
 		View::load('Auth_Admin', 'auth_admin_edit',
 			array(
-				'role' => Auth_Roles::get_by_id($id),
-				'role_perms' => Auth_Permissions::get_by_role($id),
-				'avail_perms' => Auth_Permissions::get_all_avail()
+				'role' => Auth_Model_Roles::get_by_id($id),
+				'role_perms' => Auth_Model_Permissions::get_by_role($id),
+				'avail_perms' => Auth_Model_Permissions::get_all_avail()
 			)
 		);
 	}
@@ -89,7 +89,7 @@ class Auth_Admin {
 	 */
 	public static function delete($role_id)
 	{
-		if(Auth_Roles::delete($role_id))
+		if(Auth_Model_Roles::delete($role_id))
 			Message::store('success', 'Role deleted successfully.');
 		else
 			Message::store('error', 'Error deleting role. Please try again.');

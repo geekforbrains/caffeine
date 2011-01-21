@@ -1,7 +1,7 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Auth_Permissions
+ * Auth_Model_Permissions
  * @author Gavin Vickery <gdvickery@gmail.com>
  * @version 1.0
  *
@@ -9,7 +9,7 @@
  * Auth module.
  * =============================================================================
  */
-class Auth_Permissions extends Database {
+class Auth_Model_Permissions {
 	
 	/**
 	 * ------------------------------------------------------------------------
@@ -25,7 +25,7 @@ class Auth_Permissions extends Database {
 	public static function get_all_avail()
 	{
 		$permissions = array();
-		$paths = Path::get_paths();
+		$paths = Path::paths();
 
 		foreach($paths as $path)
 			if(isset($path['auth']) && !in_array($path['auth'], $permissions)
@@ -48,9 +48,9 @@ class Auth_Permissions extends Database {
 	 */
 	public static function get_by_role($role_id)
 	{
-		self::query('SELECT permission FROM {auth_role_permissions} WHERE
+		Database::query('SELECT permission FROM {auth_role_permissions} WHERE
 			role_id = %s', $role_id);
-		$perms = self::fetch_all();
+		$perms = Database::fetch_all();
 
 		$new_perms = array();
 		foreach($perms as $perm)
@@ -76,17 +76,21 @@ class Auth_Permissions extends Database {
 	public static function update($role_id, $permissions)
 	{
 		// First wipe all old permissions for this role
-		self::query('DELETE FROM {auth_role_permissions} WHERE role_id = %s', 
-			$role_id);
+		Database::delete('auth_role_permissions', array('role_id' => $role_id));
 
 		// Then add new permissions
 		foreach($permissions as $perm)
-			self::query('INSERT INTO {auth_role_permissions} 
-				(role_id, permission) VALUES (%s, %s)', $role_id, $perm);
+		{
+			$status = Database::insert('auth_role_permissions', array(
+				'role_id' => $role_id,
+				'permission' => $perm
+			));
 
-		if(self::affected_rows() > 0)
-			return true;
-		return false;
+			if(!$status)
+				return false;
+		}
+
+		return true;
 	}
 
 }

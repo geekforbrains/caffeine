@@ -1,14 +1,14 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Auth_Roles
+ * Auth_Model_Roles
  * @author Gavin Vickery <gdvickery@gmail.com>
  * @version 1.0
  *
  * This class handles getting, creating and editing roles for the Auth module.
  * =============================================================================
  */
-class Auth_Roles extends Database {
+class Auth_Model_Roles {
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -20,8 +20,8 @@ class Auth_Roles extends Database {
 	 */
 	public static function get_all()
 	{
-		self::query('SELECT * FROM {auth_roles} ORDER BY role ASC');
-		return self::fetch_all();
+		Database::query('SELECT * FROM {auth_roles} ORDER BY role ASC');
+		return Database::fetch_all();
 	}
 
 	/**
@@ -37,8 +37,8 @@ class Auth_Roles extends Database {
 	 */
 	public static function get_by_id($id)
 	{
-		self::query('SELECT * FROM {auth_roles} WHERE id = %s', $id);
-		return self::fetch_array();
+		Database::query('SELECT * FROM {auth_roles} WHERE id = %s', $id);
+		return Database::fetch_array();
 	}
 
 	/**
@@ -54,9 +54,9 @@ class Auth_Roles extends Database {
 	 */
 	public static function exists($role)
 	{
-		self::query('SELECT id FROM {auth_roles} WHERE role LIKE %s', $role);
+		Database::query('SELECT id FROM {auth_roles} WHERE role LIKE %s', $role);
 
-		if(self::num_rows() > 0)
+		if(Database::num_rows() > 0)
 			return true;
 		return false;
 	}
@@ -74,12 +74,10 @@ class Auth_Roles extends Database {
 	 */
 	public static function create($site_id, $role)
 	{
-		self::query('INSERT INTO {auth_roles} (site_id, role) VALUES (%s, %s)', 
-			$site_id, $role);
-
-		if(self::affected_rows() > 0)
-			return true;
-		return false;
+		return Database::insert('auth_roles', array(
+			'site_id' => $site_id,
+			'role' => $role
+		));
 	}
 
 	/**
@@ -98,13 +96,8 @@ class Auth_Roles extends Database {
 	{
 		if(self::get_by_id($role_id))
 		{
-			self::query('DELETE FROM {auth_role_permissions} WHERE role_id = %s',
-				$role_id);
-
-			self::query('DELETE FROM {auth_roles} WHERE id = %s', $role_id);
-			
-			if(self::affected_rows() > 0)
-				return true;
+			Database::delete('auth_role_permissions', array('role_id' => $role_id));
+			return Database::delete('auth_roles', array('id' => $role_id));
 		}
 
 		return false;
