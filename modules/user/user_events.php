@@ -74,7 +74,8 @@ final class User_Events {
 			$paths['admin/logout'] = array(
 				'title' => 'Logout',
 				'callback' => array('User_Admin', 'logout'),
-				'auth' => true
+				'auth' => true,
+				'visible' => false
 			);
 		}
 

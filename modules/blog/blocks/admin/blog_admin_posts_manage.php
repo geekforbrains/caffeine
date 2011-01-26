@@ -1,21 +1,25 @@
-<h2>Manage Posts</h2>
+<div class="area">
+	<h2>Manage Posts</h2>
 
-<? if($posts): ?>
-    <? foreach($posts as $post): ?>
-    
-        <div class="admin-blog-post">
-            <a href="<? echo Router::url('admin/blog/posts/edit/%d', $post['cid']) ?>">
-                <? echo $post['title'] ?>
-            </a>
-            - 
-            <a href="<? echo Router::url('admin/blog/posts/delete/%d', $post['cid']) ?>">
-                Delete
-            </a>
-        </div>
-        
-    <? endforeach; ?>
-<? else: ?>
+	<table class="stripe" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<th>Title</th>
+			<th style="text-align: right">Created</th>
+		</tr>
 
-    <i>No blog posts</i>
-    
-<? endif; ?>
+		<?php if($posts): ?>
+			<?php foreach($posts as $post): ?>
+				<tr>
+					<td>
+						<a href="<?php l('admin/blog/posts/edit/%d', $post['cid']); ?>">
+							<?php echo $post['title']; ?>
+						</a>
+					</td>
+					<td align="right"><?php echo $post['created']; ?></a></td>
+				</tr>
+			<?php endforeach; ?>
+		<?php else: ?>
+			<tr><td colspan="2"><em>No posts</em></td></tr>
+		<?php endif; ?>
+	</table>
+</div>

@@ -4,6 +4,6 @@
  * Admin Configurations
  * =============================================================================
  */
-define('ADMIN_THEME', 'default');
+define('ADMIN_THEME', 'admin');
 define('ADMIN_DEFAULT_PATH', 'admin/blog');
 
