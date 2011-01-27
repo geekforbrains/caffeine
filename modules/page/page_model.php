@@ -58,6 +58,23 @@ class Page_Model {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * Gets all pages who's parent ID is the given parameter.
+	 *
+	 * @param $parent_cid
+	 *		The parent ID a page must be associated with.
+	 *
+	 * @return array
+	 *		Returns an array of pages, or an empty array.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function get_by_parent_cid($parent_cid)
+	{
+		Database::query('SELECT * FROM {pages} WHERE parent_cid = %s', $parent_cid);
+		return Database::fetch_all();
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * Gets a page based on its slug. A "slug" is a unique key based on the
 	 * the title. This is meant to help with SEO by providing "pretty" urls.
 	 *
@@ -83,6 +100,34 @@ class Page_Model {
 			return Database::fetch_array();
 
 		return false;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Gets all pages who's parent matches the given slug.
+	 *
+	 * @param $slug
+	 *		The parent slug to get child pages for.
+	 *
+	 * @return array
+	 *		Returns an array of pages if they exist, otherwise an empty array
+	 *		is returned.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function get_by_parent_slug($slug)
+	{
+		Database::query('
+			SELECT
+				p1.*
+			FROM {pages} p1
+				JOIN {pages} p2 ON p2.cid = p1.parent_cid 
+			WHERE
+				p2.slug = %s
+			', 
+			$slug
+		);
+
+		return Database::fetch_all();
 	}
 
 	/**

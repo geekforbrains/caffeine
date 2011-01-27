@@ -28,39 +28,40 @@ final class Page_Events {
 	 */
 	public static function path_callbacks()
 	{
-		return array(
-			// Front
-			'page/%s' => array(
-				'callback' => array('Page', 'load'),
-				'auth' => true
-			),
+		// Front, dynamic pages
+		$paths = Page::build_paths();
 
-			// Admin
-			'admin/page' => array(
-				'title' => 'Pages',
-				'alias' => 'admin/page/manage'
-			),
-			'admin/page/manage' => array(
-				'title' => 'Manage Pages',
-				'callback' => array('Page_Admin', 'manage'),
-				'auth' => 'manage pages'
-			),
-			'admin/page/create' => array(
-				'title' => 'Create Page',
-				'callback' => array('Page_Admin', 'create'),
-				'auth' => 'create pages'
-			),
-			'admin/page/edit/%d' => array(
-				'callback' => array('Page_Admin', 'edit'),
-				'auth' => 'edit pages',
-				'visible' => false
-			),
-			'admin/page/delete/%d' => array(
-				'callback' => array('Page_Admin', 'delete'),
-				'auth' => 'delete pages',
-				'visible' => false
-			)
+		// Admin
+		$paths['admin/page'] = array(
+			'title' => 'Pages',
+			'alias' => 'admin/page/manage'
 		);
+
+		$paths['admin/page/manage'] = array(
+			'title' => 'Manage Pages',
+			'callback' => array('Page_Admin', 'manage'),
+			'auth' => 'manage pages'
+		);
+
+		$paths['admin/page/create'] = array(
+			'title' => 'Create Page',
+			'callback' => array('Page_Admin', 'create'),
+			'auth' => 'create pages'
+		);
+
+		$paths['admin/page/edit/%d'] = array(
+			'callback' => array('Page_Admin', 'edit'),
+			'auth' => 'edit pages',
+			'visible' => false
+		);
+
+		$paths['admin/page/delete/%d'] = array(
+			'callback' => array('Page_Admin', 'delete'),
+			'auth' => 'delete pages',
+			'visible' => false
+		);
+
+		return $paths;
 	}
 
 	/**
