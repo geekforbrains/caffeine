@@ -23,14 +23,14 @@
 						<li><a href="#">Reset Password</a></li>
 					</ul>
 				<?php else: ?>
-					<?php echo Menu::build('admin', 0, array('class' => 'left')); ?>
+					<?php echo Menu::build('admin', 0, array('admin/auth'), array('class' => 'left')); ?>
 				<?php endif; ?>
             </div>
         </div>
 
         <div class="sub_tabs">
 			<div class="center">
-				<?php echo Menu::build('admin/%s', 0, array('class' => 'left')); ?>
+				<?php echo Menu::build('admin/%s', 0, array(), array('class' => 'left')); ?>
 			</div>
 			<div class="clear"></div>
         </div>

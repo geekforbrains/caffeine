@@ -4,7 +4,7 @@
  * User Configurations
  * =============================================================================
  */
-define('USER_LOGIN_REDIRECT', '/');
+define('USER_LOGIN_REDIRECT', 'admin');
 define('USER_LOGOUT_REDIRECT', 'admin/login');
 
 define('USER_CREATE_ROOT', true);

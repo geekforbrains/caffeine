@@ -42,7 +42,11 @@ class Blog_Admin_Posts {
 			{
 				Blog_Model_Posts::add_to_category($cid, $_POST['category_cid']);
             
-				Message::store(MSG_OK, 'Post created successfully.');
+				if($published)
+					Message::store(MSG_OK, 'Post successfully published.');
+				else
+					Message::store(MSG_OK, 'Post successfully saved to drafts.');
+
 				Router::redirect('admin/blog/posts/manage');
 			}
 			else

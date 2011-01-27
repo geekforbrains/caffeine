@@ -58,8 +58,8 @@ img, a img, a:link img, a:hover img {
 
 #content {margin: 30px auto 0 auto}
 #content .area, #content .area.full {width: 100%; margin-bottom: 40px; clear: both}
-#content .area.left, #content .area.right {width: 75%; clear: none}
-#content .area.left.short, #content .area.right.short {width: 20%;}
+#content .area.left, #content .area.right {width: 80%; clear: none}
+#content .area.left.short, #content .area.right.short {width: 16%;}
 #content .area.left.half, #content .area.right.half,
 #content .area .left, #content .area .right {width: 47%}
 #content .area, #content .area.left, #content .area.right, #content .area.full
@@ -112,11 +112,19 @@ h1 {
     color: #666666;
 }
 #content h3 {
+	padding: 4px 0 8px 0;
+    font-size: 18px;
+    border-bottom: 4px solid #666666;
+    color: #666666;
+}
+/*
+#content h3 {
     padding: 8px 0;
     font-size: 18px;
     border-bottom: 4px solid #666666;
     color: #666666;
 }
+*/
 #content h4 {
     margin-bottom: 5px;
     color: #242424;

@@ -60,12 +60,18 @@ class Menu {
 	 *			The above might get a top level menu of all sub-categories 
 	 *			based on the category replaced by "%s". 
 	 *
+	 * @param $ignore
+	 *		An array of offsets to ignore when building the menu.
+	 *
+	 * @param $attr
+	 *		An array of HTML attributes to be added to the lists <ul> tag
+	 *
 	 * @return mixed
 	 *		Returns menu HTML if the menu items based on the given offset exist.
 	 *		Otherwise "null" is returned.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function build($offset = null, $depth = -1, $attr = array())
+	public static function build($offset = null, $depth = -1, $ignore = array(), $attr = array())
 	{
 		$sorted = array();
 
