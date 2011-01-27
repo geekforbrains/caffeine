@@ -48,21 +48,21 @@ final class User_Events {
 				'auth' => true,
 				'visible' => false
 			),
-			'admin/user' => array(
+			'admin/admin/user' => array(
 				'title' => 'Users',
-				'alias' => 'admin/user/manage'
+				'alias' => 'admin/admin/user/manage'
 			),
-			'admin/user/manage' => array(
+			'admin/admin/user/manage' => array(
 				'title' => 'Manage Users',
 				'callback' => array('User_Admin', 'manage'),
 				'auth' => 'manage users'
 			),
-			'admin/user/create' => array(
+			'admin/admin/user/create' => array(
 				'title' => 'Create User',
 				'callback' => array('User_Admin', 'create'),
 				'auth' => 'create users'
 			),
-			'admin/user/edit/%d' => array(
+			'admin/admin/user/edit/%d' => array(
 				'callback' => array('User_Admin', 'edit'),
 				'auth' => 'edit users',
 				'visible' => false

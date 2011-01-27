@@ -185,7 +185,7 @@ class Menu {
 			$html .= '</a>';
 
 			if($item['children'])
-				$html .= self::_html($item['children'], $attr);
+				$html .= self::_html($item['children'], $attr, $ignore);
 
 			$html .= '</li>';
 		}

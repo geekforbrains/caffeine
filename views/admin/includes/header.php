@@ -23,7 +23,14 @@
 						<li><a href="#">Reset Password</a></li>
 					</ul>
 				<?php else: ?>
-					<?php echo Menu::build('admin', 0, array('admin/auth', 'admin/user'), array('class' => 'left')); ?>
+					<?php echo Menu::build('admin', 0, array('admin/auth', 'admin/user', 'admin/admin'), 
+						array('class' => 'left')); ?>
+
+					<ul class="right">
+						<li <?php echo (stristr(Path::current(), 'admin/admin')) ? 'class="active"' : ''; ?>>
+							<a href="<?php l('admin/admin'); ?>">Administration</a>
+						</li>
+					</ul>
 				<?php endif; ?>
             </div>
         </div>

@@ -26,25 +26,25 @@ final class Auth_Events {
 	public static function path_callbacks()
 	{
 		return array(
-			'admin/auth' => array(
+			'admin/admin/auth' => array(
 				'title' => 'Roles',
-				'alias' => 'admin/auth/manage'
+				'alias' => 'admin/admin/auth/manage'
 			),
-			'admin/auth/manage' => array(
+			'admin/admin/auth/manage' => array(
 				'title' => 'Manage Roles',
 				'callback' => array('Auth_Admin', 'manage'),
 				'auth' => 'manage roles'
 			),
-			'admin/auth/create' => array(
+			'admin/admin/auth/create' => array(
 				'title' => 'Create Role',
 				'callback' => array('Auth_Admin', 'create'),
 				'auth' => 'create roles'
 			),
-			'admin/auth/edit/%d' => array(
+			'admin/admin/auth/edit/%d' => array(
 				'callback' => array('Auth_Admin', 'edit'),
 				'visible' => false
 			),
-			'admin/auth/delete/%d' => array(
+			'admin/admin/auth/delete/%d' => array(
 				'callback' => array('Auth_Admin', 'delete'),
 				'visible' => false
 			)
