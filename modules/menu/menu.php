@@ -88,7 +88,7 @@ class Menu {
 			$sorted = self::_offset($offset, $depth);
 
 		if($sorted)
-			return self::_html($sorted, $attr);
+			return self::_html($sorted, $attr, $ignore);
 		return null;
 	}
 
@@ -161,7 +161,7 @@ class Menu {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	private static function _html($sorted, $attr)
+	private static function _html($sorted, $attr, $ignore)
 	{
 		$html = '<ul';
 
@@ -172,6 +172,9 @@ class Menu {
 
 		foreach($sorted as $item)
 		{
+			if(in_array($item['path'], $ignore))
+				continue;
+
 			$class = (stristr(Path::current(), $item['path'])) ? ' class="active"' : '';
 
 			$html .= '<li' .$class. '>';

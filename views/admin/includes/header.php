@@ -23,7 +23,7 @@
 						<li><a href="#">Reset Password</a></li>
 					</ul>
 				<?php else: ?>
-					<?php echo Menu::build('admin', 0, array('admin/auth'), array('class' => 'left')); ?>
+					<?php echo Menu::build('admin', 0, array('admin/auth', 'admin/user'), array('class' => 'left')); ?>
 				<?php endif; ?>
             </div>
         </div>
