@@ -11,12 +11,20 @@ class Blog {
     /**
      * -------------------------------------------------------------------------
      * Displays a list of blog posts by page.
+	 *
+	 * @param $published
+	 *		Defines whether to get published or un-published posts. "NULL" will
+	 *		return both. Defaults to published.
+	 *
+	 * @param $limit
+	 *		Limit the amount of posts returned per page. Default is set in 
+	 *		blog_config.php.
      * -------------------------------------------------------------------------
      */
-    public static function posts() 
+    public static function posts($published = 1, $limit = BLOG_POSTS_LIMIT) 
     {
         View::load('Blog', 'blog_posts', 
-            array('posts' => Blog_Model_Posts::get_all()));
+            array('posts' => Blog_Model_Posts::get_all($published, $limit)));
     }
     
     /**
@@ -47,6 +55,17 @@ class Blog {
         View::load('Blog', 'blog_post',
             array('post' => Blog_Model_Posts::get_by_slug($slug)));
     }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Displays the latest blog post.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function latest_post()
+	{
+		View::load('Blog', 'blog_latest_post', 
+			array('post' => Blog_Model_Posts::get_latest()));
+	}
     
     /**
      * -------------------------------------------------------------------------

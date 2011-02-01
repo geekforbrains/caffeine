@@ -26,10 +26,8 @@ final class Database_Events {
      * have a chance to run "install" methods for creating database tables.
      * -------------------------------------------------------------------------
      */
-    public static function caffeine_bootstrap() 
-	{
-		if(DATABASE_ENABLED)
-			Database::connect();
+    public static function caffeine_bootstrap() {
+        Database::connect();
     }
     
     /**

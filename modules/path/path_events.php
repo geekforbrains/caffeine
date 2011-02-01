@@ -28,12 +28,33 @@ final class Path_Events extends Path {
 
 		$current_path = Router::current_path();
 		if(!strlen($current_path))
-			$current_path = PATH_DEFAULT;
+		{
+			if(strlen(PATH_DEFAULT))
+				$current_path = PATH_DEFAULT;
+			else
+				die('The default path configuration cannot be empty.');
+		}
+
+		/**
+		if($current_path == 'front')
+			View::load('Path', 'front');
+		else
+		{
+			$path_data = self::_auth_path($current_path);
+
+			if($path_data)
+				self::_call_path($path_data);
+			else
+				View::load('Path', '404');
+		}
+		*/
 
 		$path_data = self::_auth_path($current_path);
 
 		if($path_data)
 			self::_call_path($path_data);
+		else
+			View::load('Path', '404');
     }
 
 }

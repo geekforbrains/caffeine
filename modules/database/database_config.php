@@ -4,7 +4,6 @@
  * Database Configurations
  * =============================================================================
  */
-define('DATABASE_ENABLED', true);
 define('DATABASE_HOST', 'localhost');
 define('DATABASE_NAME', 'caffeine');
 define('DATABASE_USER', 'username');

@@ -307,6 +307,7 @@ final class Caffeine {
 					
 			self::$_debug[] = array(
 				'timestamp' => $timestamp,
+				'level' => $level,
 				'class' => $class,
 				'message' => $message
 			);
@@ -320,6 +321,7 @@ final class Caffeine {
 			{
 				$output .= '<tr>';
 				$output .= '<td>' .$row['timestamp']. '</td>';
+				$output .= '<td>' .$row['level']. '</td>';
 				$output .= '<td>' .$row['class']. '</td>';
 				$output .= '<td>' .$row['message']. '</td>';
 				$output .= '</tr>';
@@ -397,6 +399,7 @@ final class Caffeine {
 			if(file_exists($site_config_path))	
 				$config_path = $site_config_path;
 			
+			self::debug(3, 'Caffeine', 'Checking if the "%s" module has a config file', $module);
 			if(file_exists($config_path))
 			{
 				self::debug(2, 'Caffeine', 'Loading config file: %s', $config_path);

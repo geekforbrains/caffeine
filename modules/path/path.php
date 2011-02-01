@@ -30,21 +30,69 @@
 class Path {
 
 	// Stores loaded paths and metadata
-    protected static $_paths 	= array();
 	protected static $_current	= null;
-	
+    protected static $_paths 	= array(
+		'front' => array(
+			'title' => null,
+			'callback' => array('Path', 'front'),
+			'auth' => true,
+			'visible' => false
+		)
+	);
+
+	public static function front() {
+		View::load('Path', 'front');
+	}
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Returns the current path to be called. This is not the same as the path
 	 * returned by the Router::current_path().
 	 * -------------------------------------------------------------------------
 	 */
-	public static function current() {
+	public static function get_calling_path() {
 		return self::$_current;
 	}
 
-	public static function paths() {
+	public static function get_paths() {
 		return self::$_paths;
+	}
+
+	// Deprecated
+	public static function current() {
+		return self::get_calling_path();
+	}
+
+	// Deprecated
+	public static function paths() {
+		return self::get_paths();
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Checks if the given path is equal to or within the current path. Used
+	 * to determine active menu items mostly.
+	 *
+	 * @param $path
+	 *		The path to compare to the current path.
+	 *
+	 * @return boolean
+	 *		Returns true if the path is equal to or exists within the current
+	 *		path. False otherwise.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function is_active($path) 
+	{
+		if(preg_match('@' .$path. '@', Router::current_path()))
+			return true;
+		return false;
+	}
+
+	public static function is_front() 
+	{
+		if(!strlen(Router::current_path()))
+			return true;
+		return false;
 	}
 
 	public static function path_data($path) 
@@ -119,11 +167,13 @@ class Path {
 	{
 		$path_data = self::path_data($current_path);
 
+		/*
 		if(!$path_data)
 		{
 			View::load('Path', '404');
 			return false;
 		}
+		*/
 
 		if(!Auth::check_access($current_path, $path_data))
 		{
@@ -177,7 +227,7 @@ class Path {
 				return;
 		}
 
-		View::load('Path', '404');
+		//View::load('Path', '404');
     }
 
 }

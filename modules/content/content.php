@@ -31,7 +31,7 @@ class Content {
 	 *		Returns a newly generated content ID.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function create($type) 
+	public static function create($type, $relatives = null) 
 	{
 		$user = User::get_current();	
 		$timestamp = time();
@@ -47,6 +47,11 @@ class Content {
 		if($status)
 		{
 			$cid = Database::insert_id();
+
+			// Temporary addition of relatives again
+			if(!is_null($relatives) && $relatives) // Second check is for 0 (zero)
+				self::_add_relatives($cid, $relatives);
+
 			Caffeine::trigger('Content', 'created', array('cid' => $cid));
 			return $cid;
 		}
@@ -137,6 +142,88 @@ class Content {
 		if(Database::num_rows() > 0)
 			return true;
 		return false;
+	}
+
+	/**
+	 * =========================================================================
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 *
+	 * TEMPORARY ADDITION OF RELATIVE METHODS. THESE WILL BE REMOVED AGAIN.
+	 *
+	 * NO NEW CODE SHOULD USE THESE METHODS.
+	 *
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 * =========================================================================
+	 */ 
+	public static function relative_exists($cid, $relative_cid)
+	{
+		self::query('SELECT cid FROM {content_relatives} WHERE
+			cid = %s AND relative_cid = %s', $cid, $relative_cid);
+
+		if(self::num_rows() > 0)
+			return true;
+		return false;
+	}
+
+	public static function add_relative($cid, $relative_cid)
+	{
+		self::query('SELECT * FROM {content_relatives} WHERE
+			cid = %s AND relative_cid = %s', $cid, $relative_cid);
+
+		if(self::num_rows() == 0)
+		{
+			self::query('INSERT INTO {content_relatives} (cid, relative_cid)
+				VALUES (%s, %s)', $cid, $relative_cid);
+
+			if(self::affected_rows() > 0)
+				return true;
+			return false;
+		}
+
+		return true;
+	}
+
+	public static function remove_relative($cid, $relative_cid)
+	{
+		self::query('DELETE FROM {content_relatives} WHERE
+			cid = %s AND relative_cid = %s', $cid, $relative_cid);
+
+		if(self::affected_rows() > 0)
+			return true;
+		return false;
+	}
+
+	public static function update_relatives($cid, $relatives)
+	{
+		self::query('DELETE FROM {content_relatives} WHERE cid = %s', $cid);
+		self::_add_relatives($cid, $relatives);
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Adds relative content to the given content ID. This is used to associate
+	 * other types of content togeather. For example, a Blog post might have
+	 * several categories associated with it.
+	 *
+	 * @param $cid
+	 *		The main content ID to have the other ID's associated with.
+	 *
+	 * @param $relatives
+	 *		A single ID or an array of ID's to be associated with $cid.
+	 * -------------------------------------------------------------------------
+	 */
+	private static function _add_relatives($cid, $relatives)
+	{
+		if(is_array($relatives))
+		{
+			foreach($relatives as $r)
+				self::_add_relatives($cid, $r);
+		}
+		else
+		{
+			self::query('INSERT INTO {content_relatives} (cid, relative_cid)
+				VALUES (%s, %s)', $cid, $relatives);
+		}
 	}
 
 }

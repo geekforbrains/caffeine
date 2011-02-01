@@ -13,7 +13,7 @@ class Blog_Model_Posts {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-    public static function get_all($published = null)
+    public static function get_all($published = null, $limit = BLOG_POSTS_LIMIT)
     {
 		if(!is_null($published))
 		{
@@ -26,7 +26,9 @@ class Blog_Model_Posts {
 					JOIN {content} c ON c.id = bp.cid
 				WHERE bp.published = %s
 				ORDER BY c.created DESC
-			', $published);
+				LIMIT ' .$limit,
+				$published
+			);
 		}
 		else
 		{
@@ -38,11 +40,40 @@ class Blog_Model_Posts {
 				FROM {blog_posts} bp
 					JOIN {content} c ON c.id = bp.cid
 				ORDER BY c.created DESC
-			');
+				LIMIT ' .$limit
+			);
 		}
 
 		return self::_get_categories(Database::fetch_all());
     }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	public static function get_latest($published = 1)
+	{
+		Database::query('
+			SELECT
+				bp.*,
+				c.created,
+				c.updated
+			FROM {blog_posts} bp
+				JOIN {content} c ON c.id = bp.cid
+			WHERE
+				bp.published = %s
+			ORDER BY
+				c.created DESC
+			LIMIT 1
+			',
+			$published
+		);
+
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
+		return false;
+	}
 
 	/**
 	 * -------------------------------------------------------------------------

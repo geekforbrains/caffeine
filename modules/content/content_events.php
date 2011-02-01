@@ -64,7 +64,31 @@ final class Content_Events {
 				),
 
 				'primary key' => array('id')
-			)
+			),
+
+			// Temporary addition of relative methods
+			// This will be removed, dont use it
+			'content_relatives' => array(
+				'fields' => array(
+					'cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'relative_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					)
+				),
+
+				'indexes' => array(
+					'cid' => array('cid'),
+					'relative_cid' => array('relative_cid')
+				)
+			)		
 		);
 	}
 

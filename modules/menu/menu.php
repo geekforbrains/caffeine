@@ -158,7 +158,7 @@ class Menu {
     
 	/**
 	 * -------------------------------------------------------------------------
-	 * TODO
+	 * TODO Create a block for this generated HTML
 	 * -------------------------------------------------------------------------
 	 */
 	private static function _html($sorted, $attr, $ignore)

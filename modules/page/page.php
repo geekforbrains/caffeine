@@ -10,6 +10,16 @@ class Page {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * Redirects the user to the path specified in the page configuration file.
+	 * This is used when accessing the page URL directly (foo.com/page)
+	 * -------------------------------------------------------------------------
+	 */
+	public static function redirect() {
+		Router::redirect(PAGE_REDIRECT);
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * Loads a page based on its slug. If the slug doesn't exist, returns 
 	 * boolean false to have the Path module load a 404 page.
 	 * -------------------------------------------------------------------------
@@ -33,7 +43,7 @@ class Page {
 	 * Build path information based on available pages.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function build_paths($parent_cid = 0, $paths = array(), $trail = 'page/')
+	public static function build_paths($paths = array(), $parent_cid = 0, $trail = 'page/')
 	{
 		$pages = Page_Model::get_by_parent_cid($parent_cid);
 		
@@ -47,7 +57,7 @@ class Page {
 			);
 
 			// Process any child pages of this page
-			$paths = self::build_paths($page['cid'], $paths, $trail . $page['slug'] . '/');
+			$paths = self::build_paths($paths, $page['cid'], $trail . $page['slug'] . '/');
 		}
 
 		return $paths;

@@ -16,7 +16,7 @@ class Blog_Admin_Posts {
     public static function manage() 
     {
         View::load('Blog_Admin', 'blog_admin_posts_manage',
-            array('posts' => Blog_Model_Posts::get_all()));
+            array('posts' => Blog_Model_Posts::get_all(null, 10)));
     }
     
 	/**

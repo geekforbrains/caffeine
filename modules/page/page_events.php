@@ -28,8 +28,16 @@ final class Page_Events {
 	 */
 	public static function path_callbacks()
 	{
+		// For handeling redirects
+		$paths['page'] = array(
+			'title' => 'Pages',
+			'callback' => array('Page', 'redirect'),
+			'auth' => true,
+			'visible' => true
+		);
+
 		// Front, dynamic pages
-		$paths = Page::build_paths();
+		$paths = Page::build_paths($paths);
 
 		// Admin
 		$paths['admin/page'] = array(

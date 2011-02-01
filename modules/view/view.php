@@ -115,7 +115,7 @@ class View {
      */
 	public static function get_js()
 	{
-		$html = '<script type="text/javascrip" src="%s"></script>';
+		$html = '<script type="text/javascript" src="%s"></script>';
 
 		foreach(self::$_theme_meta['js'] as $js)
 			echo sprintf($html, self::theme_url($js));
@@ -336,50 +336,131 @@ class View {
 	 * loading the view, providing the developer the ability to override
 	 * specific view output.
 	 *
-	 * The method looks for the following views in order:
-	 *		- A view with the same name as the main block being loaded.
-	 *		- A view with the same name as the module loading the block.
-	 *		- A view with the default name (set in view_config.php)
+	 * View files are HTML files located in a theme directory. The default
+	 * theme directory can be set in the view configuration file.
 	 *
-	 * When loading a block as a view, the blocks data (variables) will be
-	 * available within the view. This way you can manually re-create the blocks
-	 * contents, or simple re-style the page and re-call the blocks callback
-	 * manually.
+	 * This method looks for the following views in order:
+	 *	
+	 *		1: Segment Check
+	 *
+	 *		A view with the same name as the current path segments separated
+	 *		by underscores. All special characters are also replaced with 
+	 *		underscores.
+	 *
+	 *		The check will start with all segments at first, but then remove
+	 *		the last segment after each failed check until there are no more
+	 *		segments. 
+	 *
+	 *		NOTE: If the last segment is the same as the module name loading
+	 *		the current view, it will be ignored. The 3rd check will pick that
+	 *		up.
+	 *
+	 *		Examples:
+	 *
+	 *		http://example.com/page/about-us
+	 *			1. page_about_us.php
+	 *
+	 *		http://example.com/store/product/details/23
+	 *			1. store_product_details_23.php
+	 *			2. store_product_details.php
+	 *			2. store_product.php
+	 *
+	 * 		--------------------------------------------------------------------
+	 *
+	 *		2: Block Check
+	 *
+	 *		A view with the same name as the main block being loaded. The
+	 *		"main" block is the first block called using the View::load
+	 *		method. It is typically called via a method that has been 
+	 *		registered with a specific path.
+	 * 		
+	 * 		When loading a block as a view, the blocks data (variables) will be
+	 * 		available within the view. This way you can manually re-create the blocks
+	 * 		contents, or simple re-style the page and re-call the blocks callback
+	 * 		manually.
+	 *
+	 *		@see View::load for more details on how blocks work.
+	 *
+	 *		Example:
+	 *
+	 *		View::load('Blog', 'blog_posts'); => blog_posts.php
+	 *
+	 * 		--------------------------------------------------------------------
+	 *
+	 *		3: Module Check
+	 *
+	 *		A view with the same name as the module loading the main block. 
+	 *		
+	 *		Examples:
+	 *
+	 *		View::load('Blog', 'blog_posts'); => blog.php
+	 *		View::load('Photo_Gallery', 'albums') => photo_gallery.php
+	 *
+	 * 		--------------------------------------------------------------------
+	 *
+	 *		4: Default View
+	 *
+	 *		If no other views are found in the above checks, the default view
+	 *		is loaded. The default view name is set in the views configuration
+	 *		file. By default, it is "index.php".
      * -------------------------------------------------------------------------
      */
     private static function _render_view()
     {
-        $view_path = self::$_theme_path . VIEW_INDEX . CAFFEINE_EXT;
-        $view_data = array();
-        $view_key = null;
-        
-		// Check for view with same name as block
-		$block_path = self::$_theme_path . self::$_loaded_block['block'] . 
-			CAFFEINE_EXT;
+		$view_path = self::_determine_view();
+		Caffeine::debug(1, 'View', 'Rendering view: %s', $view_path);
+		return self::render($view_path, self::$_loaded_block['data']);
+    }
 
-		Caffeine::debug(2, 'View', 'Checking for block view: %s', $block_path);
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
+	private static function _determine_view()
+	{
+		// Get the module name loading the current view
+		$current_module = Caffeine::get_class_module(self::$_loaded_block['class']);
+
+		// 1: Check for view based on segments
+		$paths = preg_replace('/[^A-Za-z0-9\/]/', '_', Router::current_path());
+		$path_bits = explode('/', $paths);
+		
+		while($path_bits)
+		{
+			$path = implode('_', $path_bits);
+
+			// Ignore empty paths and paths with same name as module
+			if(strlen($path) && $path != $current_module)
+			{
+				$segment_path = self::$_theme_path . $path . CAFFEINE_EXT;
+				Caffeine::debug(3, 'View', 'Check for segment view: %s', $segment_path);
+
+				if(file_exists($segment_path))
+					return $segment_path;
+			}
+
+			array_pop($path_bits);
+		}
+
+		// 2: Check for view with block name
+		$block_path = self::$_theme_path . self::$_loaded_block['block'] . CAFFEINE_EXT;
+		Caffeine::debug(3, 'View', 'Checking for block view: %s', $block_path);
 
 		if(file_exists($block_path))
-		{
-			$view_path = $block_path;
-			$view_data = self::$_loaded_block['data'];
-		}
-        
-		// Check for view with same name as module loading this block
-		$module_path = Caffeine::get_class_module(self::$_loaded_block['class']);
+			return $block_path;
 
-		if($module_path)
-		{
-			$module_path = self::$_theme_path . $module_path . CAFFEINE_EXT;
-			Caffeine::debug(2, 'View', 'Checking for module view: %s', $module_path);
+		// 3: Check for view with module name
+		$module_path = self::$_theme_path . $current_module . CAFFEINE_EXT;
+		Caffeine::debug(3, 'View', 'Checking for module view: %s', $module_path);
 
-			if(file_exists($module_path))
-				$view_path = $module_path;
-		}
-            
-        Caffeine::debug(1, 'View', 'Rendering view: %s', $view_path);
-        return self::render($view_path, $view_data);
-    }
+		if(file_exists($module_path))
+			return $module_path;
+
+		// 4: Return default view
+		Caffeine::debug(3, 'View', 'No view overrides found, using default');
+		return self::$_theme_path . VIEW_INDEX . CAFFEINE_EXT;
+	}
     
     /**
      * -------------------------------------------------------------------------
@@ -404,11 +485,18 @@ class View {
                 $path = $orig_block;
         }
             
-        if(is_null($path))
-            trigger_error('Block doesn\'t exist: ' . $class . ' - ' . $block, E_USER_ERROR);
+        //if(is_null($path))
+        //    trigger_error('Block doesn\'t exist: ' . $class . ' - ' . $block, E_USER_ERROR);
             
-        Caffeine::debug(2, 'View', 'Rendering block: %s', $path);
-        return self::render($path, $data);
+		if(!is_null($path))
+		{
+			Caffeine::debug(2, 'View', 'Rendering block: %s', $path);
+			return self::render($path, $data);
+		}
+		else
+			Caffeine::debug(2, 'View', 'No blocks found, not rendering.');
+
+		return null;
     }
 
 	/**
