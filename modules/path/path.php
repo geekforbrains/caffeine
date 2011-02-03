@@ -167,13 +167,9 @@ class Path {
 	{
 		$path_data = self::path_data($current_path);
 
-		/*
+		// If not data exists for this path, return false to show 404
 		if(!$path_data)
-		{
-			View::load('Path', '404');
 			return false;
-		}
-		*/
 
 		if(!Auth::check_access($current_path, $path_data))
 		{
@@ -224,10 +220,10 @@ class Path {
 				$success = call_user_func($path_data['callback']);
 
 			if($success !== false)
-				return;
+				return true;
 		}
 
-		//View::load('Path', '404');
+		return false;
     }
 
 }

@@ -35,26 +35,12 @@ final class Path_Events extends Path {
 				die('The default path configuration cannot be empty.');
 		}
 
-		/**
-		if($current_path == 'front')
-			View::load('Path', 'front');
-		else
-		{
-			$path_data = self::_auth_path($current_path);
-
-			if($path_data)
-				self::_call_path($path_data);
-			else
-				View::load('Path', '404');
-		}
-		*/
-
 		$path_data = self::_auth_path($current_path);
 
-		if($path_data)
-			self::_call_path($path_data);
-		else
-			View::load('Path', '404');
+		if($path_data && self::_call_path($path_data))
+			return;
+
+		View::load('Path', '404');
     }
 
 }
