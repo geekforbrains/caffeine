@@ -46,6 +46,12 @@ class View {
 
 	// Should we echo loaded blocks or not
 	protected static $_output_blocks		= false;
+
+	// Should we check for views that match the url segments.
+	// This is used to temporarily disable segment checks for loading views
+	// directly, such as a 404 page.
+	// @see View::load
+	protected static $_check_segments		= true;
     
 	/**
 	 * -------------------------------------------------------------------------
@@ -232,10 +238,23 @@ class View {
      *
      *      The above would create the variables $name and $age with the values 
      *      "John Doe" and "25" respectively.
+	 *
+	 * @param $check_segments
+	 *		Should we temporarily not check for views that match the current
+	 *		segment? This will only work for "main" view loads, not loads being
+	 *		called from within other views etc.
+	 *
+	 *		This is mostly just for use by the Path module which calls a 404
+	 *		page. If segments is enabled, its possible the 404 page will never
+	 *		be called and you'll just get a bunch of fucked up problems.
+	 *
+	 *		If you don't know what this is, just leave it alone. :P
      * -------------------------------------------------------------------------
      */
-    public static function load($class, $block, $data = array())
+    public static function load($class, $block, $data = array(), $check_segments = true)
     {
+		self::$_check_segments = $check_segments;
+
         if(self::$_output_blocks)
         	echo self::_render_block($class, $block, $data);
         else
@@ -408,6 +427,7 @@ class View {
     private static function _render_view()
     {
 		$view_path = self::_determine_view();
+		self::$_check_segments = true; // Reset check segments per load
 		Caffeine::debug(1, 'View', 'Rendering view: %s', $view_path);
 		return self::render($view_path, self::$_loaded_block['data']);
     }
@@ -423,24 +443,27 @@ class View {
 		$current_module = Caffeine::get_class_module(self::$_loaded_block['class']);
 
 		// 1: Check for view based on segments
-		$paths = preg_replace('/[^A-Za-z0-9\/]/', '_', Router::current_path());
-		$path_bits = explode('/', $paths);
-		
-		while($path_bits)
+		if(self::$_check_segments)
 		{
-			$path = implode('_', $path_bits);
-
-			// Ignore empty paths and paths with same name as module
-			if(strlen($path) && $path != $current_module)
+			$paths = preg_replace('/[^A-Za-z0-9\/]/', '_', Router::current_path());
+			$path_bits = explode('/', $paths);
+			
+			while($path_bits)
 			{
-				$segment_path = self::$_theme_path . $path . CAFFEINE_EXT;
-				Caffeine::debug(3, 'View', 'Check for segment view: %s', $segment_path);
+				$path = implode('_', $path_bits);
 
-				if(file_exists($segment_path))
-					return $segment_path;
+				// Ignore empty paths and paths with same name as module
+				if(strlen($path) && $path != $current_module)
+				{
+					$segment_path = self::$_theme_path . $path . CAFFEINE_EXT;
+					Caffeine::debug(3, 'View', 'Check for segment view: %s', $segment_path);
+
+					if(file_exists($segment_path))
+						return $segment_path;
+				}
+
+				array_pop($path_bits);
 			}
-
-			array_pop($path_bits);
 		}
 
 		// 2: Check for view with block name

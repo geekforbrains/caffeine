@@ -40,7 +40,7 @@ final class Path_Events extends Path {
 		if($path_data && self::_call_path($path_data))
 			return;
 
-		View::load('Path', '404');
+		View::load('Path', '404', array(), false);
     }
 
 }
