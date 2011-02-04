@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
 <head>
-    <title>Caffeine</title>
+    <title>Control Panel</title>
 	<?php View::get_css(); ?>
 	<?php View::get_js(); ?>
 </head>
 <body>
     <div id="header">
         <div class="center">
-            <h1>CRM</h1>
+            <h1>Control Panel</h1>
             <span>
 				<?php if(!stristr(Path::current(), 'admin/login')): ?>
 					Logged in as <a href="#">Administrator</a> &nbsp;|&nbsp;
