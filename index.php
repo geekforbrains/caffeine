@@ -24,14 +24,17 @@
  */
 final class Caffeine {
 
+	// Ensures Caffeine isn't re-initialized
+	private static $_init                   = false;
+
+	// Stores the location of the main config path
+	private static $_config_path			= 'config.php';
+
 	// Stores the current site "host" with subdomains
 	private static $_site					= null;
 
 	// Stores the path to the current site, if any
 	private static $_site_path				= null;
-
-	// Ensures Caffeine isn't re-initialized
-	private static $_init                   = false;
 
 	// Stores library priorities for core events
 	private static $_priorities             = array();
@@ -89,6 +92,29 @@ final class Caffeine {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * Determines which main config.php file to load based on the current site.
+	 * If a config exists for the current site (ex: sites/mysite/config.php)
+	 * that file will be loaded. Otherwise, the default config will be loaded)
+	 * -------------------------------------------------------------------------
+	 */
+	public static function config()
+	{
+		self::_determine_site();
+
+		if(!is_null(self::$_site))
+		{
+			$config_path = CAFFEINE_SITES_PATH . 
+				self::$_site . '/config' . CAFFEINE_EXT;
+
+			if(file_exists($config_path))
+				self::$_config_path = $config_path;
+		}
+
+		return self::$_config_path;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * Starting point for Caffeine. Triggers a series of events for areas of the 
 	 * application to implement. It is then up to the libraries to provide 
 	 * functionality to the rest of the application.
@@ -113,13 +139,15 @@ final class Caffeine {
 					self::$_debug_ignore[$k] = trim($v);
 			}
 		}
+
 		self::debug(1, 'Caffeine', 'Initializing');
+		self::debug(1, 'Caffeine', 'Main config file is: %s', self::$_config_path);
 				
 		if(!self::$_init)
 		{
 			self::$_init = true;
 			
-			self::_determine_site();
+			//self::_determine_site();
 			self::_scan_modules();
 
 			self::trigger('Caffeine', 'event_priority');
@@ -361,13 +389,13 @@ final class Caffeine {
 		self::$_site = str_replace('www.', '', 
 			strtolower($_SERVER['HTTP_HOST']));
 
-		Caffeine::debug(1, 'Caffeine', 'Checking if the "%s" site directory
-			exists', self::$_site);
+		//Caffeine::debug(1, 'Caffeine', 'Checking if the "%s" site directory
+			//exists', self::$_site);
 
 		$path = CAFFEINE_SITES_PATH . self::$_site . '/';
 		if(file_exists($path))
 		{
-			Caffeine::debug(2, 'Caffeine', 'Setting site path to: %s', $path);
+			//Caffeine::debug(2, 'Caffeine', 'Setting site path to: %s', $path);
 			self::$_site_path = $path;
 		}
 	}
@@ -429,9 +457,10 @@ function caffeine_error($num, $str, $file, $line) {
 }
 set_error_handler('caffeine_error');
 
-require_once('config.php');
-error_reporting(CAFFEINE_ERROR_REPORTING);
-date_default_timezone_set(CAFFEINE_TIMEZONE);
+require_once('constants.php');
+require_once(Caffeine::config());
+//error_reporting(CAFFEINE_ERROR_REPORTING);
+//date_default_timezone_set(CAFFEINE_TIMEZONE);
 
 session_start();
 $start = microtime(true);

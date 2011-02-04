@@ -32,9 +32,11 @@ class Validate {
 				Caffeine::debug(3, 'Validate', 'Check "%s" failed for field "%s"', 
 					$check, $field_name);
 
-				break;
+				return false;
 			}
 		}
+
+		return true;
 	}
 
 	// TODO
@@ -50,7 +52,7 @@ class Validate {
 	}
 
 	// TODO
-	private static function _email($f, $d)
+	private static function _valid_email($f, $d)
 	{
 		$status = isset($_POST[$f]);
 
