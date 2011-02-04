@@ -1,0 +1,10 @@
+# Sites should have their own git repo
+# Ignore them
+sites/
+
+# The files directory is for dynamically uploaded content
+# We dont need to track those files, so ignore them
+files/
+
+# Ignore VIM swap files
+*.swp
