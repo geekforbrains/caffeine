@@ -28,29 +28,37 @@ class Blog_Admin_Posts {
     {
         if($_POST)
         {
-			$user = User::get_current();
-			$published = isset($_POST['publish']) ? 1 : 0;
+			Validate::check('title', 'Title', array('required'));
+			Validate::check('content', 'Content', array('required'));
 
-            $cid = Blog_Model_Posts::create(
-                $_POST['title'], 
-                $_POST['content'],
-                String::tagify($_POST['title']),
-				$published
-            );
-
-			if($cid)
+			if(Validate::passed())
 			{
-				Blog_Model_Posts::add_to_category($cid, $_POST['category_cid']);
-            
-				if($published)
-					Message::store(MSG_OK, 'Post successfully published.');
-				else
-					Message::store(MSG_OK, 'Post successfully saved to drafts.');
+				$user = User::get_current();
+				$published = isset($_POST['publish']) ? 1 : 0;
 
-				Router::redirect('admin/blog/posts/manage');
+				$cid = Blog_Model_Posts::create(
+					$_POST['title'], 
+					$_POST['content'],
+					String::tagify($_POST['title']),
+					$published
+				);
+
+				if($cid)
+				{
+					Blog_Model_Posts::add_to_category($cid, $_POST['category_cid']);
+				
+					if($published)
+						Message::store(MSG_OK, 'Post successfully published.');
+					else
+						Message::store(MSG_OK, 'Post successfully saved to drafts.');
+
+					Router::redirect('admin/blog/posts/manage');
+				}
+				else
+					Message::set(MSG_ERR, 'Unkown error creating post. Please try again.');
 			}
 			else
-				Message::set(MSG_ERR, 'Unkown error creating post. Please try again.');
+				Message::set(MSG_ERR, 'Missing required fields.');
         }
         
         View::load('Blog_Admin', 'blog_admin_posts_create',

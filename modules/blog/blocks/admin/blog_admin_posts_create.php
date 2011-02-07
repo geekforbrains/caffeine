@@ -23,10 +23,12 @@
 			<li class="text small">
 				<label>Title</label>
 				<input type="text" name="title" value="" />
+				<?php Validate::error('title'); ?>
 			</li>
 			<li class="textarea medium">
 				<label>Content</label>
 				<textarea name="content"></textarea>
+				<?php Validate::error('content'); ?>
 			</li>
 			<li class="buttons">
 				<input type="submit" name="draft" value="Save as Draft" />
