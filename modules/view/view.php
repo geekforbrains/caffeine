@@ -159,9 +159,13 @@ class View {
 		// If a site directory exists, first check if the theme exists there
 		if(!is_null(Caffeine::site_path()))
 		{
+			$site_path = Caffeine::site_path() . VIEW_DIR . $theme . '/';
+
+			/*
 			$site_path = CAFFEINE_SITES_PATH .
 				Caffeine::site() . '/' .
 				VIEW_DIR . $theme . '/';
+			*/
 
 			Debug::log('View', 'Checking site theme path: %s', $site_path);
 
@@ -171,11 +175,14 @@ class View {
 
 		// Either no site exists, or the site doesn't contain the theme, try
 		// root views directory
-		$view_path = VIEW_PATH . $theme . '/';
-		Debug::log('View', 'Checking root theme path: %s', $view_path);
+		if(!$theme_path)
+		{
+			$view_path = VIEW_PATH . $theme . '/';
+			Debug::log('View', 'Checking root theme path: %s', $view_path);
 
-		if(!$theme_path && file_exists($view_path))
-			$theme_path = $view_path;
+			if(file_exists($view_path))
+				$theme_path = $view_path;
+		}
 
 		return $theme_path;
 	}

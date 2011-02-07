@@ -288,10 +288,7 @@ final class Caffeine {
 
 		$path = CAFFEINE_SITES_PATH . self::$_site . '/';
 		if(file_exists($path))
-		{
-			//Debug::log('Caffeine', 'Setting site path to: %s', $path);
 			self::$_site_path = $path;
-		}
 	}
 
 	/**
