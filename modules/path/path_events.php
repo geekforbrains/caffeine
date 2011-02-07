@@ -40,6 +40,8 @@ final class Path_Events extends Path {
 		if($path_data && self::_call_path($path_data))
 			return;
 
+		// Set 404 header and display 404 view
+		header('HTTP/1.0 404 Not Found');
 		View::load('Path', '404', array(), false);
     }
 

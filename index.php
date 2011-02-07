@@ -253,7 +253,6 @@ final class Caffeine {
 		printf('Error: %s<br />', $str);
 		printf('File: %s<br />', $file);
 		printf('Line: %d<br />', $line);
-		self::debug();
 		exit(1);
 	}
 
