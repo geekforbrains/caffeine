@@ -51,7 +51,7 @@ final class Caffeine {
 	 * -------------------------------------------------------------------------
 	 */
 	public static function site() {
-		self::$_site;
+		return self::$_site;
 	}
 
 	/**
