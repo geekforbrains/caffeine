@@ -73,7 +73,7 @@ class View {
     {
         foreach($data as $c => $path)
         {
-            Caffeine::debug(2, 'View', 'Class "%s" setting block path to %s', 
+            Debug::log('View', 'Class "%s" setting block path to %s', 
                 $c, $path);
             self::$_block_paths[strtolower($c)] = $path;
         }
@@ -157,13 +157,13 @@ class View {
 		$theme_path = false;
 
 		// If a site directory exists, first check if the theme exists there
-		if(!is_null(Caffeine::get_site_path()))
+		if(!is_null(Caffeine::site_path()))
 		{
 			$site_path = CAFFEINE_SITES_PATH .
-				Caffeine::get_site() . '/' .
+				Caffeine::site() . '/' .
 				VIEW_DIR . $theme . '/';
 
-			Caffeine::debug(2, 'View', 'Checking site theme path: %s', $site_path);
+			Debug::log('View', 'Checking site theme path: %s', $site_path);
 
 			if(file_exists($site_path))
 				$theme_path = $site_path;
@@ -172,7 +172,7 @@ class View {
 		// Either no site exists, or the site doesn't contain the theme, try
 		// root views directory
 		$view_path = VIEW_PATH . $theme . '/';
-		Caffeine::debug(2, 'View', 'Checking root theme path: %s', $view_path);
+		Debug::log('View', 'Checking root theme path: %s', $view_path);
 
 		if(!$theme_path && file_exists($view_path))
 			$theme_path = $view_path;
@@ -198,7 +198,7 @@ class View {
 
 		if($theme_path)
 		{
-			Caffeine::debug(1, 'View', 'Setting theme path to: %s', $theme_path);
+			Debug::log('View', 'Setting theme path to: %s', $theme_path);
 			self::$_theme = $theme;
 			self::$_theme_path = $theme_path;
 			self::$_theme_dir = str_replace(CAFFEINE_ROOT, '', self::$_theme_path);
@@ -310,7 +310,7 @@ class View {
      */
     public static function insert($view_file)
     {
-        Caffeine::debug(1, 'View', 'Inserting view "%s"', $view_file);
+        Debug::log('View', 'Inserting view "%s"', $view_file);
 
         $view_file = self::$_theme_path . $view_file . CAFFEINE_EXT;
         if(file_exists($view_file))
@@ -332,6 +332,7 @@ class View {
 		self::$_output_blocks = true;
 		$view = self::_render_view();
 		
+		Debug::log('View', 'Outputting view');
 		echo $view;
     }
 
@@ -428,7 +429,7 @@ class View {
     {
 		$view_path = self::_determine_view();
 		self::$_check_segments = true; // Reset check segments per load
-		Caffeine::debug(1, 'View', 'Rendering view: %s', $view_path);
+		Debug::log('View', 'Rendering view: %s', $view_path);
 		return self::render($view_path, self::$_loaded_block['data']);
     }
 
@@ -440,7 +441,7 @@ class View {
 	private static function _determine_view()
 	{
 		// Get the module name loading the current view
-		$current_module = Caffeine::get_class_module(self::$_loaded_block['class']);
+		$current_module = Caffeine::class_module(self::$_loaded_block['class']);
 
 		// 1: Check for view based on segments
 		if(self::$_check_segments)
@@ -456,7 +457,7 @@ class View {
 				if(strlen($path) && $path != $current_module)
 				{
 					$segment_path = self::$_theme_path . $path . CAFFEINE_EXT;
-					Caffeine::debug(3, 'View', 'Check for segment view: %s', $segment_path);
+					Debug::log('View', 'Check for segment view: %s', $segment_path);
 
 					if(file_exists($segment_path))
 						return $segment_path;
@@ -468,20 +469,20 @@ class View {
 
 		// 2: Check for view with block name
 		$block_path = self::$_theme_path . self::$_loaded_block['block'] . CAFFEINE_EXT;
-		Caffeine::debug(3, 'View', 'Checking for block view: %s', $block_path);
+		Debug::log('View', 'Checking for block view: %s', $block_path);
 
 		if(file_exists($block_path))
 			return $block_path;
 
 		// 3: Check for view with module name
 		$module_path = self::$_theme_path . $current_module . CAFFEINE_EXT;
-		Caffeine::debug(3, 'View', 'Checking for module view: %s', $module_path);
+		Debug::log('View', 'Checking for module view: %s', $module_path);
 
 		if(file_exists($module_path))
 			return $module_path;
 
 		// 4: Return default view
-		Caffeine::debug(3, 'View', 'No view overrides found, using default');
+		Debug::log('View', 'No view overrides found, using default');
 		return self::$_theme_path . VIEW_INDEX . CAFFEINE_EXT;
 	}
     
@@ -496,7 +497,7 @@ class View {
         $path = null;
             
         $override_block = self::$_theme_blocks_path . $block . CAFFEINE_EXT;
-		Caffeine::debug(3, 'View', 'Checking for block path: %s', $override_block);
+		Debug::log('View', 'Checking for block path: %s', $override_block);
 
         if(file_exists($override_block))
             $path = $override_block;
@@ -513,11 +514,11 @@ class View {
             
 		if(!is_null($path))
 		{
-			Caffeine::debug(2, 'View', 'Rendering block: %s', $path);
+			Debug::log('View', 'Rendering block: %s', $path);
 			return self::render($path, $data);
 		}
 		else
-			Caffeine::debug(2, 'View', 'No blocks found, not rendering.');
+			Debug::log('View', 'No blocks found, not rendering.');
 
 		return null;
     }

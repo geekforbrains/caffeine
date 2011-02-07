@@ -104,7 +104,7 @@ class Path {
 			$path = self::$_paths[$path]['alias'];
 
 		self::$_current = $path;
-		Caffeine::debug(1, 'Path', 'Searching callback data for path: %s', $path);
+		Debug::log('Path', 'Searching callback data for path: %s', $path);
 
 		// First attempt direct path to callback
 		if(isset(self::$_paths[$path]))
@@ -211,7 +211,7 @@ class Path {
 
 		if($path_data)
 		{
-			Caffeine::debug(1, 'Path', 'Calling path callback: %s::%s',
+			Debug::log('Path', 'Calling path callback: %s::%s',
 				$path_data['callback'][0], $path_data['callback'][1]);
 	
 			if(isset($path_data['params']))

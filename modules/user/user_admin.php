@@ -20,7 +20,7 @@ class User_Admin extends User_Model {
 			$user_id = self::check_login(
 				$_POST['username'],
 				$_POST['pass'],
-				Caffeine::get_site()
+				Caffeine::site()
 			);
 			
 			if($user_id)
@@ -75,7 +75,7 @@ class User_Admin extends User_Model {
 					$_POST['username'], 
 					$_POST['pass'], 
 					$_POST['email'],
-					Caffeine::get_site()))
+					Caffeine::site()))
 				{
 					Message::store('success', 'User created successfully.');
 					Router::redirect('admin/user/manage');

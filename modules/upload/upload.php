@@ -367,7 +367,7 @@ class Upload {
 			return false;
 
 		// Determine site path, create dir if needed
-		$site = Caffeine::get_site();		
+		$site = Caffeine::site();		
 		$upload_dir = $site . '/';
 
 		if(!file_exists(UPLOAD_PATH . $upload_dir))

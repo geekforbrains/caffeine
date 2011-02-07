@@ -42,7 +42,7 @@ class User extends Database {
 		else
 			self::$_user = self::get_by_id($_SESSION['user']);
 
-		Caffeine::debug(1, 'User', 'Current user ID is: %s', self::$_user['id']);
+		Debug::log('User', 'Current user ID is: %s', self::$_user['id']);
 	}
 
 	/**
@@ -54,7 +54,7 @@ class User extends Database {
 	 */
 	public static function create_root()
 	{
-		Caffeine::debug(1, 'User', 'Creating initial root user');
+		Debug::log('User', 'Creating initial root user');
 
 		// Create site
 		Database::query('DELETE FROM {user_sites} WHERE id = %s', USER_ROOT_ID);
@@ -172,7 +172,7 @@ class User extends Database {
 	public static function site_id($site = null)
 	{
 		if(is_null($site))
-			$site = Caffeine::get_site();
+			$site = Caffeine::site();
 
 		self::query('SELECT id FROM {user_sites} WHERE site = %s', $site);
 		

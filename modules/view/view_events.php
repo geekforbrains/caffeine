@@ -6,19 +6,15 @@
  * @version 1.0
  * =============================================================================
  */
-final class View_Events extends View {
+final class View_Events {
     
 	/**
 	 * -------------------------------------------------------------------------
 	 * Implements the Caffeine::event_priority event.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function caffeine_event_priority() 
-	{
-		return array(
-			'caffeine_init' => 1,
-			'caffeine_cleanup' => 10
-		);
+	public static function caffeine_event_priority() {
+		return array('caffeine_init' => 1);
 	}
 
     /**
@@ -31,7 +27,7 @@ final class View_Events extends View {
      * -------------------------------------------------------------------------
      */
     public static function caffeine_bootstrap() {
-        self::theme(VIEW_DEFAULT_THEME);
+        View::theme(VIEW_DEFAULT_THEME);
     }
     
     /**
@@ -54,7 +50,7 @@ final class View_Events extends View {
      * -------------------------------------------------------------------------
      */
     public static function caffeine_cleanup() {
-        self::output();
+        View::output();
     }
     
 }

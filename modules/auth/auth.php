@@ -28,7 +28,7 @@ class Auth {
 	 *
 	 * @param $current_site
 	 *		The current site. This is typically obtained using the
-	 *		Caffeine::get_site method.
+	 *		Caffeine::site method.
 	 *
 	 * @return boolean
 	 *		Returns true if the user has access, false otherwise.
@@ -37,14 +37,14 @@ class Auth {
 	public static function check_access($current_path, $path_data, $current_site = null)
 	{
 		if(is_null($current_site))
-			$current_site = Caffeine::get_site();
+			$current_site = Caffeine::site();
 
-		Caffeine::debug(1, 'Auth', 'Checking access to path "%s" on site "%s"', 
+		Debug::log('Auth', 'Checking access to path "%s" on site "%s"', 
 			$current_path, $current_site);
 
 		if($path_data['auth'] === true)
 		{
-			Caffeine::debug(1, 'Auth', 'WARNING: Path access is set to true. Allowing
+			Debug::log('Auth', 'WARNING: Path access is set to true. Allowing
 				access to anybody.');
 
 			return true;
@@ -56,7 +56,7 @@ class Auth {
 		// log attempt as a possible break-in warning
 		if($_SESSION['user'] > 0 && !$user)
 		{
-			Caffeine::debug(1, 'Auth', 'WARNING: Possible break-in attempt.
+			Debug::log('Auth', 'WARNING: Possible break-in attempt.
 				User ID "%s" doesn\'t exist, yet tried to authenticate.',
 				$_SESSION['user']);
 
@@ -66,7 +66,7 @@ class Auth {
 		// Check for super root, which is the "root" user of the "root site"
 		if($user['is_root'] && $user['site'] == USER_ROOT_SITE)
 		{
-			Caffeine::debug(1, 'Auth', 'WARNING: User is super root. Granting access on all.');
+			Debug::log('Auth', 'WARNING: User is super root. Granting access on all.');
 			return true;
 		}
 
@@ -74,7 +74,7 @@ class Auth {
 		// everything under the roots site
 		if($user['is_root'] && $user['site'] == $current_site)
 		{
-			Caffeine::debug(1, 'Auth', 'User is root of the current site.
+			Debug::log('Auth', 'User is root of the current site.
 				Granting all access on this site only.');
 
 			return true;
@@ -83,13 +83,13 @@ class Auth {
 		// Check if user has permissions for this path specifically
 		if(in_array($path_data['auth'], $user['permissions']))
 		{
-			Caffeine::debug(1, 'Auth', 'User has permission to access: %s',
+			Debug::log('Auth', 'User has permission to access: %s',
 				$path_data['auth']);
 
 			return true;
 		}
 
-		Caffeine::debug(1, 'Auth', 'All auth attempts failed. Rejecting access.');
+		Debug::log('Auth', 'All auth attempts failed. Rejecting access.');
 		return false;
 	}
 

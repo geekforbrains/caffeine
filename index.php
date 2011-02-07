@@ -10,13 +10,13 @@
  * powerful.
  *
  * @event event_priority
- *      Gives classes a chance to set event priority.
+ *		Used to set the calling priority for an event within a module.
  *
  * @event bootstrap
  *      Used to handle any pre-application processing.
  *
  * @event init
- *      Used as a main starting point for most libraries.
+ *      Used as a main starting point for most modules.
  *
  * @event cleanup
  *      Called at the end of the application for cleanup.
@@ -28,7 +28,7 @@ final class Caffeine {
 	private static $_init                   = false;
 
 	// Stores the location of the main config path
-	private static $_config_path			= 'config.php';
+	private static $_config_path			= CAFFEINE_CONFIG;
 
 	// Stores the current site "host" with subdomains
 	private static $_site					= null;
@@ -45,22 +45,13 @@ final class Caffeine {
 	// Stores the module an autoloaded class belongs to
 	private static $_class_modules			= array();
 
-	// Stores debug messages
-	private static $_debug                  = array();
-
-	// An array of classes to ignore in debug
-	private static $_debug_ignore           = array();
-
-	// An array of classes to watch in debug, overrides ignore
-	private static $_debug_watch            = array();
-
 	/**
 	 * -------------------------------------------------------------------------
 	 * Returns the current sites domain without trailing slashes.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_site() {
-		return self::$_site;
+	public static function site() {
+		self::$_site;
 	}
 
 	/**
@@ -68,7 +59,7 @@ final class Caffeine {
 	 * Gets the file path to the site folder, if any, in Caffeine's root.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_site_path() {
+	public static function site_path() {
 		return self::$_site_path;
 	}
 
@@ -77,15 +68,15 @@ final class Caffeine {
 	 * Returns the name of the module the given class was loaded from.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_class_module($class) 
+	public static function class_module($class) 
 	{
-		// Do a class check to autoload a class if it isn't already
-		class_exists($class);
+		if(class_exists($class))
+		{
+			$class = strtolower($class);
 
-		$class = strtolower($class);
-
-		if(isset(self::$_class_modules[$class]))
-			return self::$_class_modules[$class];
+			if(isset(self::$_class_modules[$class]))
+				return self::$_class_modules[$class];
+		}
 
 		return false;
 	}
@@ -104,7 +95,7 @@ final class Caffeine {
 		if(!is_null(self::$_site))
 		{
 			$config_path = CAFFEINE_SITES_PATH . 
-				self::$_site . '/config' . CAFFEINE_EXT;
+				self::$_site . '/' . CAFFEINE_CONFIG;
 
 			if(file_exists($config_path))
 				self::$_config_path = $config_path;
@@ -116,7 +107,7 @@ final class Caffeine {
 	/**
 	 * -------------------------------------------------------------------------
 	 * Starting point for Caffeine. Triggers a series of events for areas of the 
-	 * application to implement. It is then up to the libraries to provide 
+	 * application to implement. It is then up to the modules to provide 
 	 * functionality to the rest of the application.
 	 *
 	 * See the Caffeine::trigger method for more details.
@@ -124,30 +115,9 @@ final class Caffeine {
 	 */
 	public static function init()
 	{
-		if(CAFFEINE_DEBUG)
-		{
-			if(CAFFEINE_DEBUG_WATCH)
-			{
-				self::$_debug_watch = explode(',', strtolower(CAFFEINE_DEBUG_WATCH));
-				foreach(self::$_debug_watch as $k => $v)
-					self::$_debug_watch[$k] = trim($v);
-			}
-			elseif(CAFFEINE_DEBUG_IGNORE)
-			{
-				self::$_debug_ignore = explode(',', strtolower(CAFFEINE_DEBUG_IGNORE));
-				foreach(self::$_debug_ignore as $k => $v)
-					self::$_debug_ignore[$k] = trim($v);
-			}
-		}
-
-		self::debug(1, 'Caffeine', 'Initializing');
-		self::debug(1, 'Caffeine', 'Main config file is: %s', self::$_config_path);
-				
 		if(!self::$_init)
 		{
 			self::$_init = true;
-			
-			//self::_determine_site();
 			self::_scan_modules();
 
 			self::trigger('Caffeine', 'event_priority');
@@ -186,24 +156,18 @@ final class Caffeine {
 					CAFFEINE_MODULES_DIR .
 					$module_dir . '/' . $class . CAFFEINE_EXT;
 
-				self::debug(3, 'Caffeine', 'Autoload trying path: %s', $site_path);
-
 				if(file_exists($site_path))
 				{
-					self::debug(2, 'Caffeine', 'Autoloading from site: %s', $site_path);
 					self::$_class_modules[$class] = $module_dir;
 					require_once($site_path);
 					return;
 				}
 			}
 
-
 			$file_path = CAFFEINE_MODULES_PATH . $module_dir . '/' . $class . CAFFEINE_EXT;
-			self::debug(3, 'Caffeine', 'Autoload trying path: %s', $file_path);
 			
 			if(file_exists($file_path))
 			{
-				self::debug(2, 'Caffeine', 'Autoloading from root: %s', $file_path);
 				self::$_class_modules[$class] = $module_dir;
 				require_once($file_path);
 				return;
@@ -242,9 +206,6 @@ final class Caffeine {
 	 */
 	public static function trigger($class, $event, $data = array())
 	{
-		self::debug(1, 'Caffeine', 'The "%s" event was triggered by the "%s" class', 
-			$event, $class);
-		
 		$event_method = strtolower($class) .'_'. $event;
 		$event_callback = sprintf(CAFFEINE_EVENT_CALLBACK, $event);
 			
@@ -270,9 +231,6 @@ final class Caffeine {
 			{
 				if(method_exists($event_class, $event_method))
 				{
-					self::debug(2, 'Caffeine', 'Calling the "%s" event on the "%s" class', 
-						$event_method, $event_class);
-						
 					$data = call_user_func(array($event_class, $event_method), $data);
 					
 					if(method_exists($class, $event_callback))
@@ -297,67 +255,6 @@ final class Caffeine {
 		printf('Line: %d<br />', $line);
 		self::debug();
 		exit(1);
-	}
-
-	/**
-	 * -------------------------------------------------------------------------
-	 * Used to help debug and profile the application. Assists in seeing whats
-	 * going on at each stage during a Caffeine's application life.
-	 * -------------------------------------------------------------------------
-	 */
-	public static function debug()
-	{
-		if(!CAFFEINE_DEBUG)
-			return;
-			
-		$timestamp = time();
-		$args = func_get_args();
-		
-		if(func_num_args() >= 2)
-		{
-			$level = array_shift($args);
-			$class = array_shift($args);
-			$message = array_shift($args);
-			
-			if($level > CAFFEINE_DEBUG_VERBOSITY)
-				return;
-			
-			if(self::$_debug_watch &&
-				!in_array(strtolower($class), self::$_debug_watch))
-				return;
-			
-			if(in_array(strtolower($class), self::$_debug_ignore))
-				return;
-			
-			if(count($args) >= 1)
-				$message = call_user_func_array('sprintf', 
-					array_merge(array($message), $args));
-					
-			self::$_debug[] = array(
-				'timestamp' => $timestamp,
-				'level' => $level,
-				'class' => $class,
-				'message' => $message
-			);
-		}
-		else
-		{
-			$debug = self::$_debug;
-			
-			$output = '<table id="caffeine-debug" border="1" cellpadding="2">';
-			foreach($debug as $row)
-			{
-				$output .= '<tr>';
-				$output .= '<td>' .$row['timestamp']. '</td>';
-				$output .= '<td>' .$row['level']. '</td>';
-				$output .= '<td>' .$row['class']. '</td>';
-				$output .= '<td>' .$row['message']. '</td>';
-				$output .= '</tr>';
-			}
-			$output .= '</table>';
-			
-			echo $output;
-		}
 	}
 
 	/**
@@ -389,13 +286,10 @@ final class Caffeine {
 		self::$_site = str_replace('www.', '', 
 			strtolower($_SERVER['HTTP_HOST']));
 
-		//Caffeine::debug(1, 'Caffeine', 'Checking if the "%s" site directory
-			//exists', self::$_site);
-
 		$path = CAFFEINE_SITES_PATH . self::$_site . '/';
 		if(file_exists($path))
 		{
-			//Caffeine::debug(2, 'Caffeine', 'Setting site path to: %s', $path);
+			//Debug::log('Caffeine', 'Setting site path to: %s', $path);
 			self::$_site_path = $path;
 		}
 	}
@@ -408,7 +302,6 @@ final class Caffeine {
 	 */
 	private static function _scan_modules()
 	{
-		Caffeine::debug(1, 'Caffeine', 'Scanning modules for configs and events classes');
 		$modules = scandir(CAFFEINE_MODULES_PATH);
 		
 		foreach($modules as $module)
@@ -427,16 +320,11 @@ final class Caffeine {
 			if(file_exists($site_config_path))	
 				$config_path = $site_config_path;
 			
-			self::debug(3, 'Caffeine', 'Checking if the "%s" module has a config file', $module);
 			if(file_exists($config_path))
-			{
-				self::debug(2, 'Caffeine', 'Loading config file: %s', $config_path);
 				require_once($config_path);
-			}
 			
 			// Then check for events class
 			$module_class = sprintf(CAFFEINE_EVENTS_FILE_FORMAT, $module);
-			self::debug(3, 'Caffeine', 'Checking if the "%s" module has an events class', $module);
 			
 			if(class_exists($module_class))
 				self::$_event_classes[] = strtolower($module_class);
@@ -459,15 +347,6 @@ set_error_handler('caffeine_error');
 
 require_once('constants.php');
 require_once(Caffeine::config());
-//error_reporting(CAFFEINE_ERROR_REPORTING);
-//date_default_timezone_set(CAFFEINE_TIMEZONE);
-
 session_start();
-$start = microtime(true);
 
 Caffeine::init();
-
-$end = microtime(true);
-Caffeine::debug(1, 'System', 'Peak memory usage: %fMB', memory_get_peak_usage(true) / (1024 * 1024));
-Caffeine::debug(1, 'System', 'Execution time: %f Seconds', ($end - $start));
-Caffeine::debug(); // Output debug to browser, if enabled

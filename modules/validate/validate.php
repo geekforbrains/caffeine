@@ -23,13 +23,13 @@ class Validate {
 	{	
 		foreach($checks as $check)
 		{
-			Caffeine::debug(1, 'Validate', 'Performing check "%s" on field "%s"',
+			Debug::log('Validate', 'Performing check "%s" on field "%s"',
 				$check, $field_name);
 
 			if(!call_user_func(array('self', '_' . $check), 
 				$field_name, $display_name))
 			{
-				Caffeine::debug(3, 'Validate', 'Check "%s" failed for field "%s"', 
+				Debug::log('Validate', 'Check "%s" failed for field "%s"', 
 					$check, $field_name);
 
 				return false;

@@ -97,7 +97,7 @@ class Database {
         $database = DATABASE_NAME, $user = DATABASE_USER, 
         $pass = DATABASE_PASS, $alias = DATABASE_ALIAS)
     {
-        Caffeine::debug(1, 'Database', 'Connecting to alias "%s"', $alias);
+        Debug::log('Database', 'Connecting to alias "%s"', $alias);
         
         self::$_conn[$alias] = mysql_connect(
             DATABASE_HOST,
@@ -269,7 +269,7 @@ class Database {
         $query = preg_replace('({([\w\_]+)})', 
             sprintf('%s$1', DATABASE_PREFIX), $query);
             
-        Caffeine::debug(3, 'Database', $query);
+        Debug::log('Database', $query);
             
         $result = mysql_query($query);
         if(!$result)
@@ -410,7 +410,7 @@ class Database {
      */
     public static function callback_install($class, $schema = array())
     {
-        Caffeine::debug(3, 'Database', 'Installing schema returned by the "%s" class', $class);
+        Debug::log('Database', 'Installing schema returned by the "%s" class', $class);
     
         $sql = '';
         

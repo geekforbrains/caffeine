@@ -142,7 +142,7 @@ class Router {
      */
     protected static function _parse_segments()
     {
-        Caffeine::debug(1, 'Router', 'Parsing URL segments');
+        Debug::log('Router', 'Parsing URL segments');
         $host = $_SERVER['HTTP_HOST'];
         $bits = explode('index.php', $_SERVER['SCRIPT_NAME']);
         $dir = '';
