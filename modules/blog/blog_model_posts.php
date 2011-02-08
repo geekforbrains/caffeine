@@ -84,8 +84,10 @@ class Blog_Model_Posts {
     {
 		Database::query('
 			SELECT
-				bp.*
+				bp.*,
+				c.created
 			FROM {blog_posts} bp
+				JOIN {content} c ON c.id = bp.cid
 				JOIN {blog_post_categories} bpc ON bpc.post_cid = bp.cid
 				JOIN {blog_categories} bc ON bc.cid = bpc.category_cid
 			WHERE
