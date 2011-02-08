@@ -29,7 +29,7 @@
 			</li>
 			<li class="textarea medium">
 				<label>Content</label>
-				<textarea name="content"><? echo $post['content'] ?></textarea><br />
+				<textarea class="tinymce" name="content"><? echo $post['content'] ?></textarea><br />
 			</li>
 			<li class="checkbox">
 				<input type="checkbox" name="published" <?php if($post['published'] > 0) echo 'checked="checked"'; ?> />

@@ -27,7 +27,7 @@
 			</li>
 			<li class="textarea medium">
 				<label>Content</label>
-				<textarea name="content"></textarea>
+				<textarea class="tinymce" name="content"></textarea>
 				<?php Validate::error('content'); ?>
 			</li>
 			<li class="buttons">
