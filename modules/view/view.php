@@ -52,6 +52,11 @@ class View {
 	// directly, such as a 404 page.
 	// @see View::load
 	protected static $_check_segments		= true;
+
+	// Stores the currently loaded view
+	// This is to look for override blocks specific to a view
+	// @see View::_render_block
+	protected static $_view_name			= VIEW_INDEX;
     
 	/**
 	 * -------------------------------------------------------------------------
@@ -467,7 +472,10 @@ class View {
 					Debug::log('View', 'Check for segment view: %s', $segment_path);
 
 					if(file_exists($segment_path))
+					{
+						self::$_view_name = $path;
 						return $segment_path;
+					}
 				}
 
 				array_pop($path_bits);
@@ -479,14 +487,20 @@ class View {
 		Debug::log('View', 'Checking for block view: %s', $block_path);
 
 		if(file_exists($block_path))
+		{
+			self::$_view_name = self::$_loaded_block['block'];
 			return $block_path;
+		}
 
 		// 3: Check for view with module name
 		$module_path = self::$_theme_path . $current_module . CAFFEINE_EXT;
 		Debug::log('View', 'Checking for module view: %s', $module_path);
 
 		if(file_exists($module_path))
+		{
+			self::$_view_name = $current_module;
 			return $module_path;
+		}
 
 		// 4: Return default view
 		Debug::log('View', 'No view overrides found, using default');
@@ -501,34 +515,50 @@ class View {
     private static function _render_block($class, $block, $data = array())
     {
         $class = strtolower($class);
-        $path = null;
-            
-        $override_block = self::$_theme_blocks_path . $block . CAFFEINE_EXT;
-		Debug::log('View', 'Checking for block path: %s', $override_block);
+		$block_path = self::_determine_block($class, $block);
 
-        if(file_exists($override_block))
-            $path = $override_block;
-               
-        elseif(isset(self::$_block_paths[$class]))
-        {
-            $orig_block = self::$_block_paths[$class] . $block . CAFFEINE_EXT;
-            if(file_exists($orig_block))
-                $path = $orig_block;
-        }
-            
-        //if(is_null($path))
-        //    trigger_error('Block doesn\'t exist: ' . $class . ' - ' . $block, E_USER_ERROR);
-            
-		if(!is_null($path))
+		if($block_path)
 		{
-			Debug::log('View', 'Rendering block: %s', $path);
-			return self::render($path, $data);
+			Debug::log('View', 'Rendering block: %s', $block_path);
+			return self::render($block_path, $data);
 		}
 		else
 			Debug::log('View', 'No blocks found, not rendering.');
-
-		return null;
     }
+
+    /**
+     * -------------------------------------------------------------------------
+     * TODO
+     * -------------------------------------------------------------------------
+     */
+	private static function _determine_block($class, $block)
+	{
+		// First check for override block pre-pended with current view
+		$view_block = self::$_theme_blocks_path . self::$_view_name .'_'. $block . CAFFEINE_EXT;
+		Debug::log('View', 'Checking for view block: %s', $view_block);
+
+		if(file_exists($view_block))
+			return $view_block;
+            
+		// Secondly check for a regular override block
+        $override_block = self::$_theme_blocks_path . $block . CAFFEINE_EXT;
+		Debug::log('View', 'Checking for override block: %s', $override_block);
+
+        if(file_exists($override_block))
+              return $override_block; 
+
+		// Finally check for a block default set by the calling class
+        if(isset(self::$_block_paths[$class]))
+        {
+            $default_block = self::$_block_paths[$class] . $block . CAFFEINE_EXT;
+			Debug::log('View', 'Checking for default block: %s', $default_block);
+
+            if(file_exists($default_block))
+				return $default_block;
+        }
+            
+		return false;
+	}
 
 	/**
 	 * -------------------------------------------------------------------------
