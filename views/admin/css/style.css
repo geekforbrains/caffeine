@@ -248,6 +248,13 @@ table.stripe .over {
 /* ====================================
    FORM STYLES
 =====================================*/
+#content form .validate-error span {
+    background-color: #efbebe;
+    color: #6f1212;
+	padding: 2px 5px;
+	display: block;
+	float: left;
+}
 #content form fieldset {margin: 0; padding: 0; border: none}
 #content form label {
     display: block;

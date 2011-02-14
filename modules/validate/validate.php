@@ -86,6 +86,7 @@ class Validate {
 	// TODO
 	private static function _required($field, $display_name, $data)
 	{
+		$data[$field] = trim($data[$field]);
 		if(!isset($data[$field]) || !strlen($data[$field]))
 		{
 			self::$_errors[$field] = sprintf(VALIDATE_REQUIRED, $display_name); 

@@ -95,7 +95,7 @@ class Path {
 		return false;
 	}
 
-	public static function path_data($path) 
+	public static function get_data($path) 
 	{
 		if(!strlen($path))
 			$path = PATH_DEFAULT;
@@ -104,7 +104,7 @@ class Path {
 			$path = self::$_paths[$path]['alias'];
 
 		self::$_current = $path;
-		Debug::log('Path', 'Searching callback data for path: %s', $path);
+		Debug::log('Path', 'Getting callback data for path: %s', $path);
 
 		// First attempt direct path to callback
 		if(isset(self::$_paths[$path]))
@@ -127,6 +127,7 @@ class Path {
 			}
 		}
 
+		Debug::log('Path', 'No callback data found for path: %s', $path);
 		return false;
 	}
 
@@ -163,14 +164,8 @@ class Path {
 	 * redirect them to a new configurable path, or show an access denied view.
 	 * -------------------------------------------------------------------------
 	 */
-	protected static function _auth_path($current_path)
+	protected static function _auth_path($current_path, $path_data)
 	{
-		$path_data = self::path_data($current_path);
-
-		// If not data exists for this path, return false to show 404
-		if(!$path_data)
-			return false;
-
 		if(!Auth::check_access($current_path, $path_data))
 		{
 			if($current_path == PATH_ACCESS_DENIED_REDIRECT)
@@ -207,21 +202,17 @@ class Path {
 	 */
     protected static function _call_path($path_data)
     {
-		$success = false; // Used for tracking dynamic 404's
+		Debug::log('Path', 'Calling path callback: %s::%s',
+			$path_data['callback'][0], $path_data['callback'][1]);
 
-		if($path_data)
-		{
-			Debug::log('Path', 'Calling path callback: %s::%s',
-				$path_data['callback'][0], $path_data['callback'][1]);
-	
-			if(isset($path_data['params']))
-				$success = call_user_func_array($path_data['callback'], $path_data['params']);
-			else
-				$success = call_user_func($path_data['callback']);
+		if(isset($path_data['params']))
+			$success = call_user_func_array($path_data['callback'], $path_data['params']);
+		else
+			$success = call_user_func($path_data['callback']);
 
-			if($success !== false)
-				return true;
-		}
+		// Method can return boolean false to handle dynamic 404's
+		if($success !== false)
+			return true;
 
 		return false;
     }

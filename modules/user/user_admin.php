@@ -78,7 +78,7 @@ class User_Admin extends User_Model {
 					Caffeine::site()))
 				{
 					Message::store('success', 'User created successfully.');
-					Router::redirect('admin/user/manage');
+					Router::redirect('admin/admin/user/manage');
 				}
 			}
 		}
@@ -95,11 +95,20 @@ class User_Admin extends User_Model {
 	{
 		if($_POST)
 		{
+			if(!isset($_POST['is_root']))
+				$_POST['is_root'] = 0;
+
 			if(!isset($_POST['roles']))
 				$_POST['roles'] = array();
 
-			self::update_roles($_POST['user_id'], $_POST['roles']);
-			Message::set('success', 'User roles updated successfully.');
+			self::update_user($user_id, $_POST['username'], $_POST['email'], $_POST['is_root']);
+			self::update_roles($user_id, $_POST['roles']);
+
+			// If password field is set, create new password
+			if(strlen($_POST['pass']))
+				self::update_pass($user_id, $_POST['pass']);
+
+			Message::set('success', 'User updated successfully.');
 		}
 
 		View::load('User_Admin', 'user_admin_edit',

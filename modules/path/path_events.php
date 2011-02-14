@@ -35,11 +35,21 @@ final class Path_Events extends Path {
 				die('The default path configuration cannot be empty.');
 		}
 
-		$path_data = self::_auth_path($current_path);
+		if($path_data = Path::get_data($current_path))
+		{
+			if(self::_auth_path($current_path, $path_data))
+			{
+				if(self::_call_path($path_data))
+					return;
+			}
+			else
+			{
+				View::load('Path', 'access_denied', array(), false);
+				return;
+			}
+		}
 
-		if($path_data && self::_call_path($path_data))
-			return;
-
+		// If we got here either something went wrong or the path doesn't exist
 		// Set 404 header and display 404 view
 		header('HTTP/1.0 404 Not Found');
 		View::load('Path', '404', array(), false);

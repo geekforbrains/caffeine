@@ -13,12 +13,12 @@
 				<input type="text" name="username" />
 			</li>
 			<li class="text small">
-				<label>Password</label>
-				<input type="password" name="pass" />
-			</li>
-			<li class="text small">
 				<label>Email</label>
 				<input type="text" name="email" />
+			</li>
+			<li class="text small">
+				<label>Password</label>
+				<input type="password" name="pass" />
 			</li>
 			<li class="buttons">
 				<input type="submit" value="Create User" />

@@ -88,6 +88,26 @@ class User_Model extends Database {
 		}
 	}
 
+	public static function update_user($id, $username, $email, $is_root)
+	{
+		Database::update('user_accounts',
+			array(
+				'username' => $username,
+				'email' => $email,
+				'is_root' => $is_root
+			),
+			array('id' => $id)
+		);
+	}
+
+	public static function update_pass($id, $pass)
+	{
+		Database::update('user_accounts',
+			array('pass' => md5($pass)),
+			array('id' => $id)
+		);
+	}
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * TODO

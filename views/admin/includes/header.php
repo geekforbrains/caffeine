@@ -11,7 +11,8 @@
             <h1>Control Panel</h1>
             <span>
 				<?php if(!stristr(Path::current(), 'admin/login')): ?>
-					Logged in as <a href="#">Administrator</a> &nbsp;|&nbsp;
+					<?php $user = User::get_current(); ?>
+					Logged in as <a href="<?php l('admin/admin/user/edit/%d', $user['id']); ?>"><?php echo $user['username']; ?></a> &nbsp;|&nbsp;
 					<a href="<?php echo Router::url('admin/logout'); ?>">Logout</a>
 				<?php endif; ?>
             </span>

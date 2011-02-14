@@ -131,7 +131,8 @@ class User extends Database {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Gets all users for either the current site or the entire system.
+	 * Gets all users for either the current site or the entire system. The 
+	 * system root user is always ignored, as it is not meant to be managed.
 	 *
 	 * @param $entire_system
 	 *		A boolean value determining whether to get users of the current 
@@ -141,10 +142,15 @@ class User extends Database {
 	 *		Returns a multi-dimensional associative array of user accounts.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_all($entire_site = false)
+	public static function get_all($entire_system = false)
 	{
-		self::query('SELECT id, username, email FROM {user_accounts}
-			ORDER BY username ASC');
+		self::query('
+			SELECT id, username, email 
+			FROM {user_accounts}
+			WHERE id != %s
+			ORDER BY username ASC',
+			USER_ROOT_ID
+		);
 
 		$rows = self::fetch_all();
 

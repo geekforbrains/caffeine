@@ -32,18 +32,25 @@ class Auth_Admin {
 	{
         if($_POST)
         {
-            if(!Auth_Model_Roles::exists($_POST['role']))
-            {
-              	if(Auth_Model_Roles::create(User::site_id(), $_POST['role']))
+			Validate::check('role', 'Role Name', array('required'));
+
+			if(Validate::passed())
+			{
+				if(!Auth_Model_Roles::exists($_POST['role']))
 				{
-                	Message::store('success', 'Role created successfully.');
-                	Router::redirect('admin/auth/manage');
+					if(Auth_Model_Roles::create(User::site_id(), $_POST['role']))
+					{
+						Message::store(MSG_OK, 'Role created successfully.');
+						Router::redirect('admin/admin/auth/manage');
+					}
+					else
+						Message::set(MSG_ERR, 'Error creating role. Please try again.');
 				}
 				else
-					Message::set('error', 'Error creating role. Please try again.');
-            }
-            else
-                Message::set('error', 'A role with that name already exists.');
+					Message::set(MSG_ERR, 'A role with that name already exists.');
+			}
+			else
+				Message::set(MSG_ERR, 'Missing required fields.');
         }
         
 		View::load('Auth_Admin', 'auth_admin_create',
@@ -94,7 +101,7 @@ class Auth_Admin {
 		else
 			Message::store('error', 'Error deleting role. Please try again.');
 
-		Router::redirect('admin/auth/manage');
+		Router::redirect('admin/admin/auth/manage');
 	}
 
 }

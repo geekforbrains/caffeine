@@ -18,7 +18,8 @@ final class Debug_Events {
 	}
 
 	public static function caffeine_cleanup() {
-		Debug::display();
+		if(DEBUG_ENABLED)
+			Debug::display();
 	}
 
 	public static function view_block_paths() {

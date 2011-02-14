@@ -5,7 +5,7 @@
 
 <div class="area right">
 	<h2>Edit User</h2>
-	<form method="post" action="<?php echo Router::url('admin/user/edit/%d', $user['id']); ?>">
+	<form method="post" action="<?php echo Router::url('admin/admin/user/edit/%d', $user['id']); ?>">
 		<input type="hidden" name="user_id" value="<?php echo $user['id']; ?>" />
 		<ul>
 			<li class="text small">
@@ -15,6 +15,10 @@
 			<li class="text small">
 				<label>Email</label>
 				<input type="text" name="email" value="<?php echo $user['email']; ?>" />
+			</li>
+			<li class="text small">
+				<label>Password</label>
+				<input type="password" name="pass" value="" />
 			</li>
 			<li class="checkbox">
 				<label>Roles</label>
@@ -28,6 +32,11 @@
 				<?php else: ?>
 					<i>No available roles.</i><br />
 				<?php endif; ?>
+			</li>
+			<li class="checkbox">
+				<label>Set as Administrator</label>
+				<input type="checkbox" name="is_root" value="1" <?php echo ($user['is_root']) ? 'checked="checked"' : ''; ?> />
+				Give user full administrator access <em>(Overrides roles)</em>
 			</li>
 			<li class="buttons">
 				<input type="submit" value="Update User" />

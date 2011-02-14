@@ -32,7 +32,6 @@ final class Admin_Events {
             'admin' => array(
                 'title' => 'Admin',
                 'callback' => array('Admin', 'redirect'),
-				'auth' => 'read blog posts'
             ),
 			'admin/admin' => array(
 				'title' => 'Administration',
