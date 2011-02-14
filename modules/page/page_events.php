@@ -58,6 +58,7 @@ final class Page_Events {
 		);
 
 		$paths['admin/page/edit/%d'] = array(
+			'title' => 'Edit Page',
 			'callback' => array('Page_Admin', 'edit'),
 			'auth' => 'edit pages',
 			'visible' => false

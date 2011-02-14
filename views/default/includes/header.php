@@ -1,8 +1,8 @@
 <html>
 <head>
-	<title>Caffeine</title>
-	<?php View::get_css(); ?>
-	<?php View::get_js(); ?>
+	<base href="<?php echo View::theme_url(); ?>/" />
+	<title><?php echo View::get_title('Caffeine', 'Caffeine | '); ?></title>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
 

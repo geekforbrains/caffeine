@@ -34,9 +34,12 @@ class Blog {
      */
     public static function posts_by_category($slug = null)
     {
+		$category = Blog_Model_Categories::get_by_slug($slug);
+
+		View::set_title('Blog posts in "' .$category['name']. '"');
         View::load('Blog', 'blog_posts',
             array(
-                'category' => Blog_Model_Categories::get_by_slug($slug),
+                'category' => $category,
                 'posts' => Blog_Model_Posts::get_all_by_category_slug($slug)
             )
         );
@@ -51,9 +54,11 @@ class Blog {
     {
         if(is_null($slug))
             Router::redirect('blog');
-          
-        View::load('Blog', 'blog_post',
-            array('post' => Blog_Model_Posts::get_by_slug($slug)));
+
+		$post = Blog_Model_Posts::get_by_slug($slug);
+
+		View::set_title($post['title']);
+        View::load('Blog', 'blog_post', array('post' => $post));
     }
 
 	/**

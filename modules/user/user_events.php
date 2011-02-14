@@ -63,6 +63,7 @@ final class User_Events {
 				'auth' => 'create users'
 			),
 			'admin/admin/user/edit/%d' => array(
+				'title' => 'Edit User',
 				'callback' => array('User_Admin', 'edit'),
 				'auth' => 'edit users',
 				'visible' => false

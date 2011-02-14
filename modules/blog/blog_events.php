@@ -35,6 +35,7 @@ final class Blog_Events {
 				'alias' => 'blog/posts'
             ),
             'blog/posts' => array(
+				'title' => 'Blog',
                 'callback' => array('Blog', 'posts'),
                 'visible' => false,
 				'auth' => true,
@@ -50,11 +51,11 @@ final class Blog_Events {
             
             // Admin Posts
             'admin/blog' => array(
-                'title' => 'Blog',
+				'title' => 'Blog',
 				'alias' => 'admin/blog/posts/manage'
             ),
             'admin/blog/posts' => array(
-                'title' => 'Posts',
+				'title' => 'Posts',
 				'alias' => 'admin/blog/posts/manage'
             ),
             'admin/blog/posts/manage' => array(
@@ -68,6 +69,7 @@ final class Blog_Events {
 				'auth' => 'create blog posts'
             ),
             'admin/blog/posts/edit/%d' => array(
+				'title' => 'Edit Post',
                 'callback' => array('Blog_Admin_Posts', 'edit'),
 				'auth' => 'edit blog posts'
             ),
@@ -92,6 +94,7 @@ final class Blog_Events {
 				'auth' => 'create blog categories'
             ),
             'admin/blog/categories/edit/%d' => array(
+				'title' => 'Edit Category',
                 'callback' => array('Blog_Admin_Categories', 'edit'),
 				'auth' => 'edit blog categories'
             ),

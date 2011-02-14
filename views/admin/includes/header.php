@@ -1,9 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en">
 <head>
-    <title>Control Panel</title>
-	<?php View::get_css(); ?>
-	<?php View::get_js(); ?>
+	<base href="<?php echo View::theme_url(); ?>/" />
+    <title><?php echo View::get_title('Control Panel', 'Control Panel | '); ?></title>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" />
+	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+	<script type="text/javascript" src="js/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="js/admin.js"></script>
 </head>
 <body>
     <div id="header">

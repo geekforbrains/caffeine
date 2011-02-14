@@ -57,36 +57,67 @@ class View {
 	// This is to look for override blocks specific to a view
 	// @see View::_render_block
 	protected static $_view_name			= VIEW_INDEX;
-    
+
+	// Stores the title last set via the View::set_title method
+	protected static $_view_title			= null;
+
 	/**
 	 * -------------------------------------------------------------------------
-	 * Callback for the View::change_theme event.
+	 * Used for setting the page title. This itself does not set the page title
+	 * but provides a title to be used. To show custom titles, the <title> tag
+	 * should call the View::get_title method.
+	 *
+	 * @param $title
+	 *		The title to give the current page.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function callback_change_theme($class, $data) 
-	{
-		if(isset($data['theme']))
-			self::theme($data['theme']);	
+	public static function set_title($title) {
+		self::$_view_title = $title;
 	}
 
-    /**
-     * -------------------------------------------------------------------------
-     * Callback for the View::block_paths event.
-     * -------------------------------------------------------------------------
-     */
-    public static function callback_block_paths($class, $data) 
-    {
-        foreach($data as $c => $path)
-        {
-            Debug::log('View', 'Class "%s" setting block path to %s', 
-                $c, $path);
-            self::$_block_paths[strtolower($c)] = $path;
-        }
-    }
+	/**
+	 * -------------------------------------------------------------------------
+	 * Used for getting the current page title. If a title has been set, that
+	 * title will be returned with any prepended or appended strings set in the
+	 * params. If a title has not been set, the $default will be returned.
+	 *
+	 * @param $default
+	 *		The default title to use if no title has been set by the system.
+	 *
+	 * @param $prepend
+	 *		A string to prepend a set title with. This will ONLY be prepended
+	 *		to a title set by the system, it will not be prepended to $default.
+	 *
+	 * @param $append
+	 *		A string to append to the set title. This will ONLY append to a
+	 *		title set by the system, it will not be appended to $default.
+	 *
+	 * @return string
+	 *		Returns either a set title or the default title as a string.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function get_title($default, $prepend = null, $append = null)
+	{
+		if(!is_null(self::$_view_title))
+		{
+			$title = self::$_view_title;
+			
+			if(!is_null($prepend))
+				$title = $prepend . $title;
+
+			if(!is_null($append))
+				$title .= $append;
+
+			return $title;
+		}
+
+		return $default;
+	}
+    
     
     /**
      * -------------------------------------------------------------------------
-     * TODO
+     * DEPRECATED
      * -------------------------------------------------------------------------
      */
 	public static function add_css($media, $css) 
@@ -99,7 +130,7 @@ class View {
 
     /**
      * -------------------------------------------------------------------------
-     * TODO
+     * DEPRECATED
      * -------------------------------------------------------------------------
      */
 	public static function get_css() 
@@ -112,7 +143,7 @@ class View {
 
     /**
      * -------------------------------------------------------------------------
-     * TODO
+     * DEPRECATED
      * -------------------------------------------------------------------------
      */
 	public static function add_js($js) {
@@ -121,7 +152,7 @@ class View {
 
     /**
      * -------------------------------------------------------------------------
-     * TODO
+     * DEPRECATED
      * -------------------------------------------------------------------------
      */
 	public static function get_js()
@@ -134,13 +165,15 @@ class View {
 
     /**
      * -------------------------------------------------------------------------
-     * TODO
+     * Returns the full URL to the current views theme directory. This is 
+	 * typically used to set the <base href="" /> tag in an html view.
      * -------------------------------------------------------------------------
      */
-	public static function theme_url($path) {
+	public static function theme_url($path = null) {
 		return Router::url(self::$_theme_dir . $path);
 	}
 
+	// TODO
 	public static function theme_path() {
 		return self::$_theme_path;
 	}
@@ -361,6 +394,32 @@ class View {
 			self::$_loaded_block['data']
 		);
 	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Callback for the View::change_theme event.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function callback_change_theme($class, $data) 
+	{
+		if(isset($data['theme']))
+			self::theme($data['theme']);	
+	}
+
+    /**
+     * -------------------------------------------------------------------------
+     * Callback for the View::block_paths event.
+     * -------------------------------------------------------------------------
+     */
+    public static function callback_block_paths($class, $data) 
+    {
+        foreach($data as $c => $path)
+        {
+            Debug::log('View', 'Class "%s" setting block path to %s', 
+                $c, $path);
+            self::$_block_paths[strtolower($c)] = $path;
+        }
+    }
     
     /**
      * -------------------------------------------------------------------------

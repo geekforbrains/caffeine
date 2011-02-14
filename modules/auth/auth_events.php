@@ -41,6 +41,7 @@ final class Auth_Events {
 				'auth' => 'create roles'
 			),
 			'admin/admin/auth/edit/%d' => array(
+				'title' => 'Edit Role',
 				'callback' => array('Auth_Admin', 'edit'),
 				'visible' => false
 			),

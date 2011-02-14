@@ -152,6 +152,10 @@ class Path {
 			// Default unset permission to false
 			if(!isset($d['auth']))
 				$d['auth'] = false;
+
+			// If no title set, set to null
+			if(!isset($d['title']))
+				$d['title'] = null;
                 
             self::$_paths[$p] = $d;
         }
@@ -212,7 +216,11 @@ class Path {
 
 		// Method can return boolean false to handle dynamic 404's
 		if($success !== false)
+		{
+			if(isset($path_data['title']) && strlen($path_data['title']))
+				View::set_title($path_data['title']);
 			return true;
+		}
 
 		return false;
     }
