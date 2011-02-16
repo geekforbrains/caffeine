@@ -47,11 +47,11 @@ function caffeineFileBrowser(field_name, url, type, win) {
 	tinyMCE.activeEditor.windowManager.open({
 		file : caffeineBaseURL + 'admin/media/dialog/' + type,
 		title : 'My File Browser',
-		width : 700,
-		height : 600,
-		resizable : "no",
-		inline : "yes",
-		close_previous : "no"
+		width : 500,
+		height : 400,
+		resizable : 'yes',
+		inline : 'yes',
+		close_previous : 'no' 
 	}, {
 		window : win,
 		input : field_name
@@ -66,22 +66,24 @@ function caffeineFileBrowser(field_name, url, type, win) {
  * -----------------------------------------------------------------------------
  */
 tinyMCE.init({
-    mode : "specific_textareas",
-    editor_selector: "tinymce",
+    mode : 'specific_textareas',
+    editor_selector: 'tinymce',
 
-    theme : "advanced",
-    skin : "o2k7",
+    theme : 'advanced',
+    skin : 'o2k7',
 	skin_variant : 'silver',
-    plugins : "inlinepopups,media",
-	dialog_type : "modal",
+    //plugins : "inlinepopups,media",
+	plugins : 'inlinepopups',
+	dialog_type : 'modal',
 
-    theme_advanced_buttons1 : "formatselect,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,anchor,|,image,media,|,code,",
-    theme_advanced_buttons2 : "", //"bullist,numlist,|,link,unlink,anchor,|,image,media,|,code,",
-    theme_advanced_buttons3 : "",
+    //theme_advanced_buttons1 : "formatselect,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,anchor,|,image,media,|,code,",
+    theme_advanced_buttons1 : 'formatselect,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,|,image,|,code,',
+    theme_advanced_buttons2 : '', //"bullist,numlist,|,link,unlink,anchor,|,image,media,|,code,",
+    theme_advanced_buttons3 : '',
 
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
-    theme_advanced_statusbar_location : "bottom",
+    theme_advanced_toolbar_location : 'top',
+    theme_advanced_toolbar_align : 'left',
+    theme_advanced_statusbar_location : 'bottom',
     theme_advanced_resizing : true,
     theme_advanced_resize_horizontal : false,
 	
