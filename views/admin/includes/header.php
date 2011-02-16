@@ -5,9 +5,14 @@
     <title><?php echo View::get_title('Control Panel', 'Control Panel | '); ?></title>
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" />
-	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript">
+		// Used by custon TinyMCE filebrowser
+		// Look in the js/admin.js file for usage
+		var caffeineBaseURL = '<?php echo Router::base(); ?>/';
+	</script>
 	<script type="text/javascript" src="js/admin.js"></script>
 </head>
 <body>

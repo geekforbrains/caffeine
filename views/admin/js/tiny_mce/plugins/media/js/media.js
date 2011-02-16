@@ -319,6 +319,14 @@ function getType(v) {
 		f.src.value = 'http://video.google.com/googleplayer.swf?docId=' + v.substring('http://video.google.com/videoplay?docid='.length) + '&hl=en';
 		return 'flash';
 	}
+	
+	// Vimeo
+    if(v.match(/^http:\/\/(?:www\.){0,1}vimeo\.com\/(\d+)$/) ) {
+        f.width.value = '400';
+        f.height.value = '321';
+    	f.src.value = 'http://vimeo.com/moogaloop.swf?clip_id=' + v.match(/^http:\/\/(?:www\.){0,1}vimeo\.com\/(\d+)$/)[1];
+        return 'flash';
+    }
 
 	for (i=0; i<fo.length; i++) {
 		c = fo[i].split('=');
