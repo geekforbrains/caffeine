@@ -8,6 +8,8 @@
  * The Mailer module provides a "Caffeine" based interface for the popular
  * phpMailer class. This class does NOT provide the actual mail functionality,
  * but rather static methods that can be used throughout the application.
+ *
+ * @credit http://phpmailer.worxware.com/
  * =============================================================================
  */
 class Mailer {

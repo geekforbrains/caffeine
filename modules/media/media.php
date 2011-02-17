@@ -26,8 +26,25 @@ class Media {
 	 * block being loaded is "media_<type>_dialog".
 	 * -------------------------------------------------------------------------
 	 */
-	public static function dialog($type) {
-		View::load('Media', sprintf('media_%s_dialog', $type));
+	public static function dialog($type) 
+	{
+		$cid = null;
+
+		if(isset($_FILES['media_file']))
+		{
+			if($cid = self::add('media_file'))
+				Message::set(MSG_OK, 'File uploaded successfully.');
+			else
+				Message::set(MSG_ERR, self::$_error);
+		}
+
+		View::load('Media', sprintf('media_%s_dialog', $type), 
+			array(
+				'type' => $type,
+				'cid' => $cid,
+				'images' => Media_Model::get_all(MEDIA_TYPE_IMAGE)
+			)		
+		);
 	}
 
 	/**
@@ -47,21 +64,14 @@ class Media {
 	 */
 	public static function add($filename)
 	{
-		// Check if file name is URL, probably youtube or vimeo link
-		if(stristr('http://', $filename))
-		{
-			if($cid = Media_Model::create_url($filename))
-				return $cid;
-			else
-				self::$_error = 'Error creating media URL. Please try again.';
-		}
-
 		// Check if filename exists in $_FILES as upload
-		elseif(isset($_FILES[$filename]))
+		if(isset($_FILES[$filename]))
 		{
 			if($data = Upload::save($_FILES[$filename]))
 			{
-				if($cid = Media_Model::create_file($data))
+				$media_type = self::_determine_media_type($data['type']);
+
+				if($cid = Media_Model::create_file($data, $media_type))
 					return $cid;
 				else
 					self::$_error = 'Error creating media file. Please try again.';
@@ -70,11 +80,61 @@ class Media {
 				self::$_error = Upload::error();
 		}
 
+		// Check if file name is URL, probably youtube or vimeo link
+		elseif(is_string($filename) && stristr('http://', $filename))
+		{
+			if($cid = Media_Model::create_url($filename))
+				return $cid;
+			else
+				self::$_error = 'Error creating media URL. Please try again.';
+		}
+
+
 		// Just incase something weird happens :P
 		if(is_null(self::$_error))
 			self::$_error = 'Unkown media error.';
 
 		return false;
+	}
+
+	// TODO
+	// Determine if type is file or url
+	public static function get($cid) {
+		return Media_Model::get_file($cid);
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Get all files or all files of a specific type.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function get_all($type = null) {
+		return Media_Model::get_all($type);
+	}
+
+	// TODO
+	public static function display($cid)
+	{
+		$file = Media_Model::get_file($cid);
+		$path = UPLOAD_PATH . $file['path'] . $file['hash'];
+
+		Imager::open($path);
+		//Imager::resize(500, 500, true);
+		Imager::percent(50);
+		Imager::show();
+
+		exit;
+	}
+
+	// TODO
+	public static function download() {}
+
+	// TODO
+	private static function _determine_media_type($file_type)
+	{
+		if(stristr($file_type, 'image'))
+			return MEDIA_TYPE_IMAGE;
+		return MEDIA_TYPE_FILE;
 	}
 
 }

@@ -87,7 +87,9 @@ tinyMCE.init({
     theme_advanced_resizing : true,
     theme_advanced_resize_horizontal : false,
 	
+	// Additional tweaks
   	paste_auto_cleanup_on_paste : true,
+	convert_urls : false,
 	
 	file_browser_callback : 'caffeineFileBrowser'
 });

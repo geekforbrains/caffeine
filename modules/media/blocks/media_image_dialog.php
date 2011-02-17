@@ -1,6 +1,13 @@
-<h1>Image Dialog</h1>
+<?php if($cid): ?>
+	<h1>Uploaded</h1>
+	<a href="#" onclick="inject('<?php l('media/display/%d', $cid); ?>')">
+		<img src="<?php l('media/display/%d', $cid); ?>" />
+	</a>
+<?php endif; ?>
 
-<!-- This is an example link, simply add the inject method to return a value -->
-<a href="#" onclick="inject('http://geekforbrains.com/photo/avatar.png')">
-	<img src="http://geekforbrains.com/photo/avatar.png" />
-</a>
+<h1>Images</h1>
+<?php foreach($images as $image): ?>
+	<a href="#" onclick="inject('<?php l('media/display/%d', $image['cid']); ?>')">
+		<img src="<?php l('media/display/%d', $image['cid']); ?>" />
+	</a>
+<?php endforeach; ?>

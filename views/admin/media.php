@@ -24,6 +24,13 @@
 		}
 	</script>
 <body>
+	<?php echo Message::display(); ?>
+
+	<form method="post" action="<?php l('admin/media/dialog/%s', $type); ?>" enctype="multipart/form-data">
+		<input type="file" name="media_file" />
+		<input type="submit" />
+	</form>
+
 	<?php View::content(); ?>
 </body>
 </html>

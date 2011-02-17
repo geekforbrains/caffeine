@@ -25,6 +25,16 @@ final class Media_Events {
 	public static function path_callbacks()
 	{
 		return array(
+			'media/display/%d' => array(
+				'callback' => array('Media', 'display'),
+				'auth' => true,
+				'visible' => false
+			),
+			'media/download/%d' => array(
+				'callback' => array('Media', 'download'),
+				'auth' => true,
+				'visible' => false
+			),
 			'admin/media/dialog/%s' => array(
 				'title' => 'Media Dialog',
 				'callback' => array('Media', 'dialog'),
@@ -55,6 +65,11 @@ final class Media_Events {
 						'length' => 255,
 						'not null' => true,
 					),
+					'hash' => array(
+						'type' => 'varchar',
+						'length' => 32,
+						'not null' => true
+					),
 					'path' => array(
 						'type' => 'text',
 						'size' => 'tiny',
@@ -71,6 +86,10 @@ final class Media_Events {
 						'unsigned' => true,
 						'not null' => true
 					)
+				),
+				
+				'indexes' => array(
+					'hash' => array('hash')
 				),
 
 				'primary key' => array('cid')
