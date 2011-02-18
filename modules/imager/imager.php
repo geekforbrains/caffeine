@@ -43,6 +43,10 @@ class Imager {
 			self::$_thumb->cropFromCenter($width, $height);
 	}
 
+	public static function rotate($degrees) {
+		self::$_thumb->rotateImageNDegrees($degrees);
+	}
+
 	public static function show() {
 		self::$_thumb->show();
 	}

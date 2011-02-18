@@ -23,7 +23,7 @@
 					<?php endforeach; ?>
 				</select>
 			</li>
-			<li class="textarea medium">
+			<li class="textarea full">
 				<label>Content</label>
 				<textarea class="tinymce" name="content"><?php echo $page['content']; ?></textarea>
 			</li>

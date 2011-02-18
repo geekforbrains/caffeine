@@ -47,8 +47,8 @@ function caffeineFileBrowser(field_name, url, type, win) {
 	tinyMCE.activeEditor.windowManager.open({
 		file : caffeineBaseURL + 'admin/media/dialog/' + type,
 		title : 'My File Browser',
-		width : 500,
-		height : 400,
+		width : 900,
+		height : 800,
 		resizable : 'yes',
 		inline : 'yes',
 		close_previous : 'no' 

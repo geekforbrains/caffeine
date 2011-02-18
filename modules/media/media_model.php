@@ -20,6 +20,8 @@ class Media_Model {
 					c.updated
 				FROM {media_files} mf
 					JOIN {content} c ON c.id = mf.cid
+				ORDER BY
+					c.updated DESC
 				'
 			);
 		}
@@ -34,6 +36,8 @@ class Media_Model {
 					JOIN {content} c ON c.id = mf.cid
 				WHERE
 					c.type = %s
+				ORDER BY
+					c.updated DESC
 				',
 				$type
 			);

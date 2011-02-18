@@ -7,3 +7,4 @@
 define('MEDIA_TYPE_IMAGE', 'media_image');
 define('MEDIA_TYPE_VIDEO', 'media_video');
 define('MEDIA_TYPE_FILE', 'media_file');
+define('MEDIA_CACHE', CAFFEINE_FILES_PATH . 'media_cache/');

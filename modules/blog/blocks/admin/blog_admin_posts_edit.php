@@ -27,7 +27,7 @@
 				<label>Title</label>
 				<input type="text" name="title" value="<? echo $post['title'] ?>" /><br />
 			</li>
-			<li class="textarea medium">
+			<li class="textarea full">
 				<label>Content</label>
 				<textarea class="tinymce" name="content"><? echo $post['content'] ?></textarea><br />
 			</li>

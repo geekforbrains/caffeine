@@ -2,27 +2,15 @@
 <head>
 	<base href="<?php echo View::theme_url(); ?>/" />
 	<title>Media Dialog</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 	<script type="text/javascript" src="js/tiny_mce/tiny_mce_popup.js"></script>
 	<script type="text/javascript">
-		function inject(URL)
-		{
-			var win = tinyMCEPopup.getWindowArg("window");
-
-			// insert information now
-			win.document.getElementById(tinyMCEPopup.getWindowArg("input")).value = URL;
-
-			// are we an image browser
-			if (typeof(win.ImageDialog) != "undefined")
-			{
-				// we are, so update image dimensions and preview if necessary
-				if (win.ImageDialog.getImageData) win.ImageDialog.getImageData();
-				if (win.ImageDialog.showPreviewImage) win.ImageDialog.showPreviewImage(URL);
-			}
-
-			// close popup window
-			tinyMCEPopup.close();
-		}
+		var mediaURL = '<?php echo Router::base(); ?>/media/image/';
+		var currentID = <?php echo $images[0]['cid']; ?>;
+		var defaultSize = 500; // Default width when resetting
+		var rotation = 0; // Set starting rotation
 	</script>
+	<script type="text/javascript" src="js/admin_dialog.js"></script>
 <body>
 	<?php echo Message::display(); ?>
 

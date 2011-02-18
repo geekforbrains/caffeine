@@ -25,7 +25,7 @@
 				<input type="text" name="title" value="" />
 				<?php Validate::error('title'); ?>
 			</li>
-			<li class="textarea medium">
+			<li class="textarea full">
 				<label>Content</label>
 				<textarea class="tinymce" name="content"></textarea>
 				<?php Validate::error('content'); ?>

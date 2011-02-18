@@ -112,22 +112,69 @@ class Media {
 		return Media_Model::get_all($type);
 	}
 
-	// TODO
-	public static function display($cid)
+	/**
+	 * ------------------------------------------------------------------------
+	 * Displays images based on parameters. Usually these are called via the
+	 * URL, but you can technically call this method Media::image() manually
+	 * as well.
+	 *
+	 * @param $cid
+	 *		The content ID of the image to display. This ID must exist within
+	 *		the media module (ie: uploaded using the media module). If only
+	 *		this param is set, the original image is displayed.
+	 *
+	 * @param $wp
+	 *		This param has two different functions. If only the $cid and this
+	 *		param are passed, then this value is used as a resize by percent.
+	 *		However, if all three params are set, $cid, $wp and $h this param
+	 *		is considered a "width" setting. When width and height are set
+	 *		either a regular resize takes place, or an adaptive resize. See 
+	 *		below for more info.
+	 *
+	 * @param $h
+	 *		Used for setting the height when resizing.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function image($cid, $rotate = 0, $wp = null, $h = null)
 	{
 		$file = Media_Model::get_file($cid);
-		$path = UPLOAD_PATH . $file['path'] . $file['hash'];
+		$thumb_hash = md5($cid . $rotate . $wp . $h);
 
-		Imager::open($path);
-		//Imager::resize(500, 500, true);
-		Imager::percent(50);
-		Imager::show();
+		$thumb_path = MEDIA_CACHE . $thumb_hash;
+		$file_path = UPLOAD_PATH . $file['path'] . $file['hash'];
+
+		if(file_exists($thumb_path))
+		{
+			header('Content-type: ' . $file['type']);
+			readfile($thumb_path);
+		}
+		else
+		{
+			Imager::open($file_path);
+
+			// Check for resize by percent
+			if($wp > 0 && is_null($h))
+				Imager::percent($wp); // Not actually width, used as percent in this case
+
+			// If width and height are set, do adapative resize
+			elseif($wp > 0 && $h > 0)
+				Imager::resize($wp, $h, true);
+
+			// Regular resize, based on highest value
+			elseif($wp > 0 || $h > 0)
+				Imager::resize($wp, $h, false);
+
+			// Check for rotate
+			if($rotate > 0)
+				Imager::rotate($rotate);
+	
+			// Save thumb for caching and display
+			Imager::save($thumb_path);
+			Imager::show();
+		}
 
 		exit;
 	}
-
-	// TODO
-	public static function download() {}
 
 	// TODO
 	private static function _determine_media_type($file_type)

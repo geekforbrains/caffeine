@@ -25,16 +25,36 @@ final class Media_Events {
 	public static function path_callbacks()
 	{
 		return array(
-			'media/display/%d' => array(
-				'callback' => array('Media', 'display'),
+			// Display original image
+			'media/image/%d' => array(
+				'callback' => array('Media', 'image'),
 				'auth' => true,
 				'visible' => false
 			),
-			'media/download/%d' => array(
-				'callback' => array('Media', 'download'),
+
+			// Display original image, rotated
+			'media/image/%d/%d' => array(
+				'callback' => array('Media', 'image'),
 				'auth' => true,
 				'visible' => false
 			),
+
+			// Resize by percent
+			'media/image/%d/%d/%d' => array(
+				'callback' => array('Media', 'image'),
+				'auth' => true,
+				'visible' => false
+			),
+
+			// Display image with width and height specified
+			// If both width and height are greater than 0, adaptive resize will be used
+			// If width or height is 0, the other will be used for resize
+			'media/image/%d/%d/%d/%d' => array(
+				'callback' => array('Media', 'image'),
+				'auth' => true,
+				'visible' => false
+			),
+
 			'admin/media/dialog/%s' => array(
 				'title' => 'Media Dialog',
 				'callback' => array('Media', 'dialog'),
