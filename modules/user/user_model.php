@@ -83,7 +83,7 @@ class User_Model extends Database {
 		}
 		else
 		{
-			Message::set('error', 'The site "' .$site. '" doesn\'t exist.');
+			Message::set('error', 'The site "' .$site. '" isn\'t configured to have users.');
 			return false;
 		}
 	}

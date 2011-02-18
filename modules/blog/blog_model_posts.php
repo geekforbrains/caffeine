@@ -104,6 +104,30 @@ class Blog_Model_Posts {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
+    public static function get_all_by_category_cid($cid)
+    {
+		Database::query('
+			SELECT
+				bp.*,
+				c.created
+			FROM {blog_posts} bp
+				JOIN {content} c ON c.id = bp.cid
+				JOIN {blog_post_categories} bpc ON bpc.post_cid = bp.cid
+				JOIN {blog_categories} bc ON bc.cid = bpc.category_cid
+			WHERE
+				bc.cid = %s
+			',
+			$cid
+		);
+
+		return Database::fetch_all();
+    }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_by_slug($slug)
     {
         Database::query('

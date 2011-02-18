@@ -17,13 +17,22 @@ class Validate {
 	/**
 	 * -------------------------------------------------------------------------
 	 * Used to check if there were any errors during validation. Returns 
-	 * boolean.
+	 * boolean. Optionally sets an error message to be displayed.
+	 *
+	 * @param $set_message
+	 *		Whether to set default error message or not.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function passed()
+	public static function passed($set_message = true)
 	{
 		if(self::$_errors)
+		{
+			if($set_message)
+				Message::set(MSG_ERR, VALIDATE_ERROR);
+
 			return false;
+		}
+
 		return true;
 	}
 
@@ -86,14 +95,20 @@ class Validate {
 	// TODO
 	private static function _required($field, $display_name, $data)
 	{
-		$data[$field] = trim($data[$field]);
-		if(!isset($data[$field]) || !strlen($data[$field]))
-		{
-			self::$_errors[$field] = sprintf(VALIDATE_REQUIRED, $display_name); 
-			return false;
-		}
+		$status = true;
 
-		return true;
+		if(isset($data[$field]))
+		{
+			if(is_string($data[$field]) && !strlen(trim($data[$field])))
+				$status = false;
+		}
+		else
+			$status = false;
+		
+		if(!$status)
+			self::$_errors[$field] = sprintf(VALIDATE_REQUIRED, $display_name); 
+
+		return $status;
 	}
 
 	// TODO

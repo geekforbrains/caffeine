@@ -22,10 +22,17 @@
 						
 					<? endforeach; ?>
 				</select>
+				<?php echo Validate::error('category_cid'); ?>
 			</li>
 			<li class="text small">
 				<label>Title</label>
 				<input type="text" name="title" value="<? echo $post['title'] ?>" /><br />
+				<?php echo Validate::error('title'); ?>
+			</li>
+			<li class="text small">
+				<label>Slug</label>
+				<input type="text" name="slug" value="<? echo $post['slug'] ?>" /><br />
+				<?php echo Validate::error('slug'); ?>
 			</li>
 			<li class="textarea full">
 				<label>Content</label>

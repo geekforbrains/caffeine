@@ -113,6 +113,27 @@ class Blog_Model_Categories {
 	 */
     public static function delete($cid)
     {
+		// Get blog posts associated with this category
+		// If those blog posts dont have any other categories associated with
+		// them, mark them as drafts
+		$posts = Blog_Model_Posts::get_all_by_category_cid($cid);
+				
+		foreach($posts as $post)
+		{
+			Database::query('
+				SELECT * FROM {blog_post_categories} WHERE post_cid = %s',
+				$post['cid']
+			);
+
+			if(Database::num_rows() <= 1)
+			{
+				Database::update('blog_posts',
+					array('published' => 0),
+					array('cid' => $post['cid'])
+				);
+			}
+		}
+
 		Content::delete($cid);
 		Database::delete('blog_post_categories', array('category_cid' => $cid));
 		return Database::delete('blog_categories', array('cid' => $cid));

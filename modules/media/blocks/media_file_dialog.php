@@ -1,1 +1,1 @@
-<h1>File Dialog</h1>
+<p><em>The file upload dialog is under development. Check back later.</em></p>

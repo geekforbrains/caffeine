@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="js/tiny_mce/tiny_mce_popup.js"></script>
 	<script type="text/javascript">
 		var mediaURL = '<?php echo Router::base(); ?>/media/image/';
-		var currentID = <?php echo $images[0]['cid']; ?>;
+		var currentID = <?php echo (isset($images[0])) ? $images[0]['cid'] : ''; ?>;
 		var defaultSize = 500; // Default width when resetting
 		var rotation = 0; // Set starting rotation
 	</script>

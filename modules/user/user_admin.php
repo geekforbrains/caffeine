@@ -26,6 +26,7 @@ class User_Admin extends User_Model {
 			if($user_id)
 			{
 				$_SESSION['user'] = $user_id;
+				$_SESSION['timeout'] = time(); // Set initial timestamp at login
 				Router::redirect(USER_LOGIN_REDIRECT);
 			}
 			else

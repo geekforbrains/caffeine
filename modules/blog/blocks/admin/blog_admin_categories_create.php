@@ -10,6 +10,7 @@
 			<li class="text small">
 				<label>Name</label>
 				<input type="text" name="name" />
+				<?php echo Validate::error('name'); ?>
 			</li>
 			<li class="buttons">
 				<input type="submit" value="Create Category" />

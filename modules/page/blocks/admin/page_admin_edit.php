@@ -6,6 +6,12 @@
 			<li class="text small">
 				<label>Title</label>
 				<input type="text" name="title" value="<?php echo $page['title']; ?>" /><br />
+				<?php echo Validate::error('title'); ?>
+			</li>
+			<li class="text small">
+				<label>Slug</label>
+				<input type="text" name="slug" value="<?php echo $page['slug']; ?>" /><br />
+				<?php echo Validate::error('slug'); ?>
 			</li>
 			<li class="select small">
 				<label>Parent</label>
@@ -13,12 +19,10 @@
 					<option value="0">None</option>
 					<?php foreach($pages as $p): ?>
 					
-						<?php if($p['cid'] != $page['cid']): ?>
-							<option value="<?php echo $p['cid']; ?>"
-								<?php if($p['cid'] == $page['parent_cid']) echo 'selected="selected"'; ?>>
-								<?php echo $p['title']; ?>
-							</option>
-						<?php endif; ?>
+						<option value="<?php echo $p['cid']; ?>"
+							<?php if($p['cid'] == $page['parent_cid']) echo 'selected="selected"'; ?>>
+							<?php echo $p['indent'] . $p['title']; ?>
+						</option>
 
 					<?php endforeach; ?>
 				</select>

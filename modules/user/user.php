@@ -25,22 +25,13 @@ class User extends Database {
 	 */
 	public static function load()
 	{
-		if(!isset($_SESSION['user']) || $_SESSION['user'] <= 0) 
-		{
-			$_SESSION['user'] = 0;
-			self::$_user = array(
-				'id' => 0,
-				'site_id' => 0,
-				'username' => null,
-				'email' => null,
-				'is_root' => 0,
-				'site' => null,
-				'roles' => array(),
-				'permissions' => array()
-			);
-		}
+		if(self::_timed_out() || !isset($_SESSION['user']) || $_SESSION['user'] <= 0) 
+			self::_set_blank();
 		else
+		{
+			$_SESSION['timeout'] = time();
 			self::$_user = self::get_by_id($_SESSION['user']);
+		}
 
 		Debug::log('User', 'Current user ID is: %s', self::$_user['id']);
 	}
@@ -252,6 +243,40 @@ class User extends Database {
 			$perms[] = $row['permission'];
 
 		return $perms;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Kills any sessions and sets a blank user array.
+	 * -------------------------------------------------------------------------
+	 */
+	private static function _set_blank()
+	{
+		$_SESSION['user'] = 0;
+		$_SESSION['timeout'] = 0;
+
+		self::$_user = array(
+			'id' => 0,
+			'site_id' => 0,
+			'username' => null,
+			'email' => null,
+			'is_root' => 0,
+			'site' => null,
+			'roles' => array(),
+			'permissions' => array()
+		);
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Kills any sessions and sets a blank user array.
+	 * -------------------------------------------------------------------------
+	 */
+	private static function _timed_out()
+	{
+		if($_SESSION['timeout'] == 0 || $_SESSION['timeout'] + USER_TIMEOUT * 60 < time())
+			return true;
+		return false;
 	}
 
 }

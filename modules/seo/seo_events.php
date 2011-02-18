@@ -17,21 +17,26 @@ final class SEO_Events {
 				'alias' => 'admin/seo/manage'
 			),
 			'admin/seo/manage' => array(
-				'title' => 'Manage SEO',
+				'title' => 'Manage Paths',
 				'callback' => array('SEO_Admin', 'manage'),
 				'auth' => 'manage seo',
 				'visible' => true
 			),
 			'admin/seo/create' => array(
-				'title' => 'Create SEO',
+				'title' => 'Create Path',
 				'callback' => array('SEO_Admin', 'create'),
 				'auth' => 'create seo',
 				'visible' => true
 			),
 			'admin/seo/edit/%d' => array(
-				'title' => 'Edit SEO',
+				'title' => 'Edit Path',
 				'callback' => array('SEO_Admin', 'edit'),
 				'auth' => 'edit seo',
+				'visible' => true
+			),
+			'admin/seo/delete/%d' => array(
+				'callback' => array('SEO_Admin', 'delete'),
+				'auth' => 'delete seo',
 				'visible' => true
 			)
 		);

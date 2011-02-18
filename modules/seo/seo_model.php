@@ -68,4 +68,14 @@ class SEO_Model {
 		);
 	}
 
+	public static function delete($cid)
+	{
+		Content::delete($cid);
+		Database::query('DELETE FROM {seo} WHERE cid = %s', $cid);
+
+		if(Database::affected_rows() > 0)
+			return true;
+		return false;
+	}
+
 }

@@ -15,8 +15,15 @@ class Blog_Admin_Posts {
 	 */
     public static function manage() 
     {
+		$published = Blog_Model_Posts::get_all(1);
+		$drafts = Blog_Model_Posts::get_all(0);
+
         View::load('Blog_Admin', 'blog_admin_posts_manage',
-            array('posts' => Blog_Model_Posts::get_all(null, 10)));
+            array(
+				'published' => $published,
+				'drafts' => $drafts
+			)
+		);
     }
     
 	/**
@@ -28,8 +35,8 @@ class Blog_Admin_Posts {
     {
         if($_POST)
         {
+			Validate::check('category_cid', 'Category', array('required'));
 			Validate::check('title', 'Title', array('required'));
-			Validate::check('content', 'Content', array('required'));
 
 			if(Validate::passed())
 			{
@@ -57,8 +64,6 @@ class Blog_Admin_Posts {
 				else
 					Message::set(MSG_ERR, 'Unkown error creating post. Please try again.');
 			}
-			else
-				Message::set(MSG_ERR, 'Missing required fields.');
         }
         
         View::load('Blog_Admin', 'blog_admin_posts_create',
@@ -80,20 +85,27 @@ class Blog_Admin_Posts {
 				return;
 			}	
 
-			$published = isset($_POST['published']) ? 1 : 0;
+			Validate::check('category_cid', 'Category', array('required'));
+			Validate::check('title', 'Title', array('required'));
+			Validate::check('slug', 'Slug', array('required'));
 
-           	Blog_Model_Posts::update(
-				$cid, 
-				$_POST['title'], 
-				$_POST['content'],
-                String::tagify($_POST['title']),
-				$published
-			);
+			if(Validate::passed())
+			{
+				$published = isset($_POST['published']) ? 1 : 0;
 
-			Blog_Model_Posts::update_categories($cid, $_POST['category_cid']);
+				Blog_Model_Posts::update(
+					$cid, 
+					$_POST['title'], 
+					$_POST['content'],
+					$_POST['slug'],
+					$published
+				);
 
-			Message::store(MSG_OK, 'Post updated successfully.');
-			Router::redirect('admin/blog/posts/manage');
+				Blog_Model_Posts::update_categories($cid, $_POST['category_cid']);
+
+				Message::store(MSG_OK, 'Post updated successfully.');
+				Router::redirect('admin/blog/posts/manage');
+			}
         }
         
         View::load('Blog_Admin', 'blog_admin_posts_edit',

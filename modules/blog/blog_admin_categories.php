@@ -28,16 +28,21 @@ class Blog_Admin_Categories {
     {
         if($_POST)
         {
-            if(!Blog_Model_Categories::exists($_POST['name']))
-            {
-                Blog_Model_Categories::create($_POST['name'], 
-                    String::tagify($_POST['name']));
-                    
-                Message::store(MSG_OK, 'Category created successfully.');
-                Router::redirect('admin/blog/categories/manage');
-            }
-            else
-                Message::set(MSG_ERR, 'A category with that name already exists.');
+			Validate::check('name', 'Name', array('required'));
+
+			if(Validate::passed())
+			{
+				if(!Blog_Model_Categories::exists($_POST['name']))
+				{
+					Blog_Model_Categories::create($_POST['name'], 
+						String::tagify($_POST['name']));
+						
+					Message::store(MSG_OK, 'Category created successfully.');
+					Router::redirect('admin/blog/categories/manage');
+				}
+				else
+					Message::set(MSG_ERR, 'A category with that name already exists.');
+			}
         }
         
         View::load('Blog_Admin', 'blog_admin_categories_create');
@@ -52,16 +57,25 @@ class Blog_Admin_Categories {
     {
         if($_POST)
         {
-            if(!Blog_Model_Categories::exists($_POST['name']))
-            {
-                Blog_Model_Categories::update($cid, $_POST['name'],
-                    String::tagify($_POST['name']));
-                    
-                Message::store('success', 'Category updated successfully.');
-                Router::redirect('admin/blog/categories/manage');
-            }
-            else
-                Message::set('error', 'A category with that name already exists.');
+			Validate::check('name', 'Name', array('required'));
+			Validate::check('slug', 'Slug', array('required'));
+
+			if(Validate::passed())
+			{
+				if(!Blog_Model_Categories::exists($_POST['name']))
+				{
+					Blog_Model_Categories::update(
+						$cid, 
+						$_POST['name'],
+						$_POST['slug']
+					);
+						
+					Message::store(MSG_OK, 'Category updated successfully.');
+					Router::redirect('admin/blog/categories/manage');
+				}
+				else
+					Message::set(MSG_ERR, 'A category with that name already exists.');
+			}
         }
         
         View::load('Blog_Admin', 'blog_admin_categories_edit',
@@ -76,9 +90,9 @@ class Blog_Admin_Categories {
     public static function delete($cid) 
     {
         if(Blog_Model_Categories::delete($cid))
-			Message::store('success', 'Category deleted successfully.');
+			Message::store(MSG_OK, 'Category deleted successfully.');
 		else
-			Message::store('error', 'Unkown error when deleting category. Please try again.');
+			Message::store(MSG_ERR, 'Unkown error when deleting category. Please try again.');
 
         Router::redirect('admin/blog/categories/manage');
     }

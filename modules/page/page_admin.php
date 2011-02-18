@@ -15,8 +15,17 @@ class Page_Admin {
 	 */
 	public static function manage() 
 	{
+		MultiArray::load(Page_Model::get_all(1));
+		$published = MultiArray::indent();
+
+		$drafts = Page_Model::get_all(0); // Drafts should not be indented
+		
 		View::load('Page_Admin', 'page_admin_manage',
-			array('pages' => Page_Model::get_all()));
+			array(
+				'published' => $published,
+				'drafts' => $drafts
+			)
+		);
 	}
 
 	/**
@@ -28,28 +37,36 @@ class Page_Admin {
 	{
 		if($_POST)
 		{
-			$user = User::get_current();
-			$published = isset($_POST['publish']) ? 1 : 0;
+			Validate::check('title', 'Title', array('required'));
 
-			$status = Page_Model::add(
-				$_POST['parent_cid'],
-				$_POST['title'],
-				String::tagify($_POST['title']),
-				$_POST['content'],
-				$published
-			);
-
-			if($status)
+			if(Validate::passed())
 			{
-				Message::store(MSG_OK, 'Page created successfully.');
-				Router::redirect('admin/page/manage');
+				$user = User::get_current();
+				$published = isset($_POST['publish']) ? 1 : 0;
+
+				$status = Page_Model::add(
+					$_POST['parent_cid'],
+					$_POST['title'],
+					String::tagify($_POST['title']),
+					$_POST['content'],
+					$published
+				);
+
+				if($status)
+				{
+					Message::store(MSG_OK, 'Page created successfully.');
+					Router::redirect('admin/page/manage');
+				}
+				else
+					Message::set(MSG_ERR, 'Error creating page. Please try again.');
 			}
-			else
-				Message::set(MSG_ERR, 'Error creating page. Please try again.');
 		}
 
+		MultiArray::load(Page_Model::get_all(1));
+		$pages = MultiArray::indent();
+
 		View::load('Page_Admin', 'page_admin_create',
-			array('pages' => Page_Model::get_all()));
+			array('pages' => $pages));
 	}
 
 	/**
@@ -64,31 +81,45 @@ class Page_Admin {
 	{
 		if($_POST)
 		{
-			if(isset($_POST['delete']))
+			Validate::check('title', 'Title', array('required'));
+			Validate::check('slug', 'Slug', array('required'));
+
+			if(Validate::passed())
 			{
-				self::delete($cid);
-				return;
+				if(isset($_POST['delete']))
+				{
+					self::delete($cid);
+					return;
+				}
+
+				if($_POST['parent_cid'] == $cid)
+					Message::set(MSG_ERR, 'Uhh, why are you trying to set the pages parent as it\'s self?');
+				else
+				{
+					$published = isset($_POST['published']) ? 1 : 0;
+
+					Page_Model::update(
+						$cid,
+						$_POST['parent_cid'],
+						$_POST['title'],
+						$_POST['slug'],
+						$_POST['content'],
+						$published
+					);
+
+					Message::store(MSG_OK, 'Page updated successfully.');
+					Router::redirect('admin/page/manage');
+				}
 			}
-				
-			$published = isset($_POST['published']) ? 1 : 0;
-
-			Page_Model::update(
-				$cid,
-				$_POST['parent_cid'],
-				$_POST['title'],
-				String::tagify($_POST['title']),
-				$_POST['content'],
-				$published
-			);
-
-			Message::store(MSG_OK, 'Page updated successfully.');
-			Router::redirect('admin/page/manage');
 		}
+
+		MultiArray::load(Page_Model::get_all(1));
+		$pages = MultiArray::indent();
 
 		View::load('Page_Admin', 'page_admin_edit',
 			array(
 				'page' => Page_Model::get_by_cid($cid),
-				'pages' => Page_Model::get_all()
+				'pages' => $pages
 			)
 		);
 	}

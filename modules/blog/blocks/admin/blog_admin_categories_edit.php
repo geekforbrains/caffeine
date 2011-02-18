@@ -11,6 +11,12 @@
 			<li class="text small">
 				<label>Name</label>
 				<input type="text" name="name" value="<? echo $category['name'] ?>" /><br />
+				<?php echo Validate::error('name'); ?>
+			</li>
+			<li class="text small">
+				<label>Slug</label>
+				<input type="text" name="slug" value="<? echo $category['slug'] ?>" /><br />
+				<?php echo Validate::error('slug'); ?>
 			</li>
 			<li class="buttons">
 				<input type="submit" value="Update Category" />

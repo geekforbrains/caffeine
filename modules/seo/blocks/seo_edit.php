@@ -1,11 +1,12 @@
 <div class="area">
-	<h2>Edit SEO</h2>
+	<h2>Edit Path</h2>
 
 	<form method="post" action="<?php l('admin/seo/edit/%d', $item['cid']); ?>">
 		<ul>
 			<li class="text medium">
 				<label>Path</label>
 				<input type="text" name="path" value="<?php echo $item['path']; ?>" />
+				<?php echo Validate::error('path'); ?>
 			</li>
 			<li class="text medium">
 				<label>Title</label>

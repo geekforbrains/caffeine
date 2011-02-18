@@ -45,6 +45,10 @@ final class Caffeine {
 	// Stores the module an autoloaded class belongs to
 	private static $_class_modules			= array();
 
+	// A list of modules to be ignored during loading
+	// @see Caffeine::_disabled
+	private static $_disabled_modules		= array();
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Returns the current sites domain without trailing slashes.
@@ -118,6 +122,15 @@ final class Caffeine {
 		if(!self::$_init)
 		{
 			self::$_init = true;
+
+			// Check for disabled modues
+			if(strlen(CAFFEINE_DISABLED_MODULES))
+			{
+				$bits = explode(',', CAFFEINE_DISABLED_MODULES);
+				foreach($bits as $bit)
+					self::$_disabled_modules[] = strtolower(trim($bit));
+			}
+
 			self::_scan_modules();
 
 			self::trigger('Caffeine', 'event_priority');
@@ -246,6 +259,8 @@ final class Caffeine {
 	/**
 	 * -------------------------------------------------------------------------
 	 * Error handler for errors triggered via PHP's trigger_error function.
+	 *
+	 * TODO Move this to its own module, and use exceptions instead.
 	 * -------------------------------------------------------------------------
 	 */
 	public static function error($num, $str, $file, $line)
@@ -304,6 +319,9 @@ final class Caffeine {
 		{
 			if($module{0} == '.')
 				continue;
+
+			if(self::_is_disabled($module))
+				continue;
 			
 			// First check for config file, load if found
 			$module_config = sprintf(CAFFEINE_CONFIG_FILE_FORMAT, $module);
@@ -325,6 +343,15 @@ final class Caffeine {
 			if(class_exists($module_class))
 				self::$_event_classes[] = strtolower($module_class);
 		}
+	}
+
+	// TODO
+	private static function _is_disabled($module)
+	{
+		if(self::$_disabled_modules)
+			if(in_array($module, self::$_disabled_modules))
+				return true;
+		return false;
 	}
 
 }
