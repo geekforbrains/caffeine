@@ -274,8 +274,12 @@ class User extends Database {
 	 */
 	private static function _timed_out()
 	{
-		if($_SESSION['timeout'] == 0 || $_SESSION['timeout'] + USER_TIMEOUT * 60 < time())
+		if(!isset($_SESSION['timeout']) || $_SESSION['timeout'] == 0 || 
+			$_SESSION['timeout'] + USER_TIMEOUT * 60 < time())
+		{
 			return true;
+		}
+
 		return false;
 	}
 
