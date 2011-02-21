@@ -157,25 +157,25 @@ class Content {
 	 */ 
 	public static function relative_exists($cid, $relative_cid)
 	{
-		self::query('SELECT cid FROM {content_relatives} WHERE
+		Database::query('SELECT cid FROM {content_relatives} WHERE
 			cid = %s AND relative_cid = %s', $cid, $relative_cid);
 
-		if(self::num_rows() > 0)
+		if(Database::num_rows() > 0)
 			return true;
 		return false;
 	}
 
 	public static function add_relative($cid, $relative_cid)
 	{
-		self::query('SELECT * FROM {content_relatives} WHERE
+		Database::query('SELECT * FROM {content_relatives} WHERE
 			cid = %s AND relative_cid = %s', $cid, $relative_cid);
 
-		if(self::num_rows() == 0)
+		if(Database::num_rows() == 0)
 		{
-			self::query('INSERT INTO {content_relatives} (cid, relative_cid)
+			Database::query('INSERT INTO {content_relatives} (cid, relative_cid)
 				VALUES (%s, %s)', $cid, $relative_cid);
 
-			if(self::affected_rows() > 0)
+			if(Database::affected_rows() > 0)
 				return true;
 			return false;
 		}
@@ -185,17 +185,17 @@ class Content {
 
 	public static function remove_relative($cid, $relative_cid)
 	{
-		self::query('DELETE FROM {content_relatives} WHERE
+		Database::query('DELETE FROM {content_relatives} WHERE
 			cid = %s AND relative_cid = %s', $cid, $relative_cid);
 
-		if(self::affected_rows() > 0)
+		if(Database::affected_rows() > 0)
 			return true;
 		return false;
 	}
 
 	public static function update_relatives($cid, $relatives)
 	{
-		self::query('DELETE FROM {content_relatives} WHERE cid = %s', $cid);
+		Database::query('DELETE FROM {content_relatives} WHERE cid = %s', $cid);
 		self::_add_relatives($cid, $relatives);
 	}
 
@@ -221,7 +221,7 @@ class Content {
 		}
 		else
 		{
-			self::query('INSERT INTO {content_relatives} (cid, relative_cid)
+			Database::query('INSERT INTO {content_relatives} (cid, relative_cid)
 				VALUES (%s, %s)', $cid, $relatives);
 		}
 	}
