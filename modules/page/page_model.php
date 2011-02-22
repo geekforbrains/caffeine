@@ -25,10 +25,35 @@ class Page_Model {
 	public static function get_all($published = null)
 	{
 		if(!is_null($published))
-			Database::query('SELECT * FROM {pages} WHERE published = %s 
-				ORDER BY title ASC', $published);
+		{
+			Database::query('
+				SELECT 
+					p.*,
+					c.created,
+					c.updated
+				FROM {pages} p 
+					JOIN {content} c ON c.id = p.cid
+				WHERE published = %s 
+					AND c.site_id = %s
+				ORDER BY title ASC', 
+				$published,
+				User::site_id()
+			);
+		}
 		else
-			Database::query('SELECT * FROM {pages} ORDER BY title ASC');
+		{
+			Database::query('
+				SELECT 
+					p.*,
+					c.created,
+					c.updated
+				FROM {pages} p
+					JOIN {content} c ON c.id = p.cid
+				WHERE c.site_id = %s
+				ORDER BY title ASC',
+				User::site_id()
+			);
+		}
 
 		return Database::fetch_all();
 	}

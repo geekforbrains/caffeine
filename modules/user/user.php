@@ -75,8 +75,10 @@ class User extends Database {
 	 */
 	public static function create_site()
 	{
+		$site = Caffeine::site();
+
 		if(!is_null(Caffeine::site_path()) && !User_Model::site_exists($site))
-			User_Model::create_site(Caffeine::site());
+			User_Model::create_site($site);
 	}
 
 	/**
@@ -145,14 +147,16 @@ class User extends Database {
 	 *		Returns a multi-dimensional associative array of user accounts.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_all($entire_system = false)
+	public static function get_all()
 	{
 		self::query('
 			SELECT id, username, email 
 			FROM {user_accounts}
 			WHERE id != %s
+				AND site_id = %s
 			ORDER BY username ASC',
-			USER_ROOT_ID
+			USER_ROOT_ID,
+			self::site_id()
 		);
 
 		$rows = self::fetch_all();

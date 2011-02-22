@@ -37,7 +37,10 @@ class Auth {
 	public static function check_access($current_path, $path_data, $current_site = null)
 	{
 		if(is_null($current_site))
-			$current_site = Caffeine::site();
+		{
+			$site = Caffeine::site();
+			$current_site = ($site) ? $site : USER_ROOT_SITE;
+		}
 
 		Debug::log('Auth', 'Checking access to path "%s" on site "%s"', 
 			$current_path, $current_site);
@@ -64,7 +67,7 @@ class Auth {
 		}
 
 		// Check for super root, which is the "root" user of the "root site"
-		if($user['is_root'] && $user['site'] == USER_ROOT_SITE)
+		if($user['is_root'] && $user['id'] == USER_ROOT_ID && $user['site_id'] == USER_ROOT_SITE_ID)
 		{
 			Debug::log('Auth', 'WARNING: User is super root. Granting access on all.');
 			return true;

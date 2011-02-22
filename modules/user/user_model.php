@@ -21,10 +21,10 @@ class User_Model extends Database {
 			FROM {user_accounts} ua
 				LEFT JOIN {user_sites} us ON us.id = ua.site_id
 			WHERE
-				ua.username = %s
-				AND ua.pass = MD5(%s)
-				AND (us.site = %s OR us.site = %s)
-		', $username, $pass, $site, USER_ROOT_SITE);
+				(ua.username = %s AND ua.pass = MD5(%s))
+				AND
+				(us.site = %s OR (ua.username = %s AND us.site = %s))
+		', $username, $pass, $site, USER_ROOT_USERNAME, USER_ROOT_SITE);
 
 		if(self::num_rows() > 0)
 			return self::fetch_single('id');
@@ -55,8 +55,12 @@ class User_Model extends Database {
 	 */
 	public static function username_exists($username)
 	{
-		self::query('SELECT id FROM {user_accounts} WHERE username LIKE %s', 
-			$username);
+		self::query('
+			SELECT id FROM {user_accounts} 
+			WHERE username LIKE %s AND site_id = %s', 
+			$username,
+			User::site_id()
+		);
 
 		if(self::num_rows() > 0)
 			return true;
@@ -72,20 +76,13 @@ class User_Model extends Database {
 	{
 		$site_id = self::get_site_id($site);
 
-		if($site_id)
-		{
-			self::query('
-				INSERT INTO {user_accounts} (site_id, username, pass, email)
-				VALUES (%s, %s, MD5(%s), %s)', 
-				$site_id, $username, $pass, $email
-			);
-			return true;
-		}
-		else
-		{
-			Message::set('error', 'The site "' .$site. '" isn\'t configured to have users.');
-			return false;
-		}
+		self::query('
+			INSERT INTO {user_accounts} (site_id, username, pass, email)
+			VALUES (%s, %s, MD5(%s), %s)', 
+			$site_id, $username, $pass, $email
+		);
+
+		return true;
 	}
 
 	public static function update_user($id, $username, $email, $is_root)
@@ -119,7 +116,7 @@ class User_Model extends Database {
 		if(self::num_rows() > 0)
 			return self::fetch_single('id');
 
-		return false;
+		return USER_ROOT_SITE_ID;
 	}
 
 	public static function site_exists($site)
