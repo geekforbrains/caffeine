@@ -89,7 +89,6 @@ class Media {
 				self::$_error = 'Error creating media URL. Please try again.';
 		}
 
-
 		// Just incase something weird happens :P
 		if(is_null(self::$_error))
 			self::$_error = 'Unkown media error.';
@@ -141,7 +140,7 @@ class Media {
 		$thumb_hash = md5($cid . $rotate . $wp . $h);
 
 		$thumb_path = MEDIA_CACHE . $thumb_hash;
-		$file_path = UPLOAD_PATH . $file['path'] . $file['hash'];
+		$file_path = Upload::path($file['path'], $file['hash']);
 
 		if(file_exists($thumb_path))
 		{
@@ -169,7 +168,7 @@ class Media {
 				Imager::rotate($rotate);
 	
 			// Save thumb for caching and display
-			Imager::save($thumb_path);
+			//Imager::save($thumb_path);
 			Imager::show();
 		}
 

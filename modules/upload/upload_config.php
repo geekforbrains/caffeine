@@ -5,4 +5,3 @@
  * =============================================================================
  */
 define('UPLOAD_DIR', 'uploads/');
-define('UPLOAD_PATH', CAFFEINE_FILES_PATH . UPLOAD_DIR);

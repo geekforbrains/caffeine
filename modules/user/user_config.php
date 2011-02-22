@@ -12,7 +12,7 @@ define('USER_ROOT_USERNAME', 'root');
 define('USER_ROOT_PASS', 'root');
 define('USER_ROOT_EMAIL', 'root@localhost');
 
-define('USER_TIMEOUT', 5); // Specify how many minutes before user session times out
+define('USER_TIMEOUT', 15); // Specify how many minutes before user session times out
 
 /**
  * =============================================================================

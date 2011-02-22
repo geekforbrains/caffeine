@@ -36,6 +36,9 @@ final class Caffeine {
 	// Stores the path to the current site, if any
 	private static $_site_path				= null;
 
+	// Stores the path to the current files dir
+	private static $_files_path				= null;
+
 	// Stores library priorities for core events
 	private static $_priorities             = array();
 
@@ -69,6 +72,15 @@ final class Caffeine {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * Gets the current files path.
+	 * -------------------------------------------------------------------------
+ 	 */
+	public static function files_path() {
+		return self::$_files_path;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * Returns the name of the module the given class was loaded from.
 	 * -------------------------------------------------------------------------
 	 */
@@ -95,6 +107,7 @@ final class Caffeine {
 	public static function config()
 	{
 		self::_determine_site();
+		self::_determine_file_path();
 
 		if(!is_null(self::$_site))
 		{
@@ -307,6 +320,33 @@ final class Caffeine {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * Determines the current upload path based on the current site, and if
+	 * a site directory exists.
+	 * 
+	 * Also runs checks to make sure the file directory exists, and is 
+	 * writable.
+	 * -------------------------------------------------------------------------
+	 */
+	private static function _determine_file_path()
+	{
+		// Default files to root file directory
+		$file_path = CAFFEINE_FILES_PATH;	
+
+		// If a site directory exists for the current site, set the file path there
+		if(!is_null(self::$_site) && file_exists(CAFFEINE_SITES_PATH . self::$_site))
+			$file_path = CAFFEINE_SITES_PATH . self::$_site . '/' . CAFFEINE_FILES_DIR;
+
+		if(!file_exists($file_path))
+			die('The files directory doesn\'t exist: ' . $file_path);
+
+		if(!is_writable($file_path))
+			die('The files directory isn\'t writable: ' . $file_path);
+
+		self::$_files_path = $file_path;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * Scans all modules in the Caffeine modules directory for event and
 	 * config files.
 	 * -------------------------------------------------------------------------
@@ -345,7 +385,12 @@ final class Caffeine {
 		}
 	}
 
-	// TODO
+	/**
+	 * -------------------------------------------------------------------------
+	 * Determines if the given module has been disabled via the 
+	 * CAFFEINE_DISABLED_MODULES configuration.
+	 * -------------------------------------------------------------------------
+	 */
 	private static function _is_disabled($module)
 	{
 		if(self::$_disabled_modules)

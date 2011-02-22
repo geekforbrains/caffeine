@@ -205,6 +205,18 @@ class Upload {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * Determines the full upload path for a given file array.
+	 *
+	 * Can determine the full path if hash is given, or just the upload
+	 * upload directory if the file path is only given.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function path($file_path, $file_hash = null) {
+		return Caffeine::files_path() . UPLOAD_DIR . $file_path . $file_hash;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
@@ -237,20 +249,19 @@ class Upload {
 
 		if($upload_path)
 		{
-			//$file_hash = uniqid(md5_file($file['tmp_name']));
 			$file_hash = md5(uniqid($file['tmp_name'], true));
-			$file_path = UPLOAD_PATH . $upload_path . $file_hash;
+			$file_path = $upload_path; // Relative upload path YYYY/MM/<hash>
 
 			// If couldn't determine file type, make plain
 			if(!strlen($file['type']))
 				$file['type'] = 'text/plain';
 			
-			if(move_uploaded_file($file['tmp_name'], $file_path))
+			if(move_uploaded_file($file['tmp_name'], self::path($file_path, $file_hash)))
 			{
 				return array(
 					'name' => $file['name'],
 					'hash' => $file_hash,
-					'path' => $upload_path,
+					'path' => $file_path,
 					'type' => $file['type'],
 					'size' => $file['size']
 				);
@@ -294,18 +305,17 @@ class Upload {
 			}
 
 			$za = new ZipArchive();
-			$za->open(UPLOAD_PATH . $file['path'] . $file['hash']);
-			$za->extractTo(UPLOAD_PATH . $file['path']); // Extract zip files to same path as zip
+			$za->open(self::path($file['path'], $file['hash']));
+			$za->extractTo(self::path($file['path'])); // Extract zip files to same path as zip
 			
 			for($i = 0; $i < $za->numFiles; $i++)
 			{
 				$zf = $za->statIndex($i);
 				//$zf_info = new finfo(FILEINFO_MIME);
 
-				$zfpath = UPLOAD_PATH . $file['path'] . $zf['name'];
+				$zfpath = self::path($file['path'], $zf['name']);
 				$zfhash = md5_file($zfpath);
-				$zfhashpath = UPLOAD_PATH . $file['path'] . $zfhash; 
-
+				$zfhashpath = self::path($file['path'], $zfhash);
 
 				$zipfiles[] = array(
 					'name' => $zf['name'],
@@ -316,7 +326,7 @@ class Upload {
 				);
 
 				// Rename file to hash
-				rename($zfpath, UPLOAD_PATH . $file['path'] . $zfhash);
+				rename($zfpath, self::path($file['path'], $zfhash));
 			}
 
 			$file['files'] = $zipfiles;
@@ -349,45 +359,36 @@ class Upload {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Used to determine the upload path based on the current site as well as
-	 * the month and year. Also checks to make sure the upload paths exist and
-	 * are writeable.
+	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
 	private static function _determine_upload_path()
 	{
-		// Check paths for existance and upload
-		if(!file_exists(UPLOAD_PATH))
-			self::$_error = 'The upload path doesn\'t exist.';
+		$upload_path = Caffeine::files_path() . UPLOAD_DIR;
 
-		elseif(!is_writable(UPLOAD_PATH))
-			self::$_error = 'The upload path isn\'t writable.';
+		// Make sure the uploads dir exists
+		if(!file_exists($upload_path))
+			if(!mkdir($upload_path))
+				die('Unable to create uploads directory: ' . $upload_path);
 
-		if(!is_null(self::$_error))
-			return false;
-
-		// Determine site path, create dir if needed
-		$site = Caffeine::site();		
-		$upload_dir = $site . '/';
-
-		if(!file_exists(UPLOAD_PATH . $upload_dir))
-			mkdir(UPLOAD_PATH . $upload_dir);
+		// Make sure uploads is writable
+		if(!is_writable($upload_path))
+			die('The uploads directory isn\'t writable: ' . $upload_path);
 
 		// Set path into current year/month sub directory
 		$y = date('Y');
 		$m = date('m');
 
 		// Make sure year dir exists
-		if(!file_exists(UPLOAD_PATH . $upload_dir . $y))
-			mkdir(UPLOAD_PATH . $upload_dir . $y);
+		if(!file_exists($upload_path . $y))
+			mkdir($upload_path . $y);
 
 		// Make sure month dir exists
-		if(!file_exists(UPLOAD_PATH . $upload_dir . $y . '/' . $m))
-			mkdir(UPLOAD_PATH . $upload_dir . $y . '/' . $m);
+		if(!file_exists($upload_path . $y . '/' . $m))
+			mkdir($upload_path . $y . '/' . $m);
 
-		$upload_dir .= $y . '/' . $m . '/';
-
-		return $upload_dir;
+		// Only return relative path, incase site name changes etc.
+		return $y . '/' .$m . '/';
 	}
 
 	/**
