@@ -18,6 +18,9 @@ final class User_Events {
 		if(USER_CREATE_ROOT)
 			User::create_root();
 
+		if(USER_AUTOCREATE_SITES)
+			User::create_site();
+
 		User::load();
 	}
 

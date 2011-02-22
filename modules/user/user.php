@@ -69,6 +69,18 @@ class User extends Database {
 
 	/**
 	 * -------------------------------------------------------------------------
+	 * If autocreate config is enabled, checks if a current site exists and
+	 * creates one in the database accordingly.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function create_site()
+	{
+		if(!is_null(Caffeine::site_path()) && !User_Model::site_exists($site))
+			User_Model::create_site(Caffeine::site());
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
 	 * Returns an array of metadata about the current user. This information
 	 * is loaded by the User::load method.
 	 *

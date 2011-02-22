@@ -122,4 +122,22 @@ class User_Model extends Database {
 		return false;
 	}
 
+	public static function site_exists($site)
+	{
+		Database::query('SELECT id FROM {user_sites} WHERE site LIKE %s', $site);
+		
+		if(Database::num_rows() > 0)
+			return true;
+		return false;
+	}
+
+	public static function create_site($site)
+	{
+		Database::insert('user_sites', array('site' => $site));
+
+		if(Database::affected_rows() > 0)
+			return true;
+		return false;
+	}
+
 }

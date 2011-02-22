@@ -7,6 +7,8 @@
 define('USER_LOGIN_REDIRECT', 'admin');
 define('USER_LOGOUT_REDIRECT', 'admin/login');
 
+define('USER_AUTOCREATE_SITES', true);
+
 define('USER_CREATE_ROOT', true);
 define('USER_ROOT_USERNAME', 'root');
 define('USER_ROOT_PASS', 'root');
