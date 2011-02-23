@@ -53,11 +53,11 @@ class Auth {
 			return true;
 		}
 
-		$user = User::get_current();
+		$user = User::current();
 
 		// If for some reason the user didnt exist, reject access and
 		// log attempt as a possible break-in warning
-		if($_SESSION['user'] > 0 && !$user)
+		if(isset($_SESSION['user']) && $_SESSION['user'] > 0 && !$user)
 		{
 			Debug::log('Auth', 'WARNING: Possible break-in attempt.
 				User ID "%s" doesn\'t exist, yet tried to authenticate.',

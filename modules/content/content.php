@@ -33,7 +33,7 @@ class Content {
 	 */
 	public static function create($type, $relatives = null) 
 	{
-		$user = User::get_current();	
+		$user = User::current();	
 		$timestamp = time();
 
 		$status = Database::insert('content',	array(

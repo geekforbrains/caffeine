@@ -13,13 +13,17 @@ final class User_Events {
 	 * Implements the Caffeine::init event.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function caffeine_init()
+	public static function caffeine_init() 
 	{
 		if(USER_CREATE_ROOT)
-			User::create_root();
+			User_Model::create_root();
 
 		if(USER_AUTOCREATE_SITES)
-			User::create_site();
+		{
+			$site = Caffeine::site();	
+			if(!is_null($site) && !User_Model::site_exists($site))
+				User_Model::create_site($site);
+		}
 
 		User::load();
 	}
@@ -73,7 +77,7 @@ final class User_Events {
 			)
 		);
 
-		if($_SESSION['user'] > 0)
+		if(isset($_SESSION['user']) && $_SESSION['user'] > 0)
 		{
 			$paths['admin/logout'] = array(
 				'title' => 'Logout',

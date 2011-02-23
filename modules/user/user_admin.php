@@ -20,7 +20,7 @@ class User_Admin extends User_Model {
 			$user_id = self::check_login(
 				$_POST['username'],
 				$_POST['pass'],
-				Caffeine::site()
+				User::current_site()
 			);
 			
 			if($user_id)
@@ -56,7 +56,7 @@ class User_Admin extends User_Model {
 	public static function manage()
 	{
 		View::load('User_Admin', 'user_admin_manage',
-			array('users' => User::get_all()));
+			array('users' => User_Model::get_all()));
 	}
 
 	/**
@@ -68,19 +68,23 @@ class User_Admin extends User_Model {
 	{
 		if($_POST)
 		{
-			if(self::username_exists($_POST['username']))
-				Message::set('error', 'That username is already in use.');
+			if($_POST['username'] == USER_ROOT_USERNAME)
+				Message::set(MSG_ERR, 'That username cannot be used. Please choose a different one.');
+
+			elseif(self::username_exists($_POST['username']))
+				Message::set(MSG_ERR, 'That username is already in use.');
+
 			else
 			{
-				if(self::add_user(
-					$_POST['username'], 
-					$_POST['pass'], 
+				User_Model::add_user(
+					$_POST['username'],
+					$_POST['pass'],
 					$_POST['email'],
-					Caffeine::site()))
-				{
-					Message::store('success', 'User created successfully.');
-					Router::redirect('admin/admin/user/manage');
-				}
+					User::current_site()
+				);
+
+				Message::store(MSG_OK, 'User created successfully.');
+				Router::redirect('admin/admin/user/manage');
 			}
 		}
 
@@ -114,7 +118,7 @@ class User_Admin extends User_Model {
 
 		View::load('User_Admin', 'user_admin_edit',
 			array(
-				'user' => User::get_by_id($user_id),
+				'user' => User_Model::get_by_id($user_id),
 				'avail_roles' => Auth_Model_Roles::get_all()
 			)
 		);

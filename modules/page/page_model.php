@@ -35,9 +35,9 @@ class Page_Model {
 					JOIN {content} c ON c.id = p.cid
 				WHERE published = %s 
 					AND c.site_id = %s
-				ORDER BY title ASC', 
+				ORDER BY p.title ASC', 
 				$published,
-				User::site_id()
+				User::get('site_id')
 			);
 		}
 		else
@@ -50,8 +50,9 @@ class Page_Model {
 				FROM {pages} p
 					JOIN {content} c ON c.id = p.cid
 				WHERE c.site_id = %s
-				ORDER BY title ASC',
-				User::site_id()
+				ORDER BY p.title ASC
+				',
+				User::get('site_id')
 			);
 		}
 
@@ -73,7 +74,19 @@ class Page_Model {
 	 */
 	public static function get_by_cid($cid) 
 	{
-		Database::query('SELECT * FROM {pages} WHERE cid = %s', $cid);
+		Database::query('
+			SELECT 
+				p.*,
+				c.created,
+				c.updated
+			FROM {pages} p
+				JOIN {content} c ON c.id = p.cid
+			WHERE p.cid = %s
+				AND c.site_id = %s
+			', 
+			$cid,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return Database::fetch_array();
@@ -94,7 +107,20 @@ class Page_Model {
 	 */
 	public static function get_by_parent_cid($parent_cid)
 	{
-		Database::query('SELECT * FROM {pages} WHERE parent_cid = %s', $parent_cid);
+		Database::query('
+			SELECT 
+				p.*,
+				c.created,
+				c.updated
+			FROM {pages} p
+				JOIN {content} c ON c.id = p.cid
+			WHERE p.parent_cid = %s
+				AND c.site_id = %s
+			', 
+			$parent_cid,
+			User::current_site()
+		);
+
 		return Database::fetch_all();
 	}
 
@@ -118,8 +144,21 @@ class Page_Model {
 	 */
 	public static function get_by_slug($slug, $published = 1) 
 	{
-		Database::query('SELECT * FROM {pages} WHERE slug LIKE %s AND
-			published = %s', $slug, $published);
+		Database::query('
+			SELECT 
+				p.*,
+				c.created,
+				c.updated
+			FROM {pages} p
+				JOIN {content} c ON c.id = p.cid
+			WHERE p.slug LIKE %s 
+				AND p.published = %s
+				AND c.site_id = %s
+			', 
+			$slug, 
+			$published,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return Database::fetch_array();
@@ -143,13 +182,18 @@ class Page_Model {
 	{
 		Database::query('
 			SELECT
-				p1.*
+				p1.*,
+				c.created,
+				c.updated
 			FROM {pages} p1
+				JOIN {content} c ON c.id = p1.cid
 				JOIN {pages} p2 ON p2.cid = p1.parent_cid 
 			WHERE
 				p2.slug = %s
+				AND c.site_id = %s
 			', 
-			$slug
+			$slug,
+			User::current_site()
 		);
 
 		return Database::fetch_all();

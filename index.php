@@ -310,14 +310,15 @@ final class Caffeine {
 	 */
 	private static function _determine_site()
 	{
-		$path = CAFFEINE_SITES_PATH . self::$_site . '/';
+		$site = str_replace('www.', '', 
+			strtolower($_SERVER['HTTP_HOST']));
+
+		$path = CAFFEINE_SITES_PATH . $site . '/';
 
 		// Site info should only be set if a site directory exists
 		if(file_exists($path))
 		{
-			self::$_site = str_replace('www.', '', 
-				strtolower($_SERVER['HTTP_HOST']));
-
+			self::$_site = $site;
 			self::$_site_path = $path;
 		}
 	}

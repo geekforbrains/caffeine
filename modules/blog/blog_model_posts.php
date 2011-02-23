@@ -25,9 +25,11 @@ class Blog_Model_Posts {
 				FROM {blog_posts} bp
 					JOIN {content} c ON c.id = bp.cid
 				WHERE bp.published = %s
+					AND c.site_id = %s
 				ORDER BY c.created DESC
 				LIMIT ' .$limit,
-				$published
+				$published,
+				User::current_site()
 			);
 		}
 		else
@@ -39,8 +41,11 @@ class Blog_Model_Posts {
 					c.updated
 				FROM {blog_posts} bp
 					JOIN {content} c ON c.id = bp.cid
+				WHERE
+					c.site_id = %s
 				ORDER BY c.created DESC
-				LIMIT ' .$limit
+				LIMIT ' .$limit,
+				User::current_site()
 			);
 		}
 
@@ -63,11 +68,13 @@ class Blog_Model_Posts {
 				JOIN {content} c ON c.id = bp.cid
 			WHERE
 				bp.published = %s
+				AND c.site_id = %s
 			ORDER BY
 				c.created DESC
 			LIMIT 1
 			',
-			$published
+			$published,
+			User::current_site()
 		);
 
 		if(Database::num_rows() > 0)
@@ -85,15 +92,18 @@ class Blog_Model_Posts {
 		Database::query('
 			SELECT
 				bp.*,
-				c.created
+				c.created,
+				c.updated
 			FROM {blog_posts} bp
 				JOIN {content} c ON c.id = bp.cid
 				JOIN {blog_post_categories} bpc ON bpc.post_cid = bp.cid
 				JOIN {blog_categories} bc ON bc.cid = bpc.category_cid
 			WHERE
 				bc.slug = %s
+				AND c.site_id = %s
 			',
-			$slug
+			$slug,
+			User::current_site()
 		);
 
 		return Database::fetch_all();
@@ -116,8 +126,10 @@ class Blog_Model_Posts {
 				JOIN {blog_categories} bc ON bc.cid = bpc.category_cid
 			WHERE
 				bc.cid = %s
+				AND c.site_id = %s
 			',
-			$cid
+			$cid,
+			User::current_site()
 		);
 
 		return Database::fetch_all();
@@ -137,8 +149,11 @@ class Blog_Model_Posts {
 				c.updated
 			FROM {blog_posts} bp
 				JOIN {content} c ON c.id = bp.cid
-			WHERE bp.slug = %s', 
-			$slug
+			WHERE bp.slug = %s
+				AND c.site_id = %s
+			', 
+			$slug,
+			User::current_site()
 		);
 
         return self::_get_categories(Database::fetch_array());
@@ -158,8 +173,11 @@ class Blog_Model_Posts {
 				c.updated
 			FROM {blog_posts} bp
 				JOIN {content} c ON c.id = bp.cid
-			WHERE bp.cid = %s', 
-			$cid
+			WHERE bp.cid = %s
+				AND c.site_id = %s
+			', 
+			$cid,
+			User::current_site()
 		);
 
         return self::_get_categories(Database::fetch_array());

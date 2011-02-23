@@ -16,10 +16,18 @@ class Blog_Model_Categories {
     public static function get_all()
     {
         Database::query('
-			SELECT *
-			FROM {blog_categories}
+			SELECT 
+				bc.*,	
+				c.created,
+				c.updated
+			FROM {blog_categories} bc
+				JOIN {content} c ON c.id = bc.cid
+			WHERE
+				c.site_id = %s
 			ORDER BY name ASC
-		');
+			',
+			User::current_site()
+		);
 
         return Database::fetch_all();
     }
@@ -33,13 +41,18 @@ class Blog_Model_Categories {
 	{
 		Database::query('	
 			SELECT DISTINCT
-				bc.*
+				bc.*,
+				c.created,
+				c.updated
 			FROM {blog_categories} bc
+				JOIN {content} c ON c.id = bc.cid
 				JOIN {blog_post_categories} bpc ON bpc.category_cid = bc.cid
 			WHERE
 				bpc.post_cid = %s
+				AND c.site_id = %s
 			',
-			$cid
+			$cid,
+			User::current_site()
 		);
 
 		$categories = array();
@@ -58,7 +71,20 @@ class Blog_Model_Categories {
 	 */
     public static function get_by_cid($cid)
     {
-		Database::query('SELECT * FROM {blog_categories} WHERE cid = %s', $cid);
+		Database::query('
+			SELECT 
+				bc.*,
+				c.created,
+				c.updated
+			FROM {blog_categories} bc
+				JOIN {content} c ON c.id = bc.cid
+			WHERE cid = %s
+				AND c.site_id = %s
+			', 
+			$cid,
+			User::current_site()
+		);
+
         return Database::fetch_array();
     }
 
@@ -69,8 +95,19 @@ class Blog_Model_Categories {
 	 */
     public static function get_by_slug($slug)
     {
-        Database::query('SELECT * FROM {blog_categories} WHERE slug LIKE %s',
-            $slug);
+        Database::query('
+			SELECT 
+				bc.*,
+				c.created,
+				c.updated
+			FROM {blog_categories} bc
+				JOIN {content} c ON c.id = bc.cid
+			WHERE slug LIKE %s
+				AND c.site_id = %s
+			',
+            $slug,
+			User::current_site()
+		);
 
         return Database::fetch_array();
     }
@@ -82,8 +119,17 @@ class Blog_Model_Categories {
 	 */
     public static function exists($name)
     {   
-        Database::query('SELECT cid FROM {blog_categories} WHERE name LIKE %s', 
-			$name);
+        Database::query('
+			SELECT 
+				bc.cid 
+			FROM {blog_categories} bc 
+				JOIN {content} c ON c.id = bc.cid
+			WHERE name LIKE %s
+				AND c.site_id = %s
+			', 
+			$name,
+			User::current_site()
+		);
 
         if(Database::num_rows() > 0)
             return true;

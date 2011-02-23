@@ -41,7 +41,6 @@ class Page_Admin {
 
 			if(Validate::passed())
 			{
-				$user = User::get_current();
 				$published = isset($_POST['publish']) ? 1 : 0;
 
 				$status = Page_Model::add(

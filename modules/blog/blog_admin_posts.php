@@ -40,7 +40,6 @@ class Blog_Admin_Posts {
 
 			if(Validate::passed())
 			{
-				$user = User::get_current();
 				$published = isset($_POST['publish']) ? 1 : 0;
 
 				$cid = Blog_Model_Posts::create(

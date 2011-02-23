@@ -179,7 +179,7 @@ class Path {
 				path_config.php or modify the path callback for "' .$current_path. '" 
 				to allow anonymous access.');
 
-			if($_SESSION['user'] > 0)
+			if(User::get('id') > 0)
 			{
 				View::load('Path', 'access_denied');
 				return false;

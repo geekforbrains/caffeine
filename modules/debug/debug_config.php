@@ -5,5 +5,5 @@
  * =============================================================================
  */
 define('DEBUG_ENABLED', true);
-define('DEBUG_WATCH', 'auth, user');
+define('DEBUG_WATCH', '');
 define('DEBUG_IGNORE', '');
