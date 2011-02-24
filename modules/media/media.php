@@ -44,8 +44,9 @@ class Media {
 			if($data = Upload::save($_FILES[$filename]))
 			{
 				$media_type = self::_determine_media_type($data['type']);
+				$exif = self::_read_exif($media_type, $data);
 
-				if($cid = Media_Model::create_file($data, $media_type))
+				if($cid = Media_Model::create_file($data, $media_type, $exif))
 					return $cid;
 				else
 					self::$_error = 'Error creating media file. Please try again.';
@@ -92,5 +93,21 @@ class Media {
 			return MEDIA_TYPE_IMAGE;
 		return MEDIA_TYPE_FILE;
 	}
+
+	// TODO
+	private static function _read_exif($type, $data)
+	{
+		if($type == MEDIA_TYPE_IMAGE)
+		{
+			$file = Upload::path($data['path'], $data['hash']);
+			$exif = exif_read_data($file);
+
+			if($exif)
+				return serialize($exif);
+		}
+
+		return null;
+	}
+
 
 }

@@ -70,7 +70,7 @@ class Media_Display {
 		$thumb_path = self::path($thumb_hash);
 		$file_path = Upload::path($file['path'], $file['hash']);
 
-		if(file_exists($thumb_path))
+		if(MEDIA_ENABLE_CACHE && file_exists($thumb_path))
 		{
 			Debug::log('Media', 'Loading image from cache: ' . $thumb_path);
 			header('Content-type: ' . $file['type']);
@@ -97,7 +97,9 @@ class Media_Display {
 				Imager::rotate($rotate);
 	
 			// Save thumb for caching and display
-			Imager::save($thumb_path);
+			if(MEDIA_ENABLE_CACHE)
+				Imager::save($thumb_path);
+
 			Imager::show();
 		}
 

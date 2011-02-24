@@ -85,7 +85,7 @@ class Media_Model {
 		return $cid;
 	}
 
-	public static function create_file($data, $media_type = MEDIA_TYPE_FILE) 
+	public static function create_file($data, $media_type = MEDIA_TYPE_FILE, $exif = null) 
 	{
 		$cid = Content::create($media_type);
 
@@ -95,7 +95,8 @@ class Media_Model {
 			'hash' => $data['hash'],
 			'path' => $data['path'],
 			'type' => $data['type'],
-			'size' => $data['size']
+			'size' => $data['size'],
+			'exif' => $exif
 		));
 
 		return $cid;

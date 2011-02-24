@@ -105,6 +105,11 @@ final class Media_Events {
 						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
+					),
+					'exif' => array(
+						'type' => 'text',
+						'size' => 'normal',
+						'not null' => true
 					)
 				),
 				
