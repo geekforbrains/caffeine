@@ -20,25 +20,54 @@ class Auth_Model_Roles {
 	 */
 	public static function get_all()
 	{
-		Database::query('SELECT * FROM {auth_roles} ORDER BY role ASC');
+		Database::query('
+			SELECT 
+				ar.*,
+				c.created,
+				c.updated
+			FROM {auth_roles} ar
+				JOIN {content} c ON c.id = ar.cid
+			WHERE
+				c.site_cid = %s
+			ORDER BY 
+				ar.role ASC
+			',
+			User::current_site()
+		);
+
 		return Database::fetch_all();
 	}
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Gets a role by its ID.
+	 * Gets a role by its CID.
 	 *
-	 * @param $id
-	 *		The role ID to get.
+	 * @param $cid
+	 *		The role CID to get.
 	 *
 	 * @return array
 	 *		Returns an assoc array of the given roles fields.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_by_id($id)
+	public static function get_by_cid($cid)
 	{
-		Database::query('SELECT * FROM {auth_roles} WHERE id = %s', $id);
-		return Database::fetch_array();
+		Database::query('
+			SELECT 
+				ar.*,
+				c.created,
+				c.updated
+			FROM {auth_roles} ar
+				JOIN {content} c ON c.id = ar.cid
+			WHERE ar.cid = %s
+				AND c.site_cid = %s
+			', 
+			$cid,
+			User::current_site()
+		);
+
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
+		return false;
 	}
 
 	/**
@@ -54,7 +83,17 @@ class Auth_Model_Roles {
 	 */
 	public static function exists($role)
 	{
-		Database::query('SELECT id FROM {auth_roles} WHERE role LIKE %s', $role);
+		Database::query('
+			SELECT 
+				ar.cid 
+			FROM {auth_roles} ar
+				JOIN {content} c ON c.id = ar.cid
+			WHERE ar.role LIKE %s
+				AND c.site_cid = %s
+			', 
+			$role,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return true;
@@ -72,10 +111,12 @@ class Auth_Model_Roles {
 	 *		True on success, False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function create($site_id, $role)
+	public static function create($role)
 	{
+		$cid = Content::create(AUTH_TYPE_ROLE);
+
 		return Database::insert('auth_roles', array(
-			'site_id' => $site_id,
+			'cid' => $cid,
 			'role' => $role
 		));
 	}
@@ -92,12 +133,13 @@ class Auth_Model_Roles {
 	 *		False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function delete($role_id)
+	public static function delete($cid)
 	{
-		if(self::get_by_id($role_id))
+		if(self::get_by_cid($cid))
 		{
-			Database::delete('auth_role_permissions', array('role_id' => $role_id));
-			return Database::delete('auth_roles', array('id' => $role_id));
+			Content::delete($cid);
+			Database::delete('auth_role_permissions', array('role_cid' => $cid));
+			return Database::delete('auth_roles', array('cid' => $cid));
 		}
 
 		return false;

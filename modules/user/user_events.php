@@ -15,8 +15,7 @@ final class User_Events {
 	 */
 	public static function caffeine_init() 
 	{
-		if(USER_CREATE_ROOT)
-			User_Model::create_root();
+		User_Model::create_root();
 
 		if(USER_AUTOCREATE_SITES)
 		{
@@ -100,8 +99,9 @@ final class User_Events {
 		return array(
 			'user_sites' => array(
 				'fields' => array(
-					'id' => array(
-						'type' => 'auto increment',
+					'cid' => array(
+						'type' => 'int',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
@@ -112,17 +112,18 @@ final class User_Events {
 					)
 				),
 
-				'primary key' => array('id')
+				'primary key' => array('cid')
 			),
 
 			'user_accounts' => array(
 				'fields' => array(
-					'id' => array(
-						'type' => 'auto increment',
+					'cid' => array(
+						'type' => 'int',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
-					'site_id' => array(
+					'site_cid' => array(
 						'type' => 'int',
 						'size' => 'normal',
 						'unsigned' => true,
@@ -151,32 +152,33 @@ final class User_Events {
 				),
 
 				'indexes' => array(
+					'site_cid' => array('site_cid'),
 					'username' => array('username'),
 					'email' => array('email')
 				),
 
-				'primary key' => array('id')
+				'primary key' => array('cid')
 			),
 
 			'user_roles' => array(
 				'fields' => array(
-					'user_id' => array(
+					'user_cid' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
-					'role_id' => array(
+					'role_cid' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					)
 				),
 
 				'indexes' => array(
-					'user_id' => array('user_id'),
-					'role_id' => array('role_id')
+					'user_cid' => array('user_cid'),
+					'role_cid' => array('role_cid')
 				)
 			)
 		);

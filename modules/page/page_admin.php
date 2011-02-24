@@ -78,6 +78,9 @@ class Page_Admin {
 	 */
 	public static function edit($cid) 
 	{
+		if(!Page_Model::get_by_cid($cid))
+			Router::redirect('admin/page');
+
 		if($_POST)
 		{
 			Validate::check('title', 'Title', array('required'));
@@ -136,7 +139,7 @@ class Page_Admin {
 		if(Page_Model::delete($cid))
 			Message::store(MSG_OK, 'Page deleted successfully.');
 		else
-			Message::store(MSG_ERR, 'Error deleting page. Please try again.');
+			Message::store(MSG_ERR, 'Error while deleting page. Please try again.');
 
 		Router::redirect('admin/page/manage');
 	}

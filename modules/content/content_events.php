@@ -29,27 +29,27 @@ final class Content_Events {
 						'length' => 255,
 						'not null' => true
 					),
-					'site_id' => array(
+					'site_cid' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
-					'user_id' => array(
+					'user_cid' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
 					'created' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
 					'updated' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					)
@@ -57,8 +57,8 @@ final class Content_Events {
 
 				'indexes' => array(
 					'type' => array('type'),
-					'site_id' => array('site_id'),
-					'user_id' => array('user_id'),
+					'site_cid' => array('site_cid'),
+					'user_cid' => array('user_cid'),
 					'created' => array('created'),
 					'updated' => array('updated')
 				),

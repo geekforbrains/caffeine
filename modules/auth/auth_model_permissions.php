@@ -39,17 +39,17 @@ class Auth_Model_Permissions {
 	 * -------------------------------------------------------------------------
 	 * Returns a roles permissions in a single dimensional array.
 	 *
-	 * @param $role_id
-	 *		The role ID to get permissions for.
+	 * @param $role_cid
+	 *		The role CID to get permissions for.
 	 *
 	 * @return
 	 *		An array of permissions associated with the given role.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_by_role($role_id)
+	public static function get_by_role($role_cid)
 	{
 		Database::query('SELECT permission FROM {auth_role_permissions} WHERE
-			role_id = %s', $role_id);
+			role_cid = %s', $role_cid);
 		$perms = Database::fetch_all();
 
 		$new_perms = array();
@@ -63,8 +63,8 @@ class Auth_Model_Permissions {
 	 * -------------------------------------------------------------------------
 	 * Updates a roles permissions.
 	 *
-	 * @param $role_id
-	 *		The role ID to update permissions for.
+	 * @param $role_cid
+	 *		The role CID to update permissions for.
 	 *
 	 * @param $permissions
 	 *		An array of permissions to associate with the given role.
@@ -73,16 +73,16 @@ class Auth_Model_Permissions {
 	 * 		True for success, False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function update($role_id, $permissions)
+	public static function update($role_cid, $permissions)
 	{
 		// First wipe all old permissions for this role
-		Database::delete('auth_role_permissions', array('role_id' => $role_id));
+		Database::delete('auth_role_permissions', array('role_cid' => $role_cid));
 
 		// Then add new permissions
 		foreach($permissions as $perm)
 		{
 			$status = Database::insert('auth_role_permissions', array(
-				'role_id' => $role_id,
+				'role_cid' => $role_cid,
 				'permission' => $perm
 			));
 

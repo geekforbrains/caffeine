@@ -67,11 +67,12 @@ class Media_Display {
 		$file = Media_Model::get_file($cid);
 		$thumb_hash = md5($cid . $rotate . $wp . $h);
 
-		$thumb_path = MEDIA_CACHE . $thumb_hash;
+		$thumb_path = self::path($thumb_hash);
 		$file_path = Upload::path($file['path'], $file['hash']);
 
 		if(file_exists($thumb_path))
 		{
+			Debug::log('Media', 'Loading image from cache: ' . $thumb_path);
 			header('Content-type: ' . $file['type']);
 			readfile($thumb_path);
 		}
@@ -96,11 +97,32 @@ class Media_Display {
 				Imager::rotate($rotate);
 	
 			// Save thumb for caching and display
-			//Imager::save($thumb_path);
+			Imager::save($thumb_path);
 			Imager::show();
 		}
 
 		exit;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Returns the full file system path to media cache directory. Optionally
+	 * a cached file can be passed as a param to cleanly return its full path.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function path($hash = null)
+	{
+		$user = User::current();
+		$cache_path = $user['files_path'] . MEDIA_CACHE_DIR;
+
+		if(!file_exists($cache_path))
+			if(!mkdir($cache_path))
+				die('Unable to create media cache directory: ' . $cache_path);
+
+		if(!is_writable($cache_path))
+			die('Media cache directory isn\'t writable: ' . $cache_path);
+
+		return $cache_path . $hash;
 	}
 
 }

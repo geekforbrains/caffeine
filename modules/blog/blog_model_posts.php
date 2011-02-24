@@ -25,7 +25,7 @@ class Blog_Model_Posts {
 				FROM {blog_posts} bp
 					JOIN {content} c ON c.id = bp.cid
 				WHERE bp.published = %s
-					AND c.site_id = %s
+					AND c.site_cid = %s
 				ORDER BY c.created DESC
 				LIMIT ' .$limit,
 				$published,
@@ -42,7 +42,7 @@ class Blog_Model_Posts {
 				FROM {blog_posts} bp
 					JOIN {content} c ON c.id = bp.cid
 				WHERE
-					c.site_id = %s
+					c.site_cid = %s
 				ORDER BY c.created DESC
 				LIMIT ' .$limit,
 				User::current_site()
@@ -68,7 +68,7 @@ class Blog_Model_Posts {
 				JOIN {content} c ON c.id = bp.cid
 			WHERE
 				bp.published = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			ORDER BY
 				c.created DESC
 			LIMIT 1
@@ -100,7 +100,7 @@ class Blog_Model_Posts {
 				JOIN {blog_categories} bc ON bc.cid = bpc.category_cid
 			WHERE
 				bc.slug = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			',
 			$slug,
 			User::current_site()
@@ -126,7 +126,7 @@ class Blog_Model_Posts {
 				JOIN {blog_categories} bc ON bc.cid = bpc.category_cid
 			WHERE
 				bc.cid = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			',
 			$cid,
 			User::current_site()
@@ -150,7 +150,7 @@ class Blog_Model_Posts {
 			FROM {blog_posts} bp
 				JOIN {content} c ON c.id = bp.cid
 			WHERE bp.slug = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$slug,
 			User::current_site()
@@ -174,7 +174,7 @@ class Blog_Model_Posts {
 			FROM {blog_posts} bp
 				JOIN {content} c ON c.id = bp.cid
 			WHERE bp.cid = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$cid,
 			User::current_site()
@@ -267,9 +267,17 @@ class Blog_Model_Posts {
 	 */
     public static function delete($cid)
     {
-		Content::delete($cid);
-		Database::delete('blog_post_categories', array('post_cid' => $cid));
-		return Database::delete('blog_posts', array('cid' => $cid));
+		// Always make sure this cid exists on our site, avoid hacks
+		if(self::get_by_cid($cid))
+		{
+			Content::delete($cid);
+			Database::delete('blog_post_categories', array('post_cid' => $cid));
+			Database::delete('blog_posts', array('cid' => $cid));
+			
+			return true;
+		}
+
+		return false;
     }
 
 	/**

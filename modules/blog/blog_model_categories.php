@@ -23,7 +23,7 @@ class Blog_Model_Categories {
 			FROM {blog_categories} bc
 				JOIN {content} c ON c.id = bc.cid
 			WHERE
-				c.site_id = %s
+				c.site_cid = %s
 			ORDER BY name ASC
 			',
 			User::current_site()
@@ -49,7 +49,7 @@ class Blog_Model_Categories {
 				JOIN {blog_post_categories} bpc ON bpc.category_cid = bc.cid
 			WHERE
 				bpc.post_cid = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			',
 			$cid,
 			User::current_site()
@@ -79,13 +79,15 @@ class Blog_Model_Categories {
 			FROM {blog_categories} bc
 				JOIN {content} c ON c.id = bc.cid
 			WHERE cid = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$cid,
 			User::current_site()
 		);
 
-        return Database::fetch_array();
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
+		return false;
     }
 
 	/**
@@ -103,7 +105,7 @@ class Blog_Model_Categories {
 			FROM {blog_categories} bc
 				JOIN {content} c ON c.id = bc.cid
 			WHERE slug LIKE %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			',
             $slug,
 			User::current_site()
@@ -125,7 +127,7 @@ class Blog_Model_Categories {
 			FROM {blog_categories} bc 
 				JOIN {content} c ON c.id = bc.cid
 			WHERE name LIKE %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$name,
 			User::current_site()
@@ -159,30 +161,37 @@ class Blog_Model_Categories {
 	 */
     public static function delete($cid)
     {
-		// Get blog posts associated with this category
-		// If those blog posts dont have any other categories associated with
-		// them, mark them as drafts
-		$posts = Blog_Model_Posts::get_all_by_category_cid($cid);
-				
-		foreach($posts as $post)
+		if(self::get_by_cid($cid))
 		{
-			Database::query('
-				SELECT * FROM {blog_post_categories} WHERE post_cid = %s',
-				$post['cid']
-			);
-
-			if(Database::num_rows() <= 1)
+			// Get blog posts associated with this category
+			// If those blog posts dont have any other categories associated with
+			// them, mark them as drafts
+			$posts = Blog_Model_Posts::get_all_by_category_cid($cid);
+					
+			foreach($posts as $post)
 			{
-				Database::update('blog_posts',
-					array('published' => 0),
-					array('cid' => $post['cid'])
+				Database::query('
+					SELECT * FROM {blog_post_categories} WHERE post_cid = %s',
+					$post['cid']
 				);
-			}
-		}
 
-		Content::delete($cid);
-		Database::delete('blog_post_categories', array('category_cid' => $cid));
-		return Database::delete('blog_categories', array('cid' => $cid));
+				if(Database::num_rows() <= 1)
+				{
+					Database::update('blog_posts',
+						array('published' => 0),
+						array('cid' => $post['cid'])
+					);
+				}
+			}
+
+			Content::delete($cid);
+			Database::delete('blog_post_categories', array('category_cid' => $cid));
+			Database::delete('blog_categories', array('cid' => $cid));
+
+			return true;
+		}	
+
+		return false;
     }
     
 	/**

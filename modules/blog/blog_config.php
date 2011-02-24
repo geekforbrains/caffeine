@@ -1,7 +1,7 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Blog Constants
+ * Blog Configurations
  * =============================================================================
  */
 define('BLOG_POSTS_LIMIT', 10); // How many posts to show per page

@@ -179,16 +179,7 @@ class Path {
 				path_config.php or modify the path callback for "' .$current_path. '" 
 				to allow anonymous access.');
 
-			if(User::get('id') > 0)
-			{
-				View::load('Path', 'access_denied');
-				return false;
-			}
-			else
-			{
-				Message::store('error', 'Access Denied. Please login.');
-				Router::redirect(PATH_ACCESS_DENIED_REDIRECT);
-			}
+			return false;
 		}
 
 		return $path_data;

@@ -38,7 +38,7 @@ class Auth_Admin {
 			{
 				if(!Auth_Model_Roles::exists($_POST['role']))
 				{
-					if(Auth_Model_Roles::create(User::site_id(), $_POST['role']))
+					if(Auth_Model_Roles::create($_POST['role']))
 					{
 						Message::store(MSG_OK, 'Role created successfully.');
 						Router::redirect('admin/admin/auth/manage');
@@ -49,8 +49,6 @@ class Auth_Admin {
 				else
 					Message::set(MSG_ERR, 'A role with that name already exists.');
 			}
-			else
-				Message::set(MSG_ERR, 'Missing required fields.');
         }
         
 		View::load('Auth_Admin', 'auth_admin_create',
@@ -62,7 +60,7 @@ class Auth_Admin {
 	 * Used for editing a current roles permissions.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function edit($id)
+	public static function edit($cid)
 	{
 		if($_POST)
 		{
@@ -79,8 +77,8 @@ class Auth_Admin {
 
 		View::load('Auth_Admin', 'auth_admin_edit',
 			array(
-				'role' => Auth_Model_Roles::get_by_id($id),
-				'role_perms' => Auth_Model_Permissions::get_by_role($id),
+				'role' => Auth_Model_Roles::get_by_cid($cid),
+				'role_perms' => Auth_Model_Permissions::get_by_role($cid),
 				'avail_perms' => Auth_Model_Permissions::get_all_avail()
 			)
 		);

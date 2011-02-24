@@ -13,9 +13,9 @@ class User extends Database {
 
 	// Stores data about the current user, defaults to blank
 	private static $_user = array(
-		'id' => 0,
+		'cid' => 0,
 		'is_root' => 0,
-		'site_id' => 0,
+		'site_cid' => 0,
 		'site' => null,
 		'username' => null,
 		'email' => null,
@@ -66,7 +66,7 @@ class User extends Database {
 	 * -------------------------------------------------------------------------
 	 */
 	public static function current_site() {
-		return User_Model::get_site_id(Caffeine::site());
+		return User_Model::get_site_cid(Caffeine::site());
 	}
 
 	/**
@@ -80,15 +80,23 @@ class User extends Database {
 		{
 			$_SESSION['timeout'] = time();
 
-			if($user = User_Model::get_by_id($_SESSION['user']))
+			if($user = User_Model::get_by_cid($_SESSION['user']))
 				self::$_user = $user;
 		}
 
 		self::$_user['site_path'] = Caffeine::site_path();
 		self::$_user['files_path'] = Caffeine::files_path();
 
-		Debug::log('User', 'Current user ID is: %s', self::$_user['id']);
+		Debug::log('User', 'Current user ID is: %s', self::$_user['cid']);
 		Debug::log('User', print_r(self::$_user, true));
+	}
+
+	public static function is_root($cid)
+	{
+		$root = User_Model::get_root();
+		if($root['cid'] === $cid)
+			return true;
+		return false;
 	}
 
 	/**

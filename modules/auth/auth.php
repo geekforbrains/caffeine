@@ -67,14 +67,15 @@ class Auth {
 		}
 
 		// Check for super root, which is the "root" user of the "root site"
-		if($user['is_root'] && $user['id'] == USER_ROOT_ID && $user['site_id'] == USER_ROOT_SITE_ID)
+		//if($user['is_root'] && $user['cid'] == USER_ROOT_ID && $user['site_id'] == USER_ROOT_SITE_ID)
+		if(User::is_root($user['cid']))
 		{
 			Debug::log('Auth', 'WARNING: User is super root. Granting access on all.');
 			return true;
 		}
 
 		// Check if user is root of the current site path, if they are, allow access to 
-		// everything under the roots site
+		// everything under the roots site.
 		if($user['is_root'] && $user['site'] == $current_site)
 		{
 			Debug::log('Auth', 'User is root of the current site.

@@ -205,14 +205,14 @@ class Upload {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Determines the full upload path for a given file array.
-	 *
-	 * Can determine the full path if hash is given, or just the upload
-	 * upload directory if the file path is only given.
+	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	public static function path($file_path, $file_hash = null) {
-		return Caffeine::files_path() . UPLOAD_DIR . $file_path . $file_hash;
+	public static function path($file_path = null, $file_hash = null) 
+	{
+		//return Caffeine::files_path() . UPLOAD_DIR . $file_path . $file_hash;
+		$user = User::current();
+		return $user['files_path'] . UPLOAD_DIR . $file_path . $file_hash;
 	}
 
 	/**
@@ -364,7 +364,8 @@ class Upload {
 	 */
 	private static function _determine_upload_path()
 	{
-		$upload_path = Caffeine::files_path() . UPLOAD_DIR;
+		//$upload_path = Caffeine::files_path() . UPLOAD_DIR;
+		$upload_path = self::path();
 
 		// Make sure the uploads dir exists
 		if(!file_exists($upload_path))

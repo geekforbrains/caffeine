@@ -62,44 +62,39 @@ final class Auth_Events {
 		return array(
 			'auth_roles' => array(
 				'fields' => array(
-					'id' => array(
-						'type' => 'auto increment',
-						'unsigned' => true,
-						'not null' => true
-					),
-					'site_id' => array(
+					'cid' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
 					'role' => array(
 						'type' => 'varchar',
-						'length' => 50,
+						'length' => 255,
 						'not null' => true
 					)
 				),
 
-				'primary key' => array('id')
+				'primary key' => array('cid')
 			),
 
 			'auth_role_permissions' => array(
 				'fields' => array(
-					'role_id' => array(
+					'role_cid' => array(
 						'type' => 'int',
-						'size' => 'normal',
+						'size' => 'big',
 						'unsigned' => true,
 						'not null' => true
 					),
 					'permission' => array(
 						'type' => 'varchar',
-						'length' => 50,
+						'length' => 255,
 						'not null' => true
 					)
 				),
 
 				'indexes' => array(
-					'role_id' => array('role_id'),
+					'role_cid' => array('role_cid'),
 					'permission' => array('permission')
 				)
 			)

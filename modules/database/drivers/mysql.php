@@ -97,7 +97,8 @@ class Database {
         $database = DATABASE_NAME, $user = DATABASE_USER, 
         $pass = DATABASE_PASS, $alias = DATABASE_ALIAS)
     {
-        Debug::log('Database', 'Connecting to alias "%s"', $alias);
+
+		Debug::log('Database', 'Connection to alias "%s"', $alias);
         
         self::$_conn[$alias] = mysql_connect(
             DATABASE_HOST,
@@ -110,7 +111,7 @@ class Database {
             
         if(!mysql_select_db(DATABASE_NAME, self::$_conn[$alias]))
             trigger_error('Database Selection Error: ' . mysql_error(), E_USER_ERROR);
-            
+
         self::$_active_alias = $alias;
     }
     

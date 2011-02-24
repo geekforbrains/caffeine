@@ -5,8 +5,12 @@ final class SEO_Events {
 		SEO::check_path();
 	}
 
-	public static function view_block_paths() {
-		return array('SEO_Admin' => CAFFEINE_MODULES_PATH . 'seo/blocks/');
+	public static function view_block_paths()
+	{
+		return array(
+			'SEO' => CAFFEINE_MODULES_PATH . 'seo/blocks/',
+			'SEO_Admin' => CAFFEINE_MODULES_PATH . 'seo/blocks/admin/'
+		);
 	}
 
 	public static function path_callbacks()
@@ -37,6 +41,12 @@ final class SEO_Events {
 			'admin/seo/delete/%d' => array(
 				'callback' => array('SEO_Admin', 'delete'),
 				'auth' => 'delete seo',
+				'visible' => true
+			),
+			'admin/seo/analytics' => array(
+				'title' => 'Analytics',
+				'callback' => array('SEO_Admin', 'analytics'),
+				'auth' => 'manage seo',
 				'visible' => true
 			)
 		);
@@ -79,6 +89,24 @@ final class SEO_Events {
 						'not null' => true
 					),
 					'meta_robots' => array(
+						'type' => 'varchar',
+						'length' => 255,
+						'not null' => true
+					)
+				),
+
+				'primary key' => array('cid')
+			),
+
+			'seo_analytics' => array(
+				'fields' => array(
+					'cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'code' => array(
 						'type' => 'varchar',
 						'length' => 255,
 						'not null' => true

@@ -14,7 +14,7 @@
 			<?php foreach($users as $user): ?>
 				<tr>
 					<td>
-						<a href="<?php l('admin/admin/user/edit/%d', $user['id']); ?>">
+						<a href="<?php l('admin/admin/user/edit/%d', $user['cid']); ?>">
 							<?php echo $user['username']; ?>
 						</a>
 					</td>

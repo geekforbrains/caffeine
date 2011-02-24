@@ -34,10 +34,10 @@ class Page_Model {
 				FROM {pages} p 
 					JOIN {content} c ON c.id = p.cid
 				WHERE published = %s 
-					AND c.site_id = %s
+					AND c.site_cid = %s
 				ORDER BY p.title ASC', 
 				$published,
-				User::get('site_id')
+				User::current_site()
 			);
 		}
 		else
@@ -49,10 +49,10 @@ class Page_Model {
 					c.updated
 				FROM {pages} p
 					JOIN {content} c ON c.id = p.cid
-				WHERE c.site_id = %s
+				WHERE c.site_cid = %s
 				ORDER BY p.title ASC
 				',
-				User::get('site_id')
+				User::current_site()
 			);
 		}
 
@@ -82,7 +82,7 @@ class Page_Model {
 			FROM {pages} p
 				JOIN {content} c ON c.id = p.cid
 			WHERE p.cid = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$cid,
 			User::current_site()
@@ -115,7 +115,7 @@ class Page_Model {
 			FROM {pages} p
 				JOIN {content} c ON c.id = p.cid
 			WHERE p.parent_cid = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$parent_cid,
 			User::current_site()
@@ -153,7 +153,7 @@ class Page_Model {
 				JOIN {content} c ON c.id = p.cid
 			WHERE p.slug LIKE %s 
 				AND p.published = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$slug, 
 			$published,
@@ -190,7 +190,7 @@ class Page_Model {
 				JOIN {pages} p2 ON p2.cid = p1.parent_cid 
 			WHERE
 				p2.slug = %s
-				AND c.site_id = %s
+				AND c.site_cid = %s
 			', 
 			$slug,
 			User::current_site()
@@ -294,13 +294,19 @@ class Page_Model {
 	 */
 	public static function delete($cid) 
 	{
-		Content::delete($cid);
-		
-		// Update all child pages to have no parent
-		Database::update('pages', array('parent_cid' => 0),
-			array('parent_cid' => $cid));
+		if(self::get_by_cid($cid))
+		{
+			// Update all child pages to have no parent
+			Database::update('pages', array('parent_cid' => 0),
+				array('parent_cid' => $cid));
 
-		return Database::delete('pages', array('cid' => $cid));
+			Content::delete($cid);
+			Database::delete('pages', array('cid' => $cid));
+			
+			return true;
+		}
+
+		return false;
 	}
 
 }

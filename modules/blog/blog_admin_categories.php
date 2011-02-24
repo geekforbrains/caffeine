@@ -55,6 +55,9 @@ class Blog_Admin_Categories {
 	 */
     public static function edit($cid) 
     {
+		if(!Blog_Model_Categories::get_by_cid($cid))
+			Router::redirect('admin/blog/categories');
+
         if($_POST)
         {
 			Validate::check('name', 'Name', array('required'));

@@ -96,7 +96,7 @@ class User_Admin extends User_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	public static function edit($user_id)
+	public static function edit($cid)
 	{
 		if($_POST)
 		{
@@ -106,19 +106,19 @@ class User_Admin extends User_Model {
 			if(!isset($_POST['roles']))
 				$_POST['roles'] = array();
 
-			self::update_user($user_id, $_POST['username'], $_POST['email'], $_POST['is_root']);
-			self::update_roles($user_id, $_POST['roles']);
+			self::update_user($cid, $_POST['username'], $_POST['email'], $_POST['is_root']);
+			self::update_roles($cid, $_POST['roles']);
 
 			// If password field is set, create new password
 			if(strlen($_POST['pass']))
-				self::update_pass($user_id, $_POST['pass']);
+				self::update_pass($cid, $_POST['pass']);
 
 			Message::set('success', 'User updated successfully.');
 		}
 
 		View::load('User_Admin', 'user_admin_edit',
 			array(
-				'user' => User_Model::get_by_id($user_id),
+				'user' => User_Model::get_by_cid($cid),
 				'avail_roles' => Auth_Model_Roles::get_all()
 			)
 		);

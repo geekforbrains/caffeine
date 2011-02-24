@@ -281,6 +281,11 @@ final class Caffeine {
 		printf('Error: %s<br />', $str);
 		printf('File: %s<br />', $file);
 		printf('Line: %d<br />', $line);
+		
+		echo '<pre>';
+		debug_print_backtrace();
+		echo '</pre>';
+
 		exit(1);
 	}
 

@@ -16,12 +16,12 @@
 			<?php foreach($roles as $role): ?>
 				<tr>
 					<td>
-						<a href="<?php echo Router::url('admin/admin/auth/edit/%d', $role['id']); ?>">
+						<a href="<?php echo Router::url('admin/admin/auth/edit/%d', $role['cid']); ?>">
 							<?php echo $role['role']; ?>
 						</a>
 					</td>
 					<td align="right">
-						<a href="<?php echo Router::url('admin/admin/auth/delete/%d', $role['id']); ?>">
+						<a href="<?php echo Router::url('admin/admin/auth/delete/%d', $role['cid']); ?>">
 							Delete
 						</a>
 					</td>

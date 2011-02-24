@@ -4,5 +4,8 @@
 		</a>
 	</div>
 </div> 
+
+<?php echo SEO::analytics(); ?>
+
 </body>
 </html>

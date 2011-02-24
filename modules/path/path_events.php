@@ -44,7 +44,18 @@ final class Path_Events extends Path {
 			}
 			else
 			{
-				View::load('Path', 'access_denied', array(), false);
+				// If user is logged in, show them access denied page
+				if(User::get('cid') > 0)
+					View::load('Path', 'access_denied', array(), false);
+
+				// Otherwise, if user isn't logged in, redirect to login page
+				// with error
+				else
+				{
+					//Message::store(MSG_ERR, 'Access Denied. Please login.');
+					Router::redirect(PATH_ACCESS_DENIED_REDIRECT);
+				}
+
 				return;
 			}
 		}
@@ -52,7 +63,7 @@ final class Path_Events extends Path {
 		// If we got here either something went wrong or the path doesn't exist
 		// Set 404 header and display 404 view
 		header('HTTP/1.0 404 Not Found');
-		View::set_title('404: Page Not Found');
+		//View::set_title('404: Page Not Found');
 		View::load('Path', '404', array(), false);
     }
 

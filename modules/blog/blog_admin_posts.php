@@ -76,6 +76,9 @@ class Blog_Admin_Posts {
 	 */
     public static function edit($cid) 
     {
+		if(!Blog_Model_Posts::get_by_cid($cid))
+			Router::redirect('admin/blog/posts');
+
         if($_POST)
         {
 			if(isset($_POST['delete']))
@@ -122,9 +125,11 @@ class Blog_Admin_Posts {
 	 */
     public static function delete($cid) 
     {
-        Blog_Model_Posts::delete($cid);
-        
-        Message::store(MSG_OK, 'Post deleted successfully.');
+        if(Blog_Model_Posts::delete($cid))
+			Message::store(MSG_OK, 'Post deleted successfully.');
+		else
+			Message::store(MSG_ERR, 'Unkown error while deleting post. Please try again.');
+
         Router::redirect('admin/blog/posts/manage');
     }
 

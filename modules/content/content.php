@@ -34,12 +34,13 @@ class Content {
 	public static function create($type, $relatives = null) 
 	{
 		$user = User::current();	
+		$site_cid = User::current_site(); // We dont use the users site, because it might be root
 		$timestamp = time();
 
 		$status = Database::insert('content',	array(
 			'type' => $type,
-			'site_id' => $user['site_id'],
-			'user_id' => $user['id'],
+			'site_cid' => $site_cid,
+			'user_cid' => $user['cid'],
 			'created' => $timestamp,
 			'updated' => $timestamp
 		));
@@ -137,7 +138,15 @@ class Content {
 	 */
 	public static function exists($cid)
 	{
-		Database::query('SELECT id FROM {content} WHERE id = %s', $cid);
+		Database::query('
+			SELECT id 
+			FROM {content} 
+			WHERE id = %s
+				AND site_cid = %s
+			', 
+			$cid,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return true;

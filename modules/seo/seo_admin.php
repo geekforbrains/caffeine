@@ -3,7 +3,7 @@ class SEO_Admin {
 
 	public static function manage()
 	{
-		View::load('SEO_Admin', 'seo_manage',
+		View::load('SEO_Admin', 'seo_admin_manage',
 			array('items' => SEO_Model::get_all()));
 	}
 
@@ -34,11 +34,14 @@ class SEO_Admin {
 			}
 		}
 			
-		View::load('SEO_Admin', 'seo_create');
+		View::load('SEO_Admin', 'seo_admin_create');
 	}
 
 	public static function edit($cid)
 	{
+		if(!SEO_Model::get_by_cid($cid))
+			Router::redirect('admin/seo/manage');
+
 		if($_POST)
 		{
 			Validate::check('path', 'Path', array('required'));
@@ -59,7 +62,7 @@ class SEO_Admin {
 			}
 		}
 
-		View::load('SEO_Admin', 'seo_edit', 
+		View::load('SEO_Admin', 'seo_admin_edit', 
 			array('item' => SEO_Model::get_by_cid($cid)));
 	}
 
@@ -71,6 +74,18 @@ class SEO_Admin {
 			Message::store(MSG_ERR, 'Error deleting SEO path. Please try again.');
 
 		Router::redirect('admin/seo');
+	}
+
+	public static function analytics()
+	{
+		if($_POST)
+		{
+			SEO_Model::update_analytics($_POST['code']);
+			Message::set(MSG_OK, 'Analytics updated successfully.');
+		}
+
+		View::load('SEO_Admin', 'seo_admin_analytics',
+			array('analytics' => SEO_Model::get_analytics()));
 	}
 
 }

@@ -20,28 +20,29 @@ class User_Model extends Database {
 	 *		user doesn't exist, boolean false is returned.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_by_id($user_id)
+	public static function get_by_cid($cid)
 	{
 		Database::query('
 			SELECT
-				ua.id,
-				ua.site_id,
+				ua.cid,
+				ua.site_cid,
 				ua.username,
 				ua.email,
 				ua.is_root,
 				us.site
 			FROM {user_accounts} ua
-				LEFT JOIN {user_sites} us ON us.id = ua.site_id
+				LEFT JOIN {user_sites} us ON us.cid = ua.site_cid
 			WHERE
-				ua.id = %s', 
-			$user_id
+				ua.cid = %s
+			', 
+			$cid
 		);
 
 		if(Database::num_rows() > 0)
 		{
 			$user = Database::fetch_array();
-			$user['roles'] = self::_get_roles($user_id);
-			$user['permissions'] = self::_get_permissions($user_id);
+			$user['roles'] = self::_get_roles($cid);
+			$user['permissions'] = self::_get_permissions($cid);
 
 			return $user;
 		}
@@ -59,22 +60,25 @@ class User_Model extends Database {
 	 */
 	public static function get_all()
 	{
+		$root = self::get_root();
+
 		self::query('
 			SELECT
-				ua.id,
-				ua.site_id,
+				ua.cid,
+				ua.site_cid,
 				ua.username,
 				ua.email,
 				ua.is_root,
 				us.site
 			FROM {user_accounts} ua
-				LEFT JOIN {user_sites} us ON us.id = ua.site_id
+				LEFT JOIN {user_sites} us ON us.cid = ua.site_cid
 			WHERE 
-				ua.id != %s
-				AND ua.site_id = %s
+				ua.cid != %s
+				AND ua.site_cid = %s
 			ORDER BY 
-				ua.username ASC',
-			USER_ROOT_ID,
+				ua.username ASC
+			',
+			$root['cid'],
 			User::current_site()
 		);
 
@@ -82,8 +86,8 @@ class User_Model extends Database {
 
 		foreach($rows as &$row)
 		{
-			$row['roles'] = self::_get_roles($row['id']);
-			$row['permissions'] = self::_get_permissions($row['id']);
+			$row['roles'] = self::_get_roles($row['cid']);
+			$row['permissions'] = self::_get_permissions($row['cid']);
 		}	
 
 		return $rows;
@@ -91,59 +95,62 @@ class User_Model extends Database {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Gets the roles associated with the given user ID.
+	 * Gets the roles associated with the given user CID.
 	 *
-	 * @param $user_id
-	 *		The user ID you want roles for.
+	 * @param $cid
+	 *		The user CID you want roles for.
 	 *
 	 * @return array
 	 *		Returns an array of roles.
 	 * -------------------------------------------------------------------------
 	 */
-	private static function _get_roles($user_id)
+	private static function _get_roles($cid)
 	{
 		Database::query('
 			SELECT
-				ar.id,
+				ar.cid,
 				ar.role
 			FROM {auth_roles} ar
-				LEFT JOIN {user_roles} ur ON ur.role_id = ar.id
+				LEFT JOIN {user_roles} ur ON ur.role_cid = ar.cid
 			WHERE
-				ur.user_id = %s
-		', $user_id);
+				ur.user_cid = %s
+			', 
+			$cid
+		);
 
 		$rows = Database::fetch_all();
 		$roles = array();
 
 		foreach($rows as $row)
-			$roles[$row['id']] = $row['role'];
+			$roles[$row['cid']] = $row['role'];
 
 		return $roles;
 	}
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Gets permissions for the given user ID, based on their roles. A user will
+	 * Gets permissions for the given user CID, based on their roles. A user will
 	 * inherit all permissions of the role he is apart of. Duplicate permissions
 	 * are ignored.
 	 *
-	 * @param $user_id
-	 *		The user ID you want permissions for.
+	 * @param $cid
+	 *		The user CID you want permissions for.
 	 *
 	 * @return array
 	 *		An array of permissions.
 	 * -------------------------------------------------------------------------
 	 */
-	private static function _get_permissions($user_id)
+	private static function _get_permissions($cid)
 	{
 		Database::query('
 			SELECT DISTINCT
 				arp.permission
 			FROM {auth_role_permissions} arp
-				LEFT JOIN {user_roles} ur ON ur.role_id = arp.role_id
+				LEFT JOIN {user_roles} ur ON ur.role_cid = arp.role_cid
 			WHERE
-				ur.user_id = %s',
-			$user_id
+				ur.user_cid = %s
+			',
+			$cid	
 		);
 
 		$rows = Database::fetch_all();
@@ -160,25 +167,28 @@ class User_Model extends Database {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	public static function check_login($username, $pass, $site_id)
+	public static function check_login($username, $pass, $site_cid)
 	{
+		$root = self::get_root();
+
 		Database::query('
-			SELECT id
+			SELECT 
+				cid
 			FROM {user_accounts}
 			WHERE
-				(username = %s AND pass = MD5(%s) AND site_id = %s) OR
-				(username = %s AND pass = MD5(%s) AND site_id = %s)
+				(username = %s AND pass = MD5(%s) AND site_cid = %s) OR
+				(username = %s AND pass = MD5(%s) AND site_cid = %s)
 			',
 			$username, 
 			$pass, 
-			$site_id, 
+			$site_cid, 
 			USER_ROOT_USERNAME, 
 			$pass,
-			USER_ROOT_SITE_ID
+			$root['site_cid']
 		);
 
 		if(Database::num_rows() > 0)
-			return Database::fetch_single('id');
+			return Database::fetch_single('cid');
 	
 		return false;
 	}
@@ -188,15 +198,15 @@ class User_Model extends Database {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	public static function update_roles($user_id, $roles)
+	public static function update_roles($cid, $roles)
 	{
 		// Clear old rows
-		self::query('DELETE FROM {user_roles} WHERE user_id = %s', $user_id);
+		self::query('DELETE FROM {user_roles} WHERE user_cid = %s', $cid);
 
 		// Add new roles
 		foreach($roles as $role)
-			self::query('INSERT INTO {user_roles} (user_id, role_id) VALUES
-				(%s, %s)', $user_id, $role);
+			self::query('INSERT INTO {user_roles} (user_cid, role_cid) VALUES
+				(%s, %s)', $cid, $role);
 	}
 
 	/**
@@ -207,8 +217,8 @@ class User_Model extends Database {
 	public static function username_exists($username)
 	{
 		self::query('
-			SELECT id FROM {user_accounts} 
-			WHERE username LIKE %s AND site_id = %s', 
+			SELECT cid FROM {user_accounts} 
+			WHERE username LIKE %s AND site_cid = %s', 
 			$username,
 			User::current_site()
 		);
@@ -223,10 +233,17 @@ class User_Model extends Database {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	public static function add_user($username, $pass, $email, $site_id)
+	public static function add_user($username, $pass, $email, $site_cid)
 	{
+		// Failsafe for never creating users with same username as root
+		if($username == USER_ROOT_USERNAME)
+			return false;
+
+		$cid = Content::create(USER_TYPE);
+
 		Database::insert('user_accounts', array(
-			'site_id' => $site_id,
+			'cid' => $cid,
+			'site_cid' => $site_cid,
 			'username' => $username,
 			'pass' => md5($pass),
 			'email' => $email
@@ -235,23 +252,27 @@ class User_Model extends Database {
 		return true;
 	}
 
-	public static function update_user($id, $username, $email, $is_root)
+	public static function update_user($cid, $username, $email, $is_root)
 	{
+		Content::update($cid);
+
 		Database::update('user_accounts',
 			array(
 				'username' => $username,
 				'email' => $email,
 				'is_root' => $is_root
 			),
-			array('id' => $id)
+			array('cid' => $cid)
 		);
 	}
 
-	public static function update_pass($id, $pass)
+	public static function update_pass($cid, $pass)
 	{
+		Content::update($cid);
+
 		Database::update('user_accounts',
 			array('pass' => md5($pass)),
-			array('id' => $id)
+			array('cid' => $cid)
 		);
 	}
 
@@ -260,18 +281,19 @@ class User_Model extends Database {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	public static function get_site_id($site) 
+	public static function get_site_cid($site) 
 	{
-		self::query('SELECT id FROM {user_sites} WHERE site = %s', $site);
+		self::query('SELECT cid FROM {user_sites} WHERE site = %s', $site);
 		if(self::num_rows() > 0)
-			return self::fetch_single('id');
+			return self::fetch_single('cid');
 
-		return USER_ROOT_SITE_ID;
+		$root = self::get_root();
+		return $root['site_cid'];
 	}
 
 	public static function site_exists($site)
 	{
-		Database::query('SELECT id FROM {user_sites} WHERE site LIKE %s', $site);
+		Database::query('SELECT cid FROM {user_sites} WHERE site LIKE %s', $site);
 		
 		if(Database::num_rows() > 0)
 			return true;
@@ -280,7 +302,12 @@ class User_Model extends Database {
 
 	public static function create_site($site)
 	{
-		Database::insert('user_sites', array('site' => $site));
+		$cid = Content::create(USER_TYPE_SITE);
+
+		Database::insert('user_sites', array(
+			'cid' => $cid,
+			'site' => $site
+		));
 
 		if(Database::affected_rows() > 0)
 			return true;
@@ -292,31 +319,65 @@ class User_Model extends Database {
 	 * Used to create an initial root user in the system. If the setting is
 	 * enabled, this user will be re-created at each page refresh. It should be
 	 * disabled on production sites.
-	 *  
-	 * TODO Move to model
 	 * -------------------------------------------------------------------------
 	 */
 	public static function create_root()
 	{
-		Debug::log('User', 'Creating initial root user');
+		$root = self::get_root();
+		
+		if($root['cid'] == 0)
+		{
+			Debug::log('User', 'Creating initial root user');
 
-		// Create site
-		Database::query('DELETE FROM {user_sites} WHERE id = %s', USER_ROOT_ID);
-		Database::query('INSERT INTO {user_sites} (id, site) VALUES (%s, %s)',
-			USER_ROOT_SITE_ID, USER_ROOT_SITE);
+			// Create site
+			$site_cid = Content::create(USER_TYPE_SITE);
+			Database::insert('user_sites', array(
+				'cid' => $site_cid,
+				'site' => USER_ROOT_SITE
+			));
 
-		// Create user
-		Database::query('DELETE FROM {user_accounts} WHERE id = %s', USER_ROOT_ID);
+			// Create user
+			$root_cid = Content::create(USER_TYPE);
+			Database::insert('user_accounts', array(
+				'cid' => $root_cid,
+				'site_cid' => $site_cid,
+				'username' => USER_ROOT_USERNAME,
+				'pass' => md5(USER_ROOT_PASS),
+				'email' => USER_ROOT_EMAIL,
+				'is_root' => 1
+			));
+		}
+	}
 
+	public static function get_root()
+	{
 		Database::query('
-			INSERT INTO {user_accounts} (id, site_id, username, pass, email, is_root) VALUES 
-				(%s, %s, %s, MD5(%s), %s, %s)',
-			USER_ROOT_ID,
-			USER_ROOT_SITE_ID,
+			SELECT 
+				ua.cid,
+				ua.site_cid,
+				ua.username,
+				ua.email
+			FROM {user_accounts} ua
+				JOIN {user_sites} us ON us.cid = ua.site_cid
+			WHERE  
+				ua.username = %s
+				AND ua.pass = MD5(%s)
+				AND us.site = %s
+			',
 			USER_ROOT_USERNAME,
 			USER_ROOT_PASS,
-			USER_ROOT_EMAIL,
-			1
+			USER_ROOT_SITE
+		);
+
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
+
+		// Blank incase root hasn't been created yet
+		return array(
+			'cid' => 0,
+			'site_cid' => 0,
+			'username' => USER_ROOT_USERNAME,
+			'email' => USER_ROOT_EMAIL
 		);
 	}
 

@@ -3,7 +3,19 @@ class SEO_Model {
 
 	public static function get($path)
 	{
-		Database::query('SELECT * FROM {seo} WHERE path = %s', $path);
+		Database::query('
+			SELECT 
+				s.*,
+				c.created,
+				c.updated
+			FROM {seo} s
+				JOIN {content} c ON c.id = s.cid
+			WHERE path = %s
+				AND c.site_cid = %s
+			', 
+			$path,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return Database::fetch_array();
@@ -12,7 +24,19 @@ class SEO_Model {
 
 	public static function get_by_cid($cid)
 	{
-		Database::query('SELECT * FROM {seo} WHERE cid = %s', $cid);
+		Database::query('
+			SELECT 
+				s.*,
+				c.created,
+				c.updated
+			FROM {seo} s
+				JOIN {content} c ON c.id = s.cid
+			WHERE cid = %s
+				AND c.site_cid = %s
+			', 
+			$cid,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return Database::fetch_array();
@@ -21,13 +45,36 @@ class SEO_Model {
 
 	public static function get_all()
 	{
-		Database::query('SELECT * FROM {seo} ORDER BY cid DESC');
+		Database::query('
+			SELECT 
+				s.*,
+				c.created,
+				c.updated
+			FROM {seo} s
+				JOIN {content} c ON c.id = s.cid
+			WHERE
+				c.site_cid = %s
+			ORDER BY cid DESC
+			',
+			User::current_site()
+		);
+
 		return Database::fetch_all();
 	}
 
 	public static function exists($path)
 	{
-		Database::query('SELECT cid FROM {seo} WHERE path = %s', $path);
+		Database::query('
+			SELECT 
+				s.cid 
+			FROM {seo} s 
+				JOIN {content} c ON c.id = s.cid
+			WHERE path = %s
+				AND c.site_cid = %s
+			', 
+			$path,
+			User::current_site()
+		);
 
 		if(Database::num_rows() > 0)
 			return true;
@@ -70,12 +117,61 @@ class SEO_Model {
 
 	public static function delete($cid)
 	{
-		Content::delete($cid);
-		Database::query('DELETE FROM {seo} WHERE cid = %s', $cid);
-
-		if(Database::affected_rows() > 0)
+		// Make sure we can only delete stuff on our site
+		if(self::get_by_cid($cid))
+		{
+			Content::delete($cid);
+			Database::delete('seo', array('cid' => $cid));
 			return true;
+		}
+
 		return false;
+	}
+
+	public static function get_analytics()
+	{
+		Database::query('
+			SELECT
+				sa.*,
+				c.created,
+				c.updated
+			FROM {seo_analytics} sa
+				JOIN {content} c ON c.id = sa.cid
+			WHERE
+				c.site_cid = %s
+			LIMIT 1
+			',
+			User::current_site()
+		);
+
+		if(Database::num_rows() > 0)
+			return Database::fetch_array();
+
+		return array('cid' => 0, 'code' => null);
+	}
+
+	public static function update_analytics($code)
+	{
+		$tmp = self::get_analytics();
+		$cid = $tmp['cid'];
+
+		// No code created yet
+		if($cid == 0)
+		{
+			$cid = Content::create(SEO_TYPE_ANALYTICS);
+			Database::insert('seo_analytics', array(
+				'cid' => $cid,
+				'code' => $code
+			));
+		}
+		else
+		{
+			Content::update($cid);
+			Database::update('seo_analytics',
+				array('code' => $code),
+				array('cid' => $cid)
+			);
+		}
 	}
 
 }

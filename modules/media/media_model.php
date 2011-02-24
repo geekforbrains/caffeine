@@ -20,9 +20,12 @@ class Media_Model {
 					c.updated
 				FROM {media_files} mf
 					JOIN {content} c ON c.id = mf.cid
+				WHERE
+					c.site_cid = %s
 				ORDER BY
 					c.updated DESC
-				'
+				',
+				User::current_site()
 			);
 		}
 		else
@@ -36,10 +39,12 @@ class Media_Model {
 					JOIN {content} c ON c.id = mf.cid
 				WHERE
 					c.type = %s
+					AND c.site_cid = %s
 				ORDER BY
 					c.updated DESC
 				',
-				$type
+				$type,
+				User::current_site()
 			);
 		}
 
@@ -57,8 +62,10 @@ class Media_Model {
 				JOIN {content} c ON c.id = mf.cid
 			WHERE
 				mf.cid = %s
+				AND c.site_cid = %s
 			',
-			$cid
+			$cid,
+			User::current_site()
 		);
 
 		if(Database::num_rows() > 0)

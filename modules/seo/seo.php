@@ -57,4 +57,10 @@ class SEO {
 		}
 	}
 
+	public static function analytics()
+	{
+		View::load('SEO', 'seo_analytics', 
+			array('analytics' => SEO_Model::get_analytics()));
+	}
+
 }

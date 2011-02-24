@@ -6,8 +6,8 @@
 <div class="area right">
 	<h2>Edit "<?php echo $role['role']; ?>" Role</h2>
 
-	<form method="post" action="<?php echo Router::url('admin/admin/auth/edit/%d', $role['id']); ?>">
-		<input type="hidden"  name="role_id" value="<?php echo $role['id']; ?>" />
+	<form method="post" action="<?php echo Router::url('admin/admin/auth/edit/%d', $role['cid']); ?>">
+		<input type="hidden"  name="role_id" value="<?php echo $role['cid']; ?>" />
 
 		<ul>
 			<li class="checkbox">
