@@ -31,6 +31,10 @@ final class Blog_Events {
                 'callback' => array('Blog', 'posts_by_category'),
 				'auth' => true
             ),
+			'blog/archive' => array(
+				'callback' => array('Blog', 'archive'),
+				'auth' => true
+			),
             'blog/%s' => array(
                 'callback' => array('Blog', 'post'),
 				'auth' => true,

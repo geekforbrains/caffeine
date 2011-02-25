@@ -28,33 +28,32 @@ class SEO {
 		return $default;
 	}
 
-	public static function meta($type, $content)
+	public static function meta($type, $content = null)
 	{
 		switch($type)
 		{
 			case 'author':
 				if(strlen(self::$_path['meta_author']))
-					$content = self::$_path['meta_author'];
-				return '<meta name="author" content="' .$content. '" />';
+					if($content = self::$_path['meta_author'])
+						return '<meta name="author" content="' .$content. '" />';
 
 			case 'description':
 				if(strlen(self::$_path['meta_description']))
-					$content = self::$_path['meta_description'];
-				return '<meta name="description" content="' .$content. '" />';
+					if($content = self::$_path['meta_description'])
+						return '<meta name="description" content="' .$content. '" />';
 
 			case 'keywords':
 				if(strlen(self::$_path['meta_keywords']))
-					$content = self::$_path['meta_keywords'];
-				return '<meta name="keywords" content="' .$content. '" />';
+					if($content = self::$_path['meta_keywords'])
+						return '<meta name="keywords" content="' .$content. '" />';
 
 			case 'robots':
 				if(strlen(self::$_path['meta_robots']))
-					$content = self::$_path['meta_robots'];
-				return '<meta name="robots" content="' .$content. '" />';
-
-			default:
-				die('Trying to get unavailable meta type: ' .$type);
+					if($content = self::$_path['meta_robots'])
+						return '<meta name="robots" content="' .$content. '" />';
 		}
+
+		return null;
 	}
 
 	public static function analytics()

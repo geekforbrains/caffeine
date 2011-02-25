@@ -97,10 +97,20 @@ class Media {
 	// TODO
 	private static function _read_exif($type, $data)
 	{
+		// Exif unstable, just return empty for now
+		return null;
+
 		if($type == MEDIA_TYPE_IMAGE)
 		{
 			$file = Upload::path($data['path'], $data['hash']);
-			$exif = exif_read_data($file);
+
+			// Apparently have to catch incase exif is fucked
+			try {
+				if($data = @exif_read_data($file))
+					$exif = $data;
+			} catch(Exception $e) {
+				$exif = null;
+			}
 
 			if($exif)
 				return serialize($exif);
