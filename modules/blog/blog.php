@@ -23,7 +23,7 @@ class Blog {
      */
     public static function posts($published = 1, $limit = BLOG_POSTS_LIMIT) 
     {
-        View::load('Blog', 'blog_posts', 
+        View::load('Blog', 'posts', 
             array('posts' => Blog_Model_Posts::get_all($published, $limit)));
     }
     
@@ -37,7 +37,7 @@ class Blog {
 		$category = Blog_Model_Categories::get_by_slug($slug);
 
 		View::set_title('Blog posts in "' .$category['name']. '"');
-        View::load('Blog', 'blog_posts',
+        View::load('Blog', 'posts',
             array(
                 'category' => $category,
                 'posts' => Blog_Model_Posts::get_all_by_category_slug($slug)
@@ -58,7 +58,7 @@ class Blog {
 		$post = Blog_Model_Posts::get_by_slug($slug);
 
 		View::set_title($post['title']);
-        View::load('Blog', 'blog_post', array('post' => $post));
+        View::load('Blog', 'post', array('post' => $post));
     }
 
 	/**
@@ -68,7 +68,7 @@ class Blog {
 	 */
 	public static function latest_post()
 	{
-		View::load('Blog', 'blog_latest_post', 
+		View::load('Blog', 'latest_post', 
 			array('post' => Blog_Model_Posts::get_latest()));
 	}
     
@@ -83,7 +83,7 @@ class Blog {
         if(!$slug)
             Router::redirect('blog');
             
-        View::load('Blog', 'blog_post_comments', 
+        View::load('Blog', 'post_comments', 
             array('comments' => Blog_Model_Posts::get_comments($slug)));
     }
     
@@ -94,8 +94,19 @@ class Blog {
      */
     public static function categories()
     {
-        View::load('Blog', 'blog_categories', 
+        View::load('Blog', 'categories', 
             array('categories' => Blog_Model_Categories::get_all()));
+    }
+
+    /**
+     * -------------------------------------------------------------------------
+     * DEPRECATED!!!
+     * -------------------------------------------------------------------------
+     */
+    public static function archive()
+    {
+        View::load('Blog', 'archive',
+            array('posts' => Blog_Model_Posts::get_all(1, 100)));
     }
 
 }
