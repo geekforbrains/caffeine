@@ -10,16 +10,6 @@ final class Auth_Events {
 
 	/**
 	 * ------------------------------------------------------------------------
-	 * Implements the View::block_paths event.
-	 * ------------------------------------------------------------------------
-	 */
-	public static function view_block_paths() {
-		return array('Auth_Admin' => CAFFEINE_MODULES_PATH . 
-			'auth/blocks/admin/');
-	}
-
-	/**
-	 * ------------------------------------------------------------------------
 	 * Implements the Path::callbacks event.
 	 * ------------------------------------------------------------------------
 	 */

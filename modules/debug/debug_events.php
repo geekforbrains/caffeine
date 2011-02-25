@@ -22,10 +22,4 @@ final class Debug_Events {
 			Debug::display();
 	}
 
-	public static function view_block_paths() {
-		return array(
-			'Debug' => CAFFEINE_MODULES_PATH . 'debug/blocks/'
-		);
-	}
-
 }

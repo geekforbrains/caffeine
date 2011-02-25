@@ -226,27 +226,36 @@ class Menu {
 	 */
 	private static function _walk($sorted, $path, $path_data)
 	{
-		if(strstr($path, '/'))
+		$ref =& $sorted;
+
+		$bits = explode('/', $path);
+		$bits_count = count($bits) - 1;
+
+		$tmp_bits = array();
+		$tmp_path = '';
+
+		for($i = 0; $i <= $bits_count; $i++)
 		{
-			$path_bits = explode('/', $path);
-			$base = $path_bits[0];
-			$child_path = implode('/', array_slice($path_bits, 1));
-			
-			if(!isset($sorted[$base]['children']))
-				$sorted[$base]['children'] = array();
-			
-			$sorted[$base]['children'] = self::_walk(
-				$sorted[$base]['children'], 
-				$child_path,
-				$path_data
-			);
+			$bit = $bits[$i];
+
+			$tmp_bits[] = $bit;
+			$tmp_path = implode('/', $tmp_bits);
+
+			if(!isset($ref[$bit]))
+			{
+				$ref[$bit] = array(
+					'title' => null,
+					'path' => $tmp_path,
+					'children' => array()
+				);
+			}
+
+			// Only set title when we've reached the end of the bits	
+			if($i == $bits_count)
+				$ref[$bit]['title'] = $path_data['title'];
+
+			$ref =& $ref[$bit]['children'];
 		}
-		else
-			$sorted[$path] = array(
-				'title' => $path_data['title'],
-				'path' => $path_data['path'],
-				'children' => array()
-			);
 
 		return $sorted;
 	}

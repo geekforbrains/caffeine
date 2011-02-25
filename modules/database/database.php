@@ -18,4 +18,4 @@
  *      schema api.
  * =============================================================================
  */
-require_once(CAFFEINE_MODULES_PATH . 'database/drivers/' . DATABASE_DRIVER . CAFFEINE_EXT);
+require_once(Caffeine::module_path('database') . 'drivers/' . DATABASE_DRIVER . CAFFEINE_EXT);

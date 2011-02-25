@@ -19,7 +19,7 @@ class Auth_Admin {
 	 */
 	public static function manage()
 	{
-		View::load('Auth_Admin', 'auth_admin_manage', 
+		View::load('Auth', 'admin/manage', 
 			array('roles' => Auth_Model_Roles::get_all()));
 	}
 
@@ -51,7 +51,7 @@ class Auth_Admin {
 			}
         }
         
-		View::load('Auth_Admin', 'auth_admin_create',
+		View::load('Auth', 'admin/create',
 			array('permissions' => array()));
 	}
 
@@ -75,7 +75,7 @@ class Auth_Admin {
 			Message::set('success', 'Role permissions updated successfully.');
 		}
 
-		View::load('Auth_Admin', 'auth_admin_edit',
+		View::load('Auth', 'admin/edit',
 			array(
 				'role' => Auth_Model_Roles::get_by_cid($cid),
 				'role_perms' => Auth_Model_Permissions::get_by_role($cid),
@@ -99,7 +99,7 @@ class Auth_Admin {
 		else
 			Message::store('error', 'Error deleting role. Please try again.');
 
-		Router::redirect('admin/admin/auth/manage');
+		Router::redirect('admin/admin/auth');
 	}
 
 }

@@ -38,7 +38,7 @@ final class View_Events {
     public static function caffeine_init() 
 	{
 		Caffeine::trigger('View', 'change_theme');
-        Caffeine::trigger('View', 'block_paths');
+        //Caffeine::trigger('View', 'block_paths');
     }
    
     /**

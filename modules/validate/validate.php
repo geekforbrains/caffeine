@@ -49,7 +49,7 @@ class Validate {
 	public static function error($field)
 	{
 		if(isset(self::$_errors[$field]))
-			View::load('Validate', 'validate_error',
+			View::load('Validate', 'error',
 				array('error' => self::$_errors[$field]));
 	}
 

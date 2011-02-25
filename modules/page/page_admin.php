@@ -20,7 +20,7 @@ class Page_Admin {
 
 		$drafts = Page_Model::get_all(0); // Drafts should not be indented
 		
-		View::load('Page_Admin', 'page_admin_manage',
+		View::load('Page', 'admin/manage',
 			array(
 				'published' => $published,
 				'drafts' => $drafts
@@ -64,7 +64,7 @@ class Page_Admin {
 		MultiArray::load(Page_Model::get_all(1));
 		$pages = MultiArray::indent();
 
-		View::load('Page_Admin', 'page_admin_create',
+		View::load('Page', 'admin/create',
 			array('pages' => $pages));
 	}
 
@@ -118,7 +118,7 @@ class Page_Admin {
 		MultiArray::load(Page_Model::get_all(1));
 		$pages = MultiArray::indent();
 
-		View::load('Page_Admin', 'page_admin_edit',
+		View::load('Page', 'admin/edit',
 			array(
 				'page' => Page_Model::get_by_cid($cid),
 				'pages' => $pages
@@ -141,7 +141,7 @@ class Page_Admin {
 		else
 			Message::store(MSG_ERR, 'Error while deleting page. Please try again.');
 
-		Router::redirect('admin/page/manage');
+		Router::redirect('admin/page');
 	}
 
 }

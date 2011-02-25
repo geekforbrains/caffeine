@@ -31,8 +31,8 @@
             <div class="tabs">
 				<?php if(stristr(Path::current(), 'admin/login')): ?>
 					<ul class="left">
-						<li class="active"><a href="#">Login</a></li>
-						<li><a href="#">Reset Password</a></li>
+						<li class="active"><a href="<?php l('admin/login'); ?>">Login</a></li>
+						<!--<li><a href="#">Reset Password</a></li>-->
 					</ul>
 				<?php else: ?>
 					<?php echo Menu::build('admin', 0, array('admin/auth', 'admin/user', 'admin/admin'), 

@@ -52,6 +52,9 @@ final class Caffeine {
 	// @see Caffeine::_disabled
 	private static $_disabled_modules		= array();
 
+	// Stores all modules found during scan
+	private static $_modules				= array();
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Returns the current sites domain without trailing slashes.
@@ -77,6 +80,19 @@ final class Caffeine {
  	 */
 	public static function files_path() {
 		return self::$_files_path;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Returns the path to the given module, if it exists. Otherwise boolean
+	 * false is returned.
+	 * -------------------------------------------------------------------------
+ 	 */
+	public static function module_path($module)
+	{
+		if(isset(self::$_modules[$module]))
+			return self::$_modules[$module];
+		return false;
 	}
 
 	/**
@@ -144,7 +160,7 @@ final class Caffeine {
 					self::$_disabled_modules[] = strtolower(trim($bit));
 			}
 
-			self::_scan_modules();
+			self::_load_modules();
 
 			self::trigger('Caffeine', 'event_priority');
 			self::trigger('Caffeine', 'bootstrap');
@@ -172,9 +188,22 @@ final class Caffeine {
 		$module_bits = $class_bits;
 		while($module_bits)
 		{
-			$module_dir = implode('_', $module_bits);
+			$module = implode('_', $module_bits);
+
+			if(isset(self::$_modules[$module]))
+			{
+				$path = self::$_modules[$module] . $class . CAFFEINE_EXT;
+
+				if(file_exists($path))
+				{
+					self::$_class_modules[$class] = $module;
+					require_once($path);
+					return;
+				}
+			}
 
 			// If a site directory exists, check for modules there first
+			/*
 			if(!is_null(self::$_site_path))
 			{
 				$site_path = CAFFEINE_SITES_PATH . 
@@ -198,6 +227,7 @@ final class Caffeine {
 				require_once($file_path);
 				return;
 			}
+			*/
 			
 			array_pop($module_bits);
 		}
@@ -357,41 +387,81 @@ final class Caffeine {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Scans all modules in the Caffeine modules directory for event and
-	 * config files.
+	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-	private static function _scan_modules()
+	private static function _scan_modules($path, $modules = array())
 	{
-		$modules = scandir(CAFFEINE_MODULES_PATH);
-		
-		foreach($modules as $module)
+		$items = scandir($path);
+
+		foreach($items as $i)
 		{
-			if($module{0} == '.')
+			if($i{0} == '.')
 				continue;
 
+			$i_path = $path . $i . '/';
+
+			if(file_exists($i_path . $i . CAFFEINE_EXT))
+				$modules[$i] = $i_path;
+
+			elseif(is_dir($i_path))
+				$modules = self::_scan_modules($i_path, $modules);
+		}
+
+		ksort($modules);
+		return $modules;
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	private static function _load_modules()
+	{
+		self::$_modules = self::_scan_modules(CAFFEINE_MODULES_PATH);
+		
+		foreach(self::$_modules as $module => $module_path)
+		{
 			if(self::_is_disabled($module))
 				continue;
-			
+
 			// First check for config file, load if found
-			$module_config = sprintf(CAFFEINE_CONFIG_FILE_FORMAT, $module);
-			$config_path = CAFFEINE_MODULES_PATH . $module .'/'. $module_config . CAFFEINE_EXT;
-
+			$module_config = sprintf(CAFFEINE_CONFIG_FILE_FORMAT, $module) . CAFFEINE_EXT;
+			$module_config_path = $module_path . $module_config;
+			
 			// Check for config override in sites module dir
-			$site_config_path = self::$_site_path . CAFFEINE_MODULES_DIR . 
-				$module .'/'. $module_config . CAFFEINE_EXT;
+			if(self::$_site_path)
+			{
+				$site_config_path = self::$_site_path . CAFFEINE_MODULES_DIR . 
+					$module .'/'. $module_config;
 
-			if(file_exists($site_config_path))	
-				$config_path = $site_config_path;
+				if(file_exists($site_config_path))	
+					$module_config_path = $site_config_path;
+			}
+
+			if(file_exists($module_config_path))
+				require_once($module_config_path);
 			
-			if(file_exists($config_path))
-				require_once($config_path);
+			// Then check for events class, load if found
+			$module_events = sprintf(CAFFEINE_EVENTS_FILE_FORMAT, $module);
+			$module_events_path = $module_path . $module_events . CAFFEINE_EXT;
 			
-			// Then check for events class
-			$module_class = sprintf(CAFFEINE_EVENTS_FILE_FORMAT, $module);
-			
-			if(class_exists($module_class))
-				self::$_event_classes[] = strtolower($module_class);
+			// Check for events override in sites module dir
+			if(self::$_site_path)
+			{
+				$site_events_path = self::$_site_path . CAFFEINE_MODULES_DIR .
+					$module .'/'. $module_events . CAFFEINE_EXT;
+
+				if(file_exists($site_events_path))
+					$module_events_path = $site_events_path;
+			}
+
+			if(file_exists($module_events_path))
+			{
+				self::$_event_classes[] = $module_events;
+				require_once($module_events_path);
+			}
 		}
 	}
 

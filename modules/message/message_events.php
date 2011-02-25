@@ -17,13 +17,4 @@ final class Message_Events extends Message {
         self::_move_stored();
     }
 
-	/**
-	 * -------------------------------------------------------------------------
-	 * Implements the View::block_paths event.
-	 * -------------------------------------------------------------------------
-	 */
-    public static function view_block_paths() {
-        return array('Message' => CAFFEINE_MODULES_PATH . 'message/blocks/');
-    }
-
 }

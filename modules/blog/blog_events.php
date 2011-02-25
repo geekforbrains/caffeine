@@ -10,20 +10,7 @@ final class Blog_Events {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * TODO
-	 * -------------------------------------------------------------------------
-	 */
-    public static function view_block_paths() 
-    {
-        return array(
-            'Blog' => CAFFEINE_MODULES_PATH . 'blog/blocks/',
-            'Blog_Admin' => CAFFEINE_MODULES_PATH . 'blog/blocks/admin/'
-        );
-    }
-    
-	/**
-	 * -------------------------------------------------------------------------
-	 * TODO
+	 * Implements the Path::callbacks event.
 	 * -------------------------------------------------------------------------
 	 */
     public static function path_callbacks()
@@ -107,7 +94,7 @@ final class Blog_Events {
     
 	/**
 	 * -------------------------------------------------------------------------
-	 * TODO
+	 * Implements the Database::install event.
 	 * -------------------------------------------------------------------------
 	 */
     public static function database_install()

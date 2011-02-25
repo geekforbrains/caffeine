@@ -29,19 +29,6 @@ final class User_Events {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Implements the View::block_paths event.
-	 * -------------------------------------------------------------------------
-	 */
-	public static function view_block_paths() 
-	{
-		return array(
-			'User' => CAFFEINE_MODULES_PATH . 'user/blocks/',
-			'User_Admin' => CAFFEINE_MODULES_PATH . 'user/blocks/admin/'
-		);
-	}
-
-	/**
-	 * -------------------------------------------------------------------------
 	 * Implements the Path::callbacks event.
 	 * -------------------------------------------------------------------------
 	 */

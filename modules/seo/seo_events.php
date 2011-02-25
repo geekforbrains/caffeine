@@ -5,14 +5,6 @@ final class SEO_Events {
 		SEO::check_path();
 	}
 
-	public static function view_block_paths()
-	{
-		return array(
-			'SEO' => CAFFEINE_MODULES_PATH . 'seo/blocks/',
-			'SEO_Admin' => CAFFEINE_MODULES_PATH . 'seo/blocks/admin/'
-		);
-	}
-
 	public static function path_callbacks()
 	{
 		return array(

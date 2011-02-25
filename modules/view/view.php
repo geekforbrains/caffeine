@@ -39,7 +39,7 @@ class View {
 	protected static $_theme_meta			= array('css' => array(), 'js' => array());
     
     // Paths to blocks, associated by class name
-    protected static $_block_paths          = array();
+    //protected static $_block_paths          = array();
     
     // Module block paths, set via the View::block_paths event
     protected static $_loaded_block			= array();
@@ -410,7 +410,6 @@ class View {
      * -------------------------------------------------------------------------
      * Callback for the View::block_paths event.
      * -------------------------------------------------------------------------
-     */
     public static function callback_block_paths($class, $data) 
     {
         foreach($data as $c => $path)
@@ -420,6 +419,7 @@ class View {
             self::$_block_paths[strtolower($c)] = $path;
         }
     }
+	*/
     
     /**
      * -------------------------------------------------------------------------
@@ -542,7 +542,9 @@ class View {
 		}
 
 		// 2: Check for view with block name
-		$block_path = self::$_theme_path . self::$_loaded_block['block'] . CAFFEINE_EXT;
+		$block_path = self::$_theme_path . $current_module . '_' . 
+			str_replace('/', '_', self::$_loaded_block['block']) . CAFFEINE_EXT;
+
 		Debug::log('View', 'Checking for block view: %s', $block_path);
 
 		if(file_exists($block_path))
@@ -593,28 +595,37 @@ class View {
 	private static function _determine_block($class, $block)
 	{
 		// First check for override block pre-pended with current view
-		$view_block = self::$_theme_blocks_path . self::$_view_name .'_'. $block . CAFFEINE_EXT;
+		// If the block is within a directory, the view will be prepended to the
+		// file, ignoring any directories
+		$view_bits = explode('/', $block);
+		$last_bit = count($view_bits) - 1;
+		$view_bits[$last_bit] = self::$_view_name . '_' . $view_bits[$last_bit];
+		$tmp_block = implode('/', $view_bits);
+
+		$view_block = self::$_theme_blocks_path . $class . '/' . $tmp_block . CAFFEINE_EXT;
 		Debug::log('View', 'Checking for view block: %s', $view_block);
 
 		if(file_exists($view_block))
 			return $view_block;
             
 		// Secondly check for a regular override block
-        $override_block = self::$_theme_blocks_path . $block . CAFFEINE_EXT;
+        $override_block = self::$_theme_blocks_path . $class . '/' . $block . CAFFEINE_EXT;
 		Debug::log('View', 'Checking for override block: %s', $override_block);
 
         if(file_exists($override_block))
               return $override_block; 
 
 		// Finally check for a block default set by the calling class
-        if(isset(self::$_block_paths[$class]))
-        {
-            $default_block = self::$_block_paths[$class] . $block . CAFFEINE_EXT;
+		if($module_path = Caffeine::module_path($class))
+		{
+			$default_block = $module_path . VIEW_BLOCKS_DIR . $block . CAFFEINE_EXT;
 			Debug::log('View', 'Checking for default block: %s', $default_block);
 
-            if(file_exists($default_block))
+			if(file_exists($default_block))
 				return $default_block;
-        }
+		}
+		else
+			Debug::log('View', 'No module path found for class: %s', $class);
             
 		return false;
 	}

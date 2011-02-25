@@ -3,7 +3,7 @@ class SEO_Admin {
 
 	public static function manage()
 	{
-		View::load('SEO_Admin', 'seo_admin_manage',
+		View::load('SEO', 'admin/manage',
 			array('items' => SEO_Model::get_all()));
 	}
 
@@ -34,13 +34,13 @@ class SEO_Admin {
 			}
 		}
 			
-		View::load('SEO_Admin', 'seo_admin_create');
+		View::load('SEO', 'admin/create');
 	}
 
 	public static function edit($cid)
 	{
 		if(!SEO_Model::get_by_cid($cid))
-			Router::redirect('admin/seo/manage');
+			Router::redirect('admin/seo');
 
 		if($_POST)
 		{
@@ -62,7 +62,7 @@ class SEO_Admin {
 			}
 		}
 
-		View::load('SEO_Admin', 'seo_admin_edit', 
+		View::load('SEO', 'admin/edit', 
 			array('item' => SEO_Model::get_by_cid($cid)));
 	}
 
@@ -84,7 +84,7 @@ class SEO_Admin {
 			Message::set(MSG_OK, 'Analytics updated successfully.');
 		}
 
-		View::load('SEO_Admin', 'seo_admin_analytics',
+		View::load('SEO', 'admin/analytics',
 			array('analytics' => SEO_Model::get_analytics()));
 	}
 

@@ -30,7 +30,7 @@ class Media_Display {
 				Message::set(MSG_ERR, self::$_error);
 		}
 
-		View::load('Media', sprintf('media_%s_dialog', $type), 
+		View::load('Media', sprintf('%s_dialog', $type), 
 			array(
 				'type' => $type,
 				'cid' => $cid,

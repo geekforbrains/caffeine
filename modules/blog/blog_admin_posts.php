@@ -18,7 +18,7 @@ class Blog_Admin_Posts {
 		$published = Blog_Model_Posts::get_all(1);
 		$drafts = Blog_Model_Posts::get_all(0);
 
-        View::load('Blog_Admin', 'blog_admin_posts_manage',
+        View::load('Blog', 'admin/manage_posts',
             array(
 				'published' => $published,
 				'drafts' => $drafts
@@ -65,7 +65,7 @@ class Blog_Admin_Posts {
 			}
         }
         
-        View::load('Blog_Admin', 'blog_admin_posts_create',
+        View::load('Blog', 'admin/create_post',
             array('categories' => Blog_Model_Categories::get_all()));
     }
     
@@ -110,7 +110,7 @@ class Blog_Admin_Posts {
 			}
         }
         
-        View::load('Blog_Admin', 'blog_admin_posts_edit',
+        View::load('Blog', 'admin/edit_post',
             array(
 				'post' => Blog_Model_Posts::get_by_cid($cid),
 				'categories' => Blog_Model_Categories::get_all()
@@ -130,7 +130,7 @@ class Blog_Admin_Posts {
 		else
 			Message::store(MSG_ERR, 'Unkown error while deleting post. Please try again.');
 
-        Router::redirect('admin/blog/posts/manage');
+        Router::redirect('admin/blog/posts');
     }
 
 }

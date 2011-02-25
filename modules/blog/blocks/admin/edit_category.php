@@ -1,5 +1,5 @@
 <div class="area left short">
-	<h2>Navigation</h2>
+	<h3>Navigation</h3>
 	<?php echo Menu::build('admin/blog/categories', 0); ?>
 </div>
 

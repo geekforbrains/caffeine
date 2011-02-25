@@ -15,7 +15,7 @@ class Blog_Admin_Categories {
 	 */
     public static function manage() 
     {
-        View::load('Blog_Admin', 'blog_admin_categories_manage',
+        View::load('Blog', 'admin/manage_categories',
             array('categories' => Blog_Model_Categories::get_all()));
     }
     
@@ -45,7 +45,7 @@ class Blog_Admin_Categories {
 			}
         }
         
-        View::load('Blog_Admin', 'blog_admin_categories_create');
+        View::load('Blog', 'admin/create_category');
     }
     
 	/**
@@ -81,7 +81,7 @@ class Blog_Admin_Categories {
 			}
         }
         
-        View::load('Blog_Admin', 'blog_admin_categories_edit',
+        View::load('Blog', 'admin/edit_category',
             array('category' => Blog_Model_Categories::get_by_cid($cid)));
     }
     
@@ -97,7 +97,7 @@ class Blog_Admin_Categories {
 		else
 			Message::store(MSG_ERR, 'Unkown error when deleting category. Please try again.');
 
-        Router::redirect('admin/blog/categories/manage');
+        Router::redirect('admin/blog/categories');
     }
 
 }

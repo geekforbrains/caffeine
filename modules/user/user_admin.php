@@ -33,7 +33,7 @@ class User_Admin extends User_Model {
 				Message::set('error', 'Invalid login details.');
 		}
 		
-		View::load('User_Admin', 'user_admin_login');
+		View::load('User', 'admin/login');
 	}
 
 	/**
@@ -55,7 +55,7 @@ class User_Admin extends User_Model {
 	 */
 	public static function manage()
 	{
-		View::load('User_Admin', 'user_admin_manage',
+		View::load('User', 'admin/manage',
 			array('users' => User_Model::get_all()));
 	}
 
@@ -88,7 +88,7 @@ class User_Admin extends User_Model {
 			}
 		}
 
-		View::load('User_Admin', 'user_admin_create');
+		View::load('User', 'admin/create');
 	}
 
 	/**
@@ -116,7 +116,7 @@ class User_Admin extends User_Model {
 			Message::set('success', 'User updated successfully.');
 		}
 
-		View::load('User_Admin', 'user_admin_edit',
+		View::load('User', 'admin/edit',
 			array(
 				'user' => User_Model::get_by_cid($cid),
 				'avail_roles' => Auth_Model_Roles::get_all()
