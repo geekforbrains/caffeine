@@ -42,13 +42,15 @@ class Page_Admin {
 			if(Validate::passed())
 			{
 				$published = isset($_POST['publish']) ? 1 : 0;
+				$visible = 1;
 
 				$status = Page_Model::add(
 					$_POST['parent_cid'],
 					$_POST['title'],
 					String::tagify($_POST['title']),
 					$_POST['content'],
-					$published
+					$published,
+					$visible
 				);
 
 				if($status)
@@ -99,6 +101,7 @@ class Page_Admin {
 				else
 				{
 					$published = isset($_POST['published']) ? 1 : 0;
+					$visible = isset($_POST['visible']) ? 1 : 0;
 
 					Page_Model::update(
 						$cid,
@@ -106,7 +109,9 @@ class Page_Admin {
 						$_POST['title'],
 						$_POST['slug'],
 						$_POST['content'],
-						$published
+						$_POST['weight'],
+						$published,
+						$visible
 					);
 
 					Message::store(MSG_OK, 'Page updated successfully.');

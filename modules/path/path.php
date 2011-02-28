@@ -158,6 +158,8 @@ class Path {
 				$d['title'] = null;
                 
             self::$_paths[$p] = $d;
+
+			//Debug::log('Path', 'Registering path: %s', $p);
         }
     } 
 

@@ -4,7 +4,9 @@
 	<table class="stripe" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<th>Title</th>
-			<th style="text-align: right">
+			<th style="text-align: right">Visible</th>
+			<th width="20" style="text-align: right">Weight</th>
+			<th width="40" style="text-align: right">Delete</th>
 		</tr>
 
 		<?php if($published): ?>
@@ -16,6 +18,11 @@
 						</a>
 					</td>
 					<td align="right">
+						<?php echo ($page['visible']) ? 'Yes' : 'No'; ?>
+					<td align="right">
+						<?php echo $page['weight']; ?>
+					</td>
+					<td align="right">
 						<a href="<?php l('admin/page/delete/%d', $page['cid']); ?>">
 							Delete
 						</a>
@@ -23,7 +30,7 @@
 				</tr>
 			<?php endforeach; ?>
 		<?php else: ?>
-			<tr><td colspan="2"><em>No published pages.</em></td></tr>
+			<tr><td colspan="4"><em>No published pages.</em></td></tr>
 		<?php endif; ?>
 	</table>
 </div>
@@ -34,7 +41,8 @@
 	<table class="stripe" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<th>Title</th>
-			<th style="text-align: right">
+			<th style="text-align: right">Weight</th>
+			<th width="40" style="text-align: right">Delete</th>
 		</tr>
 
 		<?php if($drafts): ?>
@@ -46,6 +54,9 @@
 						</a>
 					</td>
 					<td align="right">
+						<?php echo $page['weight']; ?>
+					</td>
+					<td align="right">
 						<a href="<?php l('admin/page/delete/%d', $page['cid']); ?>">
 							Delete
 						</a>
@@ -53,7 +64,7 @@
 				</tr>
 			<?php endforeach; ?>
 		<?php else: ?>
-			<tr><td colspan="2"><em>No draft pages.</em></td></tr>
+			<tr><td colspan="3"><em>No draft pages.</em></td></tr>
 		<?php endif; ?>
 	</table>
 </div>

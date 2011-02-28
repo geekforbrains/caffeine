@@ -178,10 +178,10 @@ class Menu {
 			$class = (stristr(Path::current(), $item['path'])) ? ' class="active"' : '';
 
 			$html .= '<li' .$class. '>';
-			$html .= '<a href="' .Router::url($item['path']). '">';
-			$html .= strlen($class) ? '<strong>' : ''; 
+			$html .= '<a' .$class. ' href="' .Router::url($item['path']). '">';
+			//$html .= strlen($class) ? '<strong>' : ''; 
 			$html .= $item['title'];
-			$html .= strlen($class) ? '</strong>' : ''; 
+			//$html .= strlen($class) ? '</strong>' : ''; 
 			$html .= '</a>';
 
 			if($item['children'])

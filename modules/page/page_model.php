@@ -35,7 +35,11 @@ class Page_Model {
 					JOIN {content} c ON c.id = p.cid
 				WHERE published = %s 
 					AND c.site_cid = %s
-				ORDER BY p.title ASC', 
+				ORDER BY 
+					p.visible DESC,
+					p.weight ASC,
+					p.title ASC
+				',
 				$published,
 				User::current_site()
 			);
@@ -50,7 +54,10 @@ class Page_Model {
 				FROM {pages} p
 					JOIN {content} c ON c.id = p.cid
 				WHERE c.site_cid = %s
-				ORDER BY p.title ASC
+				ORDER BY 
+					p.visible DESC,
+					p.weight ASC,
+					p.title ASC
 				',
 				User::current_site()
 			);
@@ -96,7 +103,8 @@ class Page_Model {
 
 	/**
 	 * -------------------------------------------------------------------------
-	 * Gets all pages who's parent ID is the given parameter.
+	 * Gets all pages who's parent ID is the given parameter. Will only return
+	 * published, visible pages.
 	 *
 	 * @param $parent_cid
 	 *		The parent ID a page must be associated with.
@@ -115,9 +123,16 @@ class Page_Model {
 			FROM {pages} p
 				JOIN {content} c ON c.id = p.cid
 			WHERE p.parent_cid = %s
+				AND p.published = %s
+				AND p.visible = %s
 				AND c.site_cid = %s
+			ORDER BY
+				p.weight ASC,
+				p.title ASC
 			', 
 			$parent_cid,
+			1,
+			1,
 			User::current_site()
 		);
 
@@ -227,7 +242,7 @@ class Page_Model {
 	 *		Returns true if the creation was successful. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function add($parent_cid, $title, $slug, $content, $published)
+	public static function add($parent_cid, $title, $slug, $content, $published, $visible)
 	{
 		$cid = Content::create(PAGE_TYPE);
 
@@ -237,7 +252,8 @@ class Page_Model {
 			'title' => $title,
 			'slug' => $slug,
 			'content' => $content,
-			'published' => $published
+			'published' => $published,
+			'visible' => $visible
 		));
 	}
 
@@ -265,7 +281,7 @@ class Page_Model {
 	 *		Returns true if the update was successful. False otherwise.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function update($cid, $parent_cid, $title, $slug, $content, $published)
+	public static function update($cid, $parent_cid, $title, $slug, $content, $weight, $published, $visible)
 	{
 		Content::update($cid);
 
@@ -275,7 +291,9 @@ class Page_Model {
 				'title' => $title,
 				'slug' => $slug,
 				'content' => $content,
-				'published' => $published
+				'weight' => $weight,
+				'published' => $published,
+				'visible' => $visible
 			),
 			array('cid' => $cid)
 		);

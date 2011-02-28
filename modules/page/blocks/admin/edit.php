@@ -32,8 +32,12 @@
 				<textarea class="tinymce" name="content"><?php echo $page['content']; ?></textarea>
 			</li>
 			<li class="checkbox">
-				<input type="checkbox" name="published" <?php if($page['published'] > 0) echo 'checked="checked"'; ?> />
-				Published
+				<input type="checkbox" name="published" <?php if($page['published'] > 0) echo 'checked="checked"'; ?> /> Published<br />
+				<input type="checkbox" name="visible" <?php if($page['visible'] > 0) echo 'checked="checked"'; ?> /> Visible
+			</li>
+			<li class="text tiny">
+				<label>Weight</label>
+				<input type="text" name="weight" value="<?php echo $page['weight']; ?>" />
 			</li>
 			<li class="buttons">
 				<input type="submit" name="update" value="Update" />

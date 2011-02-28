@@ -26,7 +26,9 @@ class Page {
 	 */
 	public static function load() 
 	{
-		$path = Router::current_path();
+		//$path = Router::current_path();
+		$path = Path::get_calling_path();
+
 		$path_bits = explode('/', $path);
 		$slug = $path_bits[count($path_bits) - 1];
 

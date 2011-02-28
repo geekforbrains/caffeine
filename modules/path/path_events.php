@@ -35,6 +35,8 @@ final class Path_Events extends Path {
 				die('The default path configuration cannot be empty.');
 		}
 
+		Debug::log('Path', 'Current path is: %s', $current_path);
+
 		if($path_data = Path::get_data($current_path))
 		{
 			if(self::_auth_path($current_path, $path_data))

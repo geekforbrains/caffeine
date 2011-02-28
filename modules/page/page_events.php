@@ -97,7 +97,18 @@ final class Page_Events {
 						'size' => 'big',
 						'not null' => true
 					),
+					'weight' => array(
+						'type' => 'int',
+						'size' => 'normal',
+						'not null' => true
+					),
 					'published' => array(
+						'type' => 'int',
+						'size' => 'tiny',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'visible' => array(
 						'type' => 'int',
 						'size' => 'tiny',
 						'unsigned' => true,
@@ -108,7 +119,9 @@ final class Page_Events {
 				'indexes' => array(
 					'parent_cid' => array('parent_cid'),
 					'slug' => array('slug'),
-					'published' => array('published')
+					'weight' => array('weight'),
+					'published' => array('published'),
+					'visible' => array('visible')
 				),
 
 				'primary key' => array('cid')
