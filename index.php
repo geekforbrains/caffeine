@@ -3,7 +3,7 @@
  * =============================================================================
  * Caffeine
  * @author Gavin Vickery <gdvickery@gmail.com>
- * @version 0.1
+ * @version 0.2
  *
  * Caffeine is a root class that triggers events in modules to form an 
  * application. Caffeine itself is rather stupid, its the modules that make it 

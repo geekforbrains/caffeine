@@ -5,7 +5,7 @@
  * Don't edit these unless you know what you're doing.
  * =============================================================================
  */
-define('CAFFEINE_VERSION', '0.1');
+define('CAFFEINE_VERSION', '0.2');
 define('CAFFEINE_EXT', '.php');
 define('CAFFEINE_CONFIG', 'config' . CAFFEINE_EXT);
 
