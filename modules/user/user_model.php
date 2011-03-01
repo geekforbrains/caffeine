@@ -61,8 +61,6 @@ class User_Model extends Database {
 	 */
 	public static function get_all()
 	{
-		$root = self::get_root();
-
 		self::query('
 			SELECT
 				ua.cid,
@@ -75,12 +73,11 @@ class User_Model extends Database {
 			FROM {user_accounts} ua
 				LEFT JOIN {user_sites} us ON us.cid = ua.site_cid
 			WHERE 
-				ua.cid != %s
+				ua.is_root = 0
 				AND ua.site_cid = %s
 			ORDER BY 
 				ua.username ASC
 			',
-			$root['cid'],
 			User::current_site()
 		);
 
