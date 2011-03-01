@@ -74,11 +74,10 @@ class Auth {
 			return true;
 		}
 
-		// Check if user is root of the current site path, if they are, allow access to 
-		// everything under the roots site.
-		if($user['is_root'] && $user['site'] == $current_site)
+		// Check if user is admin for the current site
+		if($user['is_admin'] && $user['site'] == $current_site)
 		{
-			Debug::log('Auth', 'User is root of the current site.
+			Debug::log('Auth', 'User is admin of the current site.
 				Granting all access on this site only.');
 
 			return true;

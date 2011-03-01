@@ -15,6 +15,7 @@ class User extends Database {
 	private static $_user = array(
 		'cid' => 0,
 		'is_root' => 0,
+		'is_admin' => 0,
 		'site_cid' => 0,
 		'site' => null,
 		'username' => null,

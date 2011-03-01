@@ -28,6 +28,7 @@ class User_Model extends Database {
 				ua.site_cid,
 				ua.username,
 				ua.email,
+				ua.is_admin,
 				ua.is_root,
 				us.site
 			FROM {user_accounts} ua
@@ -68,6 +69,7 @@ class User_Model extends Database {
 				ua.site_cid,
 				ua.username,
 				ua.email,
+				ua.is_admin,
 				ua.is_root,
 				us.site
 			FROM {user_accounts} ua
@@ -252,7 +254,7 @@ class User_Model extends Database {
 		return true;
 	}
 
-	public static function update_user($cid, $username, $email, $is_root)
+	public static function update_user($cid, $username, $email, $is_admin)
 	{
 		Content::update($cid);
 
@@ -260,7 +262,7 @@ class User_Model extends Database {
 			array(
 				'username' => $username,
 				'email' => $email,
-				'is_root' => $is_root
+				'is_admin' => $is_admin
 			),
 			array('cid' => $cid)
 		);
@@ -325,6 +327,7 @@ class User_Model extends Database {
 	{
 		$root = self::get_root();
 		
+		// If a root user hasn't been created yet
 		if($root['cid'] == 0)
 		{
 			Debug::log('User', 'Creating initial root user');
@@ -347,6 +350,15 @@ class User_Model extends Database {
 				'is_root' => 1
 			));
 		}
+
+		// If root already exists, only update password
+		else
+		{
+			Database::update('user_accounts',
+				array('pass' => md5(USER_ROOT_PASS)),
+				array('cid' => $root['cid'])
+			);
+		}
 	}
 
 	public static function get_root()
@@ -357,16 +369,14 @@ class User_Model extends Database {
 				ua.site_cid,
 				ua.username,
 				ua.email
-			FROM {user_accounts} ua
-				JOIN {user_sites} us ON us.cid = ua.site_cid
+			FROM 
+				{user_accounts} ua
 			WHERE  
 				ua.username = %s
-				AND ua.pass = MD5(%s)
-				AND us.site = %s
+				AND ua.is_root = %s
 			',
 			USER_ROOT_USERNAME,
-			USER_ROOT_PASS,
-			USER_ROOT_SITE
+			1
 		);
 
 		if(Database::num_rows() > 0)

@@ -131,6 +131,11 @@ final class User_Events {
 						'length' => 255,
 						'not null' => true
 					),
+					'is_admin' => array(
+						'type' => 'int',
+						'size' => 'tiny',
+						'not null' => true
+					),
 					'is_root' => array(
 						'type' => 'int',
 						'size' => 'tiny',
@@ -141,7 +146,9 @@ final class User_Events {
 				'indexes' => array(
 					'site_cid' => array('site_cid'),
 					'username' => array('username'),
-					'email' => array('email')
+					'email' => array('email'),
+					'is_admin' => array('is_admin'),
+					'is_root' => array('is_root')
 				),
 
 				'primary key' => array('cid')
