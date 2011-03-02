@@ -60,19 +60,61 @@ class Menu {
 	 *			The above might get a top level menu of all sub-categories 
 	 *			based on the category replaced by "%s". 
 	 *
-	 * @param $ignore
-	 *		An array of offsets to ignore when building the menu.
+	 * @param $settings
+	 *		An array of settings to modify the output of the menu.
+	 *
+	 *		attr: Adds an attribute to the "ul" tag.
+	 *
+	 *			Example: 
+	 *				Menu::build(null, 0, array(
+	 *					'attr' => array(
+	 *						'class' => 'example'
+	 *					)
+	 *				));
+	 *
+	 * 		ignore: Used to ignore or "exclude" any of the matching paths from output.
+	 *
+	 *			Example:
+	 *				Menu::build(null, 0, array(
+	 *					'ignore' => array(
+	 *						'page/about-us',
+	 *						'blog'
+	 *					)
+	 *				));
+	 *
+	 *		before: Used to add custom menu items before any others.
+	 *
+	 *			Example:
+	 *				Menu::build(null, 0, array(
+	 *					'before' => array(
+	 *						array(
+	 *							'title' => 'Custom Title',
+	 *							'path' => 'my/custom/path'
+	 *						)
+	 *					)
+	 *				));
+	 *
+	 *		after: Works the same as "before" but adds custom items after all others.
+	 *			
 	 *
 	 * @param $attr
-	 *		An array of HTML attributes to be added to the lists <ul> tag
+	 *		DEPRECATED! Use the "attr" key in the $settings param instead.
 	 *
 	 * @return mixed
 	 *		Returns menu HTML if the menu items based on the given offset exist.
 	 *		Otherwise "null" is returned.
 	 * -------------------------------------------------------------------------
 	 */
-	public static function build($offset = null, $depth = -1, $ignore = array(), $attr = array())
+	public static function build($offset = null, $depth = -1, $settings = array(), $attr = array())
 	{
+		// Check if using old "ignore" param
+		if(isset($settings[0]))
+			$settings = array('ignore' => $settings);
+
+		// Check if using old "attr" param
+		if($attr)
+			$settings['attr'] = $attr;
+
 		$sorted = array();
 
 		if(is_array($offset))
@@ -88,7 +130,7 @@ class Menu {
 			$sorted = self::_offset($offset, $depth);
 
 		if($sorted)
-			return self::_html($sorted, $attr, $ignore);
+			return self::_html($sorted, $settings);
 		return null;
 	}
 
@@ -161,21 +203,48 @@ class Menu {
 	 * TODO Create a block for this generated HTML
 	 * -------------------------------------------------------------------------
 	 */
-	private static function _html($sorted, $attr, $ignore)
+	private static function _html($sorted, $settings)
 	{
+		// Insert manual "before" items
+		if(isset($settings['before']))
+			$sorted = array_merge($settings['before'], $sorted);
+
+		// Insert manual "after" items
+		if(isset($settings['after']))
+			$sorted = array_merge($sorted, $settings['after']);
+
 		$html = '<ul';
 
-		foreach($attr as $k => $v)
-			$html .= ' '.$k.'="'.$v.'"';
+		if(isset($settings['attr']))
+		{
+			foreach($settings['attr'] as $k => $v)
+				$html .= ' '.$k.'="'.$v.'"';
+		}
 
 		$html .= '>';
 
+		// For tracking "first" and "last" classes
+		$count = count($sorted);
+		$current_count = 1;
+
 		foreach($sorted as $item)
 		{
-			if(in_array($item['path'], $ignore))
+			if(isset($settings['ignore']) && in_array($item['path'], $settings['ignore']))
 				continue;
 
-			$class = (stristr(Path::current(), $item['path'])) ? ' class="active"' : '';
+			$class = '';
+
+			if(stristr(Path::current(), $item['path']))
+				$class .= 'active ';
+
+			if($current_count == 1)
+				$class .= 'first';
+
+			if($current_count == $count)
+				$class .= 'last';
+
+			if(strlen($class))
+				$class = ' class="' .$class. '"';
 
 			$html .= '<li' .$class. '>';
 			$html .= '<a' .$class. ' href="' .Router::url($item['path']). '">';
@@ -184,10 +253,12 @@ class Menu {
 			//$html .= strlen($class) ? '</strong>' : ''; 
 			$html .= '</a>';
 
-			if($item['children'])
-				$html .= self::_html($item['children'], $attr, $ignore);
+			if(isset($item['children']) && $item['children'])
+				$html .= self::_html($item['children'], $settings);
 
 			$html .= '</li>';
+
+			$current_count++;
 		}
 
 		$html .= '</ul>';
