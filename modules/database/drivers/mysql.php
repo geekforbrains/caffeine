@@ -261,14 +261,14 @@ class Database {
             if(is_string($a))
                 $a = "'".$a."'";
         }
-
-        // Inject arguments
-        $query = call_user_func_array('sprintf', 
-            array_merge(array($sql), $args));
             
         // Replace table name with prefix, if any
         $query = preg_replace('({([\w\_]+)})', 
-            sprintf('%s$1', DATABASE_PREFIX), $query);
+            sprintf('%s$1', DATABASE_PREFIX), $sql);
+
+        // Inject arguments
+        $query = call_user_func_array('sprintf', 
+            array_merge(array($query), $args));
             
         Debug::log('Database', $query);
             

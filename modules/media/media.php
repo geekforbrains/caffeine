@@ -17,8 +17,8 @@ class Media {
 	// Stores any errors returned by Upload module, or within Media
 	private static $_error = null;
 
-	private static function error() {
-		return self::$_error();
+	public static function error() {
+		return self::$_error;
 	}
 
 	/**
@@ -43,7 +43,7 @@ class Media {
 		{
 			if($data = Upload::save($_FILES[$filename]))
 			{
-				$media_type = self::_determine_media_type($data['type']);
+				$media_type = self::determine_media_type($data['type']);
 				$exif = self::_read_exif($media_type, $data);
 
 				if($cid = Media_Model::create_file($data, $media_type, $exif))
@@ -71,6 +71,13 @@ class Media {
 		return false;
 	}
 
+	public static function delete($cid)
+	{
+		$file = Media_Model::get_file($cid);
+		@unlink(Upload::path($file['path'], $file['hash']));
+		return Media_Model::delete($cid);
+	}
+
 	// TODO
 	// Determine if type is file or url
 	public static function get($cid) {
@@ -87,7 +94,7 @@ class Media {
 	}
 
 	// TODO
-	private static function _determine_media_type($file_type)
+	public static function determine_media_type($file_type)
 	{
 		if(stristr($file_type, 'image'))
 			return MEDIA_TYPE_IMAGE;

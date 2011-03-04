@@ -102,4 +102,10 @@ class Media_Model {
 		return $cid;
 	}
 
+	public static function delete($cid)
+	{
+		Content::delete($cid);
+		return Database::delete('media_files', array('cid' => $cid));
+	}
+
 }

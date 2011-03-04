@@ -314,7 +314,8 @@ class Upload {
 				//$zf_info = new finfo(FILEINFO_MIME);
 
 				$zfpath = self::path($file['path'], $zf['name']);
-				$zfhash = md5_file($zfpath);
+				$zfhash = md5(uniqid($zf['name'], true));
+				//$zfhash = md5_file($zfpath);
 				$zfhashpath = self::path($file['path'], $zfhash);
 
 				$zipfiles[] = array(
