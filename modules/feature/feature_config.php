@@ -1,9 +1,8 @@
 <?php if(!defined('CAFFEINE_ROOT')) die ('No direct script access allowed.');
 /**
  * =============================================================================
- * Debug Configurations
+ * Feature Constants
  * =============================================================================
  */
-define('DEBUG_ENABLED', false);
-define('DEBUG_WATCH', 'auth, user');
-define('DEBUG_IGNORE', '');
+define('FEATURE_TYPE_AREA', 'feature_area');
+define('FEATURE_TYPE_FEATURE', 'feature');

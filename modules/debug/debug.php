@@ -47,7 +47,8 @@ class Debug {
 	}
 
 	public static function display() {
-		View::load('Debug', 'logs', array('logs' => self::$_logs));
+		if(DEBUG_ENABLED)
+			View::load('Debug', 'logs', array('logs' => self::$_logs));
 	}
 
 	public static function parse_configs()
