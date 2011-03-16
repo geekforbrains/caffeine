@@ -233,21 +233,22 @@ class Menu {
 				continue;
 
 			$class = '';
+			$title = (isset($item['title']) && strlen($item['title'])) ? ' title="'. $item['title'] .'"' : null;
 
 			if(stristr(Path::current(), $item['path']))
 				$class .= 'active ';
 
 			if($current_count == 1)
-				$class .= 'first';
+				$class .= 'first ';
 
 			if($current_count == $count)
-				$class .= 'last';
+				$class .= 'last ';
 
 			if(strlen($class))
-				$class = ' class="' .$class. '"';
+				$class = ' class="' .trim($class). '"';
 
 			$html .= '<li' .$class. '>';
-			$html .= '<a' .$class. ' href="' .Router::url($item['path']). '">';
+			$html .= '<a' .$class. ' href="' .Router::url($item['path']). '"' .$title. '>';
 			//$html .= strlen($class) ? '<strong>' : ''; 
 			$html .= $item['title'];
 			//$html .= strlen($class) ? '</strong>' : ''; 
