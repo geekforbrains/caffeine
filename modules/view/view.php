@@ -59,7 +59,7 @@ class View {
 	protected static $_view_name			= VIEW_INDEX;
 
 	// Stores the title last set via the View::set_title method
-	protected static $_view_title			= null;
+	//protected static $_view_title			= null;
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -70,10 +70,10 @@ class View {
 	 * @param $title
 	 *		The title to give the current page.
 	 * -------------------------------------------------------------------------
-	 */
 	public static function set_title($title) {
 		self::$_view_title = $title;
 	}
+	*/
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -95,7 +95,6 @@ class View {
 	 * @return string
 	 *		Returns either a set title or the default title as a string.
 	 * -------------------------------------------------------------------------
-	 */
 	public static function get_title($default, $prepend = null, $append = null)
 	{
 		if(!is_null(self::$_view_title))
@@ -113,6 +112,7 @@ class View {
 
 		return $default;
 	}
+	*/
     
     
     /**
@@ -326,14 +326,14 @@ class View {
      *      Returns a string of generated HTML.
      * -------------------------------------------------------------------------
      */
-    public static function render($path, $data = array())
+    public static function render($view_path, $view_data = array())
     {
-        if($data)
-            foreach($data as $k => $v)
+        if($view_data)
+            foreach($view_data as $k => $v)
                 $$k = $v;
         
         ob_start();
-        eval('?>' .file_get_contents($path). '<?');
+        eval('?>' .file_get_contents($view_path). '<?');
         $buffer = ob_get_contents();
         ob_end_clean();
         

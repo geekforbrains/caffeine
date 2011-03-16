@@ -1,61 +1,92 @@
 <?php
 class SEO {
 
-	private static $_path = array(
-		'path' => null,
-		'title' => null,
-		'meta_author' => null,
-		'meta_description' => null,
-		'meta_keywords' => null,
-		'meta_robots' => null
-	);
+	private static $_path = null;
+	private static $_default = null;
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function check_path()
 	{
-		if($data = SEO_Model::get(Router::current_path()))
-			self::$_path = $data;
+		if($default_data = SEO_Model::get_default_path())
+			self::$_default = $default_data;
+
+		if($path_data = SEO_Model::get_by_path(Router::current_path()))
+			self::$_path = $path_data;
 	}
 
-	public static function title($default, $prepend = null, $append = null)
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	public static function title()
 	{
-		if(strlen(self::$_path['title']))
-			$default = $prepend . self::$_path['title'] . $append;
+		$title = null;
+		$using_default = false;
+		$path_data = Path::get_path_data(); // Used for setting the title based on the current path
 
-		elseif($data = Path::get_data(Router::current_path()))
-			if(strlen($data['title']))
-				$default = $prepend . $data['title'] . $append;
+		if(!is_null(self::$_path) && strlen(self::$_path['title']))
+			$title = self::$_path['title'];
 
-		return $default;
-	}
+		elseif(isset($path_data['title']) && strlen($path_data['title']))
+			$title = $path_data['title'];
 
-	public static function meta($type, $content = null)
-	{
-		switch($type)
+		elseif(!is_null(self::$_default))
 		{
-			case 'author':
-				if(strlen(self::$_path['meta_author']))
-					if($content = self::$_path['meta_author'])
-						return '<meta name="author" content="' .$content. '" />';
-
-			case 'description':
-				if(strlen(self::$_path['meta_description']))
-					if($content = self::$_path['meta_description'])
-						return '<meta name="description" content="' .$content. '" />';
-
-			case 'keywords':
-				if(strlen(self::$_path['meta_keywords']))
-					if($content = self::$_path['meta_keywords'])
-						return '<meta name="keywords" content="' .$content. '" />';
-
-			case 'robots':
-				if(strlen(self::$_path['meta_robots']))
-					if($content = self::$_path['meta_robots'])
-						return '<meta name="robots" content="' .$content. '" />';
+			$using_default = true;
+			$title = self::$_default['title'];
 		}
 
-		return null;
+		// If we arent using default, append and prepend values to title, if any
+		if(!$using_default && !is_null(self::$_default))
+			$title = self::$_default['prepend'] . $title . self::$_default['append'];
+
+		return $title;
+	}
+	
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
+	public static function meta() 
+	{
+		print_r(Path::get_paths());
+
+		$meta = array();
+
+		if(!is_null(self::$_path))
+		{
+			foreach(self::$_path['meta'] as $m)
+			{
+				$key = strtolower($m['name']);
+				$meta[$key] = $m;
+			}
+		}
+
+		if(!is_null(self::$_default))
+		{
+			foreach(self::$_default['meta'] as $m)
+			{
+				$key = strtolower($m['name']);
+				if(!isset($meta[$key]))
+					$meta[$key] = $m;
+			}
+		}
+
+		if($meta)
+			View::load('SEO', 'meta', array('meta' => $meta));
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
 	public static function analytics()
 	{
 		View::load('SEO', 'analytics', 

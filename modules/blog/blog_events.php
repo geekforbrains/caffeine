@@ -22,20 +22,22 @@ final class Blog_Events {
 				'alias' => 'blog/posts'
             ),
             'blog/posts' => array(
-				'title' => 'Blog',
+				'title' => 'Blog Posts',
                 'callback' => array('Blog', 'posts'),
-                'visible' => false,
 				'auth' => true,
             ),
             'blog/category/%s' => array(
+				'title_callback' => array('Blog', 'category_title'),
                 'callback' => array('Blog', 'posts_by_category'),
 				'auth' => true
             ),
 			'blog/archive' => array(
+				'title' => 'Blog Archive',
 				'callback' => array('Blog', 'archive'),
 				'auth' => true
 			),
             'blog/%s' => array(
+				'title_callback' => array('Blog', 'post_title'),
                 'callback' => array('Blog', 'post'),
 				'auth' => true,
             ),

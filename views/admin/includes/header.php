@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<base href="<?php echo View::theme_url(); ?>/" />
-    <title><?php echo View::get_title('Control Panel', 'Control Panel | '); ?></title>
+    <title><?php echo SEO::title(); ?></title>
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" />
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>

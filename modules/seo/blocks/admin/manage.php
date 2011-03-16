@@ -12,7 +12,9 @@
 				<tr>
 					<td>
 						<a href="<?php l('admin/seo/edit/%d', $i['cid']); ?>">
+							<?php if($i['is_default']) echo '<strong>'; ?>
 							<?php echo $i['path']; ?>
+							<?php if($i['is_default']) echo '</strong>'; ?>
 						</a>
 					</td>
 					<td align="right">

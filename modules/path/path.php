@@ -19,6 +19,7 @@
  *          return array(
  *              'my/path/%[s|d]' => array(
  *                  'title' => 'My Path',
+ *					'title_callback' => array('MyClass', 'my_method'),
  *					'alias' => 'load/this/path/instead',
  *                  'callback' => array('MyClass', 'my_method'),
  *                  'visible' => boolean,
@@ -30,10 +31,12 @@
 class Path {
 
 	// Stores loaded paths and metadata
+	protected static $_data		= null;
 	protected static $_current	= null;
     protected static $_paths 	= array(
 		'front' => array(
 			'title' => null,
+			'title_callback' => null,
 			'callback' => array('Path', 'front'),
 			'auth' => true,
 			'visible' => false
@@ -56,6 +59,10 @@ class Path {
 
 	public static function get_paths() {
 		return self::$_paths;
+	}
+
+	public static function get_path_data() {
+		return self::$_data;
 	}
 
 	// Deprecated
@@ -156,6 +163,10 @@ class Path {
 			// If no title set, set to null
 			if(!isset($d['title']))
 				$d['title'] = null;
+
+			// If no title callback set, set to null
+			if(!isset($d['title_callback']))
+				$d['title_callback'] = null;
                 
             self::$_paths[$p] = $d;
 
@@ -207,11 +218,28 @@ class Path {
 		else
 			$success = call_user_func($path_data['callback']);
 
+		// If title call back is set, call it to set custom titles
+		if(is_array($path_data['title_callback']))
+		{
+			if(isset($path_data['params']))
+				$new_title = call_user_func_array($path_data['title_callback'], $path_data['params']);
+			else
+				$new_title = call_user_func($path_data['title_callback']);
+
+			if($new_title)
+				$path_data['title'] = $new_title;
+		}
+		
+		self::$_data = $path_data;
+
 		// Method can return boolean false to handle dynamic 404's
 		if($success !== false)
 		{
+			/*
+			NOTE: Path shouldn't be responsible for calling SEO
 			if(isset($path_data['title']) && strlen($path_data['title']))
-				View::set_title($path_data['title']);
+				SEO::set_title($path_data['title']);
+			*/
 			return true;
 		}
 

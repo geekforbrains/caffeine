@@ -35,8 +35,6 @@ class Blog {
     public static function posts_by_category($slug = null)
     {
 		$category = Blog_Model_Categories::get_by_slug($slug);
-
-		View::set_title('Blog posts in "' .$category['name']. '"');
         View::load('Blog', 'posts',
             array(
                 'category' => $category,
@@ -56,8 +54,6 @@ class Blog {
             Router::redirect('blog');
 
 		$post = Blog_Model_Posts::get_by_slug($slug);
-
-		View::set_title($post['title']);
         View::load('Blog', 'post', array('post' => $post));
     }
 
@@ -108,5 +104,19 @@ class Blog {
         View::load('Blog', 'archive',
             array('posts' => Blog_Model_Posts::get_all(1, 100)));
     }
+
+	public static function category_title($slug)
+	{
+		$category = Blog_Model_Categories::get_by_slug($slug);
+		if($category)
+			return sprintf('Blog Posts in the "%s" Category', $category['name']);
+	}
+
+	public static function post_title($slug)
+	{
+		$post = Blog_Model_Posts::get_by_slug($slug);
+		if($post)
+			return $post['title'];
+	}
 
 }

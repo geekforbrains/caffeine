@@ -15,31 +15,30 @@ final class SEO_Events {
 			'admin/seo/manage' => array(
 				'title' => 'Manage Paths',
 				'callback' => array('SEO_Admin', 'manage'),
-				'auth' => 'manage seo',
-				'visible' => true
+				'auth' => 'manage seo'
 			),
 			'admin/seo/create' => array(
 				'title' => 'Create Path',
 				'callback' => array('SEO_Admin', 'create'),
-				'auth' => 'create seo',
-				'visible' => true
+				'auth' => 'create seo'
 			),
 			'admin/seo/edit/%d' => array(
 				'title' => 'Edit Path',
 				'callback' => array('SEO_Admin', 'edit'),
-				'auth' => 'edit seo',
-				'visible' => true
+				'auth' => 'edit seo'
+			),
+			'admin/seo/edit/%d/delete-meta/%d' => array(
+				'callback' => array('SEO_Admin', 'delete_meta'),
+				'auth' => 'delete meta'
 			),
 			'admin/seo/delete/%d' => array(
 				'callback' => array('SEO_Admin', 'delete'),
-				'auth' => 'delete seo',
-				'visible' => true
+				'auth' => 'delete seo'
 			),
 			'admin/seo/analytics' => array(
 				'title' => 'Analytics',
 				'callback' => array('SEO_Admin', 'analytics'),
-				'auth' => 'manage seo',
-				'visible' => true
+				'auth' => 'manage seo'
 			)
 		);
 	}
@@ -47,7 +46,7 @@ final class SEO_Events {
 	public static function database_install()
 	{
 		return array(
-			'seo' => array(
+			'seo_paths' => array(
 				'fields' => array(
 					'cid' => array(
 						'type' => 'int',
@@ -56,8 +55,13 @@ final class SEO_Events {
 						'not null' => true
 					),
 					'path' => array(
+						'type' => 'text',
+						'size' => 'tiny',
+						'not null' => true
+					),
+					'path_hash' => array(
 						'type' => 'varchar',
-						'length' => 255,
+						'length' => 32,
 						'not null' => true
 					),
 					'title' => array(
@@ -65,29 +69,66 @@ final class SEO_Events {
 						'length' => 255,
 						'not null' => true
 					),
-					'meta_author' => array(
+					'prepend' => array(
 						'type' => 'varchar',
 						'length' => 255,
 						'not null' => true
 					),
-					'meta_description' => array(
+					'append' => array(
 						'type' => 'varchar',
 						'length' => 255,
 						'not null' => true
 					),
-					'meta_keywords' => array(
-						'type' => 'varchar',
-						'length' => 255,
-						'not null' => true
-					),
-					'meta_robots' => array(
-						'type' => 'varchar',
-						'length' => 255,
+					'is_default' => array(
+						'type' => 'int',
+						'size' => 'tiny',
 						'not null' => true
 					)
 				),
 
+				'indexes' => array(
+					'path_hash' => array('path_hash'),
+					'is_default' => array('is_default')
+				),
+
 				'primary key' => array('cid')
+			),
+
+			'seo_meta' => array(
+				'fields' => array(
+					'cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'seo_path_cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
+						'not null' => true
+					),
+					'name' => array(
+						'type' => 'varchar',
+						'length' => 255,
+						'not null' => true
+					),
+					'content' => array(
+						'type' => 'varchar',
+						'length' => 255,
+						'not null' => true
+					),
+					'is_httpequiv' => array(
+						'type' => 'int',
+						'size' => 'tiny',
+						'not null' => true
+					)
+				),
+
+				'indexes' => array(
+					'seo_path_cid' => array('seo_path_cid'),
+					'is_httpequiv' => array('is_httpequiv')
+				)
 			),
 
 			'seo_analytics' => array(

@@ -17,17 +17,15 @@ class SEO_Admin {
 			{
 				if(!SEO_Model::exists($_POST['path']))
 				{
-					SEO_Model::create(
-						$_POST['path'],
-						$_POST['title'],
-						$_POST['meta_author'],
-						$_POST['meta_description'],
-						$_POST['meta_keywords'],
-						$_POST['meta_robots']
-					);
+					$_POST['is_default'] = isset($_POST['is_default']) ? 1 : 0;
 
-					Message::store(MSG_OK, 'SEO path created successfully.');
-					Router::redirect('admin/seo');
+					if(SEO_Model::create($_POST['path'], $_POST['title'], $_POST['is_default']))
+					{
+						Message::store(MSG_OK, 'SEO path created successfully.');
+						Router::redirect('admin/seo');
+					}
+					else	
+						Message::set(MSG_ERR, 'Error creating path. Please try again.');
 				}
 				else
 					Message::set(MSG_ERR, 'That path has already been configured.');
@@ -39,31 +37,65 @@ class SEO_Admin {
 
 	public static function edit($cid)
 	{
-		if(!SEO_Model::get_by_cid($cid))
+		if(!$path = SEO_Model::get_by_cid($cid))
 			Router::redirect('admin/seo');
 
 		if($_POST)
 		{
-			Validate::check('path', 'Path', array('required'));
-
-			if(Validate::passed())
+			if(isset($_POST['update_path']))
 			{
-				SEO_Model::update(
-					$cid,
-					$_POST['path'],
-					$_POST['title'],
-					$_POST['meta_author'],
-					$_POST['meta_description'],
-					$_POST['meta_keywords'],
-					$_POST['meta_robots']
-				);
+				Validate::check('path', 'Path', array('required'));
 
-				Message::set(MSG_OK, 'Path SEO updated successully.');
+				if(Validate::passed())
+				{
+					$_POST['is_default'] = isset($_POST['is_default']) ? 1 : 0;
+					$_POST['prepend'] = isset($_POST['prepend']) ? $_POST['prepend'] : null;
+					$_POST['append'] = isset($_POST['append']) ? $_POST['append'] : null;
+
+					$status = SEO_Model::update(
+						$cid,
+						$_POST['path'],
+						$_POST['title'],
+						$_POST['prepend'],
+						$_POST['append'],
+						$_POST['is_default']
+					);
+
+					if($status)
+						Message::set(MSG_OK, 'Path updated successfully.');
+					else
+						Message::set(MSG_ERR, 'Error updating path. Please try again');
+				}
 			}
+
+			elseif(isset($_POST['add_meta']))
+			{
+				Validate::check('name', 'Name', array('required'));
+				Validate::check('content', 'Content', array('required'));
+
+				if(Validate::passed())
+				{
+					$_POST['is_httpequiv'] = isset($_POST['is_httpequiv']) ? 1 : 0;
+
+					$status = SEO_Model::create_meta(
+						$cid,
+						$_POST['name'],
+						$_POST['content'],
+						$_POST['is_httpequiv']
+					);
+
+					if($status)
+						Message::set(MSG_OK, 'Meta data added successfully.');
+					else
+						Message::set(MSG_ERR, 'Error adding meta data.');
+				}
+			}
+
+			// If posting new data, get updated path
+			$path = SEO_Model::get_by_cid($cid); // Get updated
 		}
 
-		View::load('SEO', 'admin/edit', 
-			array('item' => SEO_Model::get_by_cid($cid)));
+		View::load('SEO', 'admin/edit', array('path' => $path));
 	}
 
 	public static function delete($cid)
@@ -74,6 +106,13 @@ class SEO_Admin {
 			Message::store(MSG_ERR, 'Error deleting SEO path. Please try again.');
 
 		Router::redirect('admin/seo');
+	}
+
+	public static function delete_meta($path_cid, $meta_cid)
+	{
+		SEO_Model::delete_meta($meta_cid);
+		Message::store(MSG_OK, 'Meta data deleted successfully.');
+		Router::redirect('admin/seo/edit/' . $path_cid);
 	}
 
 	public static function analytics()
