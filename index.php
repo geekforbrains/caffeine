@@ -399,10 +399,16 @@ final class Caffeine {
 			if($i{0} == '.')
 				continue;
 
+			if(isset($modules[$i]))
+				continue;
+
 			$i_path = $path . $i . '/';
 
 			if(file_exists($i_path . $i . CAFFEINE_EXT))
+			{
+				//echo "Adding: $i_path<br />";
 				$modules[$i] = $i_path;
+			}
 
 			elseif(is_dir($i_path))
 				$modules = self::_scan_modules($i_path, $modules);
@@ -420,6 +426,11 @@ final class Caffeine {
 	private static function _load_modules()
 	{
 		self::$_modules = self::_scan_modules(CAFFEINE_MODULES_PATH);
+
+		// Merge custom site modules with root modules
+		if(self::$_site_path)
+			self::$_modules = self::_scan_modules(self::$_site_path . CAFFEINE_MODULES_DIR,
+				self::$_modules);
 		
 		foreach(self::$_modules as $module => $module_path)
 		{

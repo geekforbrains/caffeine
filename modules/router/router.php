@@ -150,7 +150,9 @@ class Router {
         if(isset($bits[0]))
             $dir = $bits[0];
 
-        self::$_base = rtrim('http://' . $host . $dir, '/');
+		$http = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+
+        self::$_base = rtrim($http . $host . $dir, '/');
         self::$_path = isset($_GET['q']) ? $_GET['q'] : '';
         
         self::$_segments = strlen(self::$_path) ? explode('/', self::$_path) : array();

@@ -34,38 +34,20 @@ final class PayPal_Events {
 		return array(
 			'paypal_transactions' => array(
 				'fields' => array(
-					'transaction_id' => array(
-						'type' => 'varchar',
-						'length' => 255,
-						'not null' => true
-					),
-					'transaction_type' => array(
-						'type' => 'varchar',
-						'length' => 255,
-						'not null' => true
-					),
-					'payment_type' => array(
-						'type' => 'varchar',
-						'length' => 255,
-						'not null' => true
-					),
-					'payment_status' => array(
-						'type' => 'varchar',
-						'length' => 255,
+					'cid' => array(
+						'type' => 'int',
+						'size' => 'big',
+						'unsigned' => true,
 						'not null' => true
 					),
 					'data' => array(
 						'type' => 'text',
-						'size' => 'big',
-						'not null' => true
-					),
-					'timestamp' => array(
-						'type' => 'int',
 						'size' => 'normal',
-						'unsigned' => true,
 						'not null' => true
 					)
-				)
+				),
+
+				'primary key' => array('cid')
 			)
 		);
 	}

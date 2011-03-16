@@ -12,6 +12,7 @@
 				<li class="text small">
 					<label>Title</label>
 					<input type="text" name="title" value="<?php if($feature) echo $feature['title']; ?>" />
+					<?php echo Validate::error('title'); ?>
 				</li>
 			<?php endif; ?>
 
@@ -19,6 +20,7 @@
 				<li class="textarea medium">
 					<label>Body</label>
 					<textarea name="body"><?php if($feature) echo $feature['body']; ?></textarea>
+					<?php echo Validate::error('body'); ?>
 				</li>
 			<?php endif; ?>
 
@@ -26,6 +28,7 @@
 				<li class="text small">
 					<label>Link</label>
 					<input type="text" name="link" value="<?php if($feature) echo $feature['link']; ?>" />
+					<?php echo Validate::error('link'); ?>
 				</li>
 			<?php endif; ?>
 
@@ -35,18 +38,17 @@
 					<input type="file" name="image" />
 
 					<?php if($feature): ?>
-						<?php foreach($feature['images'] as $image): ?>
-							<img src="<?php l('media/image/%d/0/75/75', $image['media_cid']); ?>" /><br />
-						<?php endforeach; ?>
+						<?php View::load('Feature', 'admin/feature/images', 
+							array('area' => $area, 'feature' => $feature)); ?>
 					<?php endif; ?>
 				</li>
 			<?php endif; ?>
 
 			<li class="buttons">
 				<?php if($feature): ?>
-					<input type="submit" name="edit" value="Update Feature" />
+					<input type="submit" name="update" value="Update Feature" />
 				<?php else: ?>
-					<input type="submit" name="add" value="Create Feature" />
+					<input type="submit" name="create" value="Create Feature" />
 				<?php endif; ?>
 			</li>
 		</ul>
@@ -59,6 +61,7 @@
 		<table class="stripe" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<th>Name</th>
+				<th style="text-align: right">Delete</th>
 			</tr>
 
 			<?php if($features): ?>
@@ -67,6 +70,11 @@
 						<td>
 							<a href="<?php l('admin/feature/edit/%d/%d', $area['cid'], $feature['cid']); ?>">
 								<?php echo $feature['title']; ?>
+							</a>
+						</td>
+						<td align="right">
+							<a href="<?php l('admin/feature/delete/%d/%d', $area['cid'], $feature['cid']); ?>">
+								Delete
 							</a>
 						</td>
 					</tr>

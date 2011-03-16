@@ -4,5 +4,5 @@
  * Feature Constants
  * =============================================================================
  */
+define('FEATURE_TYPE', 'feature');
 define('FEATURE_TYPE_AREA', 'feature_area');
-define('FEATURE_TYPE_FEATURE', 'feature');
