@@ -83,7 +83,7 @@ class Router {
     public static function url() 
     {
         $args = func_get_args();
-        
+
         return sprintf('%s/%s', self::$_base, 
             rtrim(call_user_func_array('sprintf', $args), '/'));
     }
@@ -152,7 +152,8 @@ class Router {
 
 		$http = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
 
-        self::$_base = rtrim($http . $host . $dir, '/');
+        //self::$_base = rtrim($http . $host . $dir, '/');
+        self::$_base = rtrim($dir, '/'); // Relative
         self::$_path = isset($_GET['q']) ? $_GET['q'] : '';
         
         self::$_segments = strlen(self::$_path) ? explode('/', self::$_path) : array();
