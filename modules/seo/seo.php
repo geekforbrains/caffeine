@@ -55,8 +55,6 @@ class SEO {
 	 */
 	public static function meta() 
 	{
-		print_r(Path::get_paths());
-
 		$meta = array();
 
 		if(!is_null(self::$_path))
