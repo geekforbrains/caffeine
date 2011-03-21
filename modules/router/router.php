@@ -17,6 +17,8 @@
  */
 class Router {
 
+	protected static $_http		= 'http://';
+	protected static $_host		= null;
     protected static $_path     = ''; // Stores current path
     protected static $_segments = array(); // Stores parsed segments
     protected static $_base     = null; // Stores the applications base URL
@@ -87,6 +89,13 @@ class Router {
         return sprintf('%s/%s', self::$_base, 
             rtrim(call_user_func_array('sprintf', $args), '/'));
     }
+
+	public static function full_url()
+	{
+		$args = func_get_args();
+		$url = call_user_func_array(array('self', 'url'), $args);
+		return self::$_http . self::$_host . $url;
+	}
     
     /**
      * -------------------------------------------------------------------------
@@ -150,9 +159,9 @@ class Router {
         if(isset($bits[0]))
             $dir = $bits[0];
 
-		$http = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
-
         //self::$_base = rtrim($http . $host . $dir, '/');
+		self::$_http = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+		self::$_host = $host;
         self::$_base = rtrim($dir, '/'); // Relative
         self::$_path = isset($_GET['q']) ? $_GET['q'] : '';
         
@@ -165,4 +174,10 @@ class Router {
 function l($path) {
 	$args = func_get_args();
 	echo call_user_func_array(array('Router', 'url'), $args);
+}
+
+// Shorthand function for Router::full_url
+function fl($path) {
+	$args = func_get_args();
+	echo call_user_func_array(array('Router', 'full_url'), $args);
 }

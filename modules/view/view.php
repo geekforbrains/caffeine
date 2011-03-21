@@ -165,12 +165,32 @@ class View {
 
     /**
      * -------------------------------------------------------------------------
+     * DEPRECATED
+     * -------------------------------------------------------------------------
+     */
+	public static function set_title()
+	{
+		return null;
+	}
+
+    /**
+     * -------------------------------------------------------------------------
+     * DEPRECATED
+     * -------------------------------------------------------------------------
+     */
+	public static function get_title()
+	{
+		return null;
+	}
+
+    /**
+     * -------------------------------------------------------------------------
      * Returns the full URL to the current views theme directory. This is 
 	 * typically used to set the <base href="" /> tag in an html view.
      * -------------------------------------------------------------------------
      */
 	public static function theme_url($path = null) {
-		return Router::url(self::$_theme_dir . $path);
+		return Router::full_url(self::$_theme_dir . $path);
 	}
 
 	// TODO

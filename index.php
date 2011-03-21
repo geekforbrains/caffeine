@@ -506,6 +506,8 @@ set_error_handler('caffeine_error');
 
 require_once('constants.php');
 require_once(Caffeine::config());
+
+date_default_timezone_set(CAFFEINE_TIMEZONE);
 session_start();
 
 Caffeine::init();
