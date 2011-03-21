@@ -8,3 +8,5 @@ files/
 
 # Ignore VIM swap files
 *.swp
+
+.gitignore
