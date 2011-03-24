@@ -403,6 +403,71 @@ class Database {
 			return true;
 		return false;
 	}
+
+	// TODO
+	public static function exists($table, $field, $value)
+	{
+		self::query('
+			SELECT 
+				'.$table.'.'.$field.'
+			FROM '.$table.' 
+				JOIN content ON content.id = '.$table.'.cid
+			WHERE '.$table.'.'.$field.' LIKE %s
+				AND content.site_cid = %s
+			', 
+			$value,
+			User::current_site()
+		);
+		
+		if(self::num_rows() > 0)
+			return true;
+		return false;
+	}
+
+	public static function get_all($table)
+	{
+		self::query('
+			SELECT
+				'.$table.'.*,
+				content.type AS content_type,
+				content.site_cid,
+				content.user_cid,
+				content.created,
+				content.updated
+			FROM '.$table.'
+				JOIN content ON content.id = '.$table.'.cid
+			WHERE
+				content.site_cid = %s
+			',
+			User::current_site()
+		);
+
+		return self::fetch_all();
+	}
+
+	public static function get_by_cid($table, $cid)
+	{
+		self::query('
+			SELECT
+				'.$table.'.*,
+				content.type AS content_type,
+				content.site_cid,
+				content.user_cid,
+				content.created,
+				content.updated
+			FROM '.$table.'
+				JOIN content ON content.id = '.$table.'.cid
+			WHERE '.$table.'.cid = %s
+				AND content.site_cid = %s
+			',
+			$cid,
+			User::current_site()
+		);
+
+		if(self::num_rows() > 0)
+			return self::fetch_array();
+		return false;
+	}
     
     /**
      * -------------------------------------------------------------------------

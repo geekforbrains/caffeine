@@ -8,6 +8,23 @@
  */
 final class Blog_Events {
 
+	public static function newsletter_items()
+	{
+		$posts = Blog_Model_Posts::get_all();
+		$data = array();
+
+		foreach($posts as $post)
+			$data[$post['cid']] = $post['title'];
+
+		return $data;
+	}
+
+	public static function newsletter_data($cid)
+	{
+		$post = Blog_Model_Posts::get_by_cid($cid);
+		return $post;
+	}
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Implements the Path::callbacks event.

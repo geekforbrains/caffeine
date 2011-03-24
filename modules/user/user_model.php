@@ -6,7 +6,7 @@
  * @version 1.0
  * =============================================================================
  */
-class User_Model extends Database {
+class User_Model {
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -61,7 +61,7 @@ class User_Model extends Database {
 	 */
 	public static function get_all()
 	{
-		self::query('
+		Database::query('
 			SELECT
 				ua.cid,
 				ua.site_cid,
@@ -200,11 +200,11 @@ class User_Model extends Database {
 	public static function update_roles($cid, $roles)
 	{
 		// Clear old rows
-		self::query('DELETE FROM {user_roles} WHERE user_cid = %s', $cid);
+		Database::query('DELETE FROM {user_roles} WHERE user_cid = %s', $cid);
 
 		// Add new roles
 		foreach($roles as $role)
-			self::query('INSERT INTO {user_roles} (user_cid, role_cid) VALUES
+			Database::query('INSERT INTO {user_roles} (user_cid, role_cid) VALUES
 				(%s, %s)', $cid, $role);
 	}
 
@@ -215,14 +215,14 @@ class User_Model extends Database {
 	 */
 	public static function username_exists($username)
 	{
-		self::query('
+		Database::query('
 			SELECT cid FROM {user_accounts} 
 			WHERE username LIKE %s AND site_cid = %s', 
 			$username,
 			User::current_site()
 		);
 
-		if(self::num_rows() > 0)
+		if(Database::num_rows() > 0)
 			return true;
 		return false;
 	}
@@ -282,9 +282,9 @@ class User_Model extends Database {
 	 */
 	public static function get_site_cid($site) 
 	{
-		self::query('SELECT cid FROM {user_sites} WHERE site = %s', $site);
-		if(self::num_rows() > 0)
-			return self::fetch_single('cid');
+		Database::query('SELECT cid FROM {user_sites} WHERE site = %s', $site);
+		if(Database::num_rows() > 0)
+			return Database::fetch_single('cid');
 
 		$root = self::get_root();
 		return $root['site_cid'];
