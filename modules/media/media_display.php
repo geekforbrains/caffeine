@@ -64,6 +64,12 @@ class Media_Display {
 	 */
 	public static function image($cid, $rotate = 0, $wp = null, $h = null)
 	{
+		if($cid == 0)
+		{
+			self::_blank_image($rotate, $wp); // width x height
+			exit();
+		}
+
 		$file = Media_Model::get_file($cid);
 		$thumb_hash = md5($cid . $rotate . $wp . $h);
 
@@ -125,6 +131,44 @@ class Media_Display {
 			die('Media cache directory isn\'t writable: ' . $cache_path);
 
 		return $cache_path . $hash;
+	}
+
+	private static function _blank_image($width, $height)
+	{
+		$string = 'No Photo';
+		$font = CAFFEINE_MODULES_PATH . 'media/fonts/' . MEDIA_FONT;
+
+		// Shrink font size one step until it fits
+		$tmp = $width / 2; // set starting font size
+		$min_w = ($width / 100) * 75; // 75% of total width
+		$min_h = $height / 2;
+		while(true)
+		{
+			$font_size = $tmp;
+			$font_box = imagettfbbox($font_size, 0, $font, $string);
+			$font_width = $font_box[0] + $font_box[2];
+			$font_height = abs($font_box[7]);
+
+			if($font_width < $min_w && $font_height < $min_h)
+				break;
+
+			$tmp--;
+		}
+
+		$font_x = ($width - $font_width) / 2;
+		$font_y = ($height + $font_height) / 2;
+
+		$im = imagecreatetruecolor($width, $height);
+		$bg = imagecolorallocate($im, 138, 138, 138);
+		$textcolor = imagecolorallocate($im, 0, 0, 0);
+		imagefilledrectangle($im, 0, 0, $width, $height, $bg);
+
+		//imagestring($im, $font, $font_x, $font_y, $string, $textcolor);
+		imagettftext($im, $font_size, 0, $font_x, $font_y, $textcolor, $font, $string);
+
+		header('content-type: image/png');
+		imagepng($im);
+		imagedestroy($im);
 	}
 
 }
