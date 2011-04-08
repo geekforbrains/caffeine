@@ -35,7 +35,7 @@
 			</li>
 			<li class="checkbox">
 				<label>Set as Administrator</label>
-				<input type="checkbox" name="is_root" value="1" <?php echo ($user['is_root']) ? 'checked="checked"' : ''; ?> />
+				<input type="checkbox" name="is_admin" value="1" <?php echo ($user['is_admin']) ? 'checked="checked"' : ''; ?> />
 				Give user full administrator access <em>(Overrides roles)</em>
 			</li>
 			<li class="buttons">
