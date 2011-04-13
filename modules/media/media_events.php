@@ -16,6 +16,13 @@ final class Media_Events {
 	public static function path_callbacks()
 	{
 		return array(
+			// Download media file, regardless of type
+			'media/download/%d' => array(
+				'callback' => array('Media_Display', 'download'),
+				'auth' => true,
+				'visible' => false
+			),
+
 			// Display original image
 			'media/image/%d' => array(
 				'callback' => array('Media_Display', 'image'),

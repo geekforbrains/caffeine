@@ -100,13 +100,13 @@ class User_Admin extends User_Model {
 	{
 		if($_POST)
 		{
-			if(!isset($_POST['is_root']))
-				$_POST['is_root'] = 0;
+			if(!isset($_POST['is_admin']))
+				$_POST['is_admin'] = 0;
 
 			if(!isset($_POST['roles']))
 				$_POST['roles'] = array();
 
-			self::update_user($cid, $_POST['username'], $_POST['email'], $_POST['is_root']);
+			self::update_user($cid, $_POST['username'], $_POST['email'], $_POST['is_admin']);
 			self::update_roles($cid, $_POST['roles']);
 
 			// If password field is set, create new password

@@ -40,6 +40,37 @@ class Media_Display {
 	}
 
 	/**
+	 * -------------------------------------------------------------------------
+	 * Forces the given media CID to be downloaded through the browser.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function download($cid)
+	{
+		$file = Media_Model::get_file($cid);
+
+		if($file)
+		{
+			$file_path = Upload::path($file['path'], $file['hash']);
+
+			header('Content-Type: application/octet-stream');
+			header('Content-Disposition: attachment; filename=' .$file['name']);
+			header('Content-Transfer-Encoding: binary');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Pragma: public');
+			header('Content-Length: ' .$file['size']);
+
+			ob_clean();
+			flush();
+
+			readfile($file_path);
+			exit;
+		}
+
+		return false;
+	}
+
+	/**
 	 * ------------------------------------------------------------------------
 	 * Displays images based on parameters. Usually these are called via the
 	 * URL, but you can technically call this method Media::image() manually
