@@ -53,7 +53,7 @@ final class Blog_Events {
 				'callback' => array('Blog', 'archive'),
 				'auth' => true
 			),
-            'blog/%s' => array(
+            'blog/%' => array(
 				'title_callback' => array('Blog', 'post_title'),
                 'callback' => array('Blog', 'post'),
 				'auth' => true,
