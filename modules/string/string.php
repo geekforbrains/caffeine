@@ -118,4 +118,23 @@ class String {
 			str_replace('%s', '([A-Za-z\-]+)', $string)));
 	}
 
+	/**
+	 * -------------------------------------------------------------------------
+	 * Receives a string, shortens it, appends stuff to the end.
+	 * -------------------------------------------------------------------------
+	 */
+	public static function truncate($string, $length, $append)
+	{
+		 $string = strip_tags($string);
+		 $output = '';
+	    settype($string, 'string');
+	    settype($length, 'integer');
+	    for($a = 0; $a < $length AND $a < strlen($string); $a++){
+	        $output .= $string[$a];
+	    }
+	    $output .= $append;
+
+	    return $output;
+	}
+
 }

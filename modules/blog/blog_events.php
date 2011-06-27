@@ -127,7 +127,7 @@ final class Blog_Events {
                 'fields' => array(
                     'cid' => array(
                         'type' => 'int',
-						'size' => 'big',
+								'size' => 'big',
                         'unsigned' => true,
                         'not null' => true
                     ),
