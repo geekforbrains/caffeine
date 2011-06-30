@@ -101,6 +101,8 @@ class Blog_Model_Posts {
 			WHERE
 				bc.slug = %s
 				AND c.site_cid = %s
+			ORDER BY
+				c.created DESC
 			',
 			$slug,
 			User::current_site()
