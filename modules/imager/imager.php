@@ -19,7 +19,7 @@ class Imager {
 	public static function open($path)
 	{
 		require_once(CAFFEINE_MODULES_PATH . 'imager/phpthumb/ThumbLib.inc.php');
-		self::$_thumb = PhpThumbFactory::create($path);
+		self::$_thumb = PhpThumbFactory::create($path, array('resizeUp' => true));
 	}
 
 	public static function resize($width, $height, $adaptive = false) 
