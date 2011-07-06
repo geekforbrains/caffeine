@@ -10,6 +10,12 @@
  */
 class String {
 
+    // TODO Finish full country list
+    public static $countries = array(
+        'CA' => 'Canada',
+        'US' => 'United States'
+    );
+
 	public static $provinces = array(
 		'AB' => 'Alberta',
 		'BC' => 'British Columbia',
