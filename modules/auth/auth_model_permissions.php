@@ -28,9 +28,16 @@ class Auth_Model_Permissions {
 		$paths = Path::paths();
 
 		foreach($paths as $path)
-			if(isset($path['auth']) && !in_array($path['auth'], $permissions)
-				&& !is_bool($path['auth']))
-				$permissions[] = $path['auth'];
+        {
+            if(isset($path['auth']) && !is_bool($path['auth']))
+            {
+                if(!isset($permissions[$path['module']]))
+                    $permissions[$path['module']] = array();
+
+                if(!in_array($path['auth'], $permissions[$path['module']]))
+                    $permissions[$path['module']][] = $path['auth'];
+            }
+        }
 
 		return $permissions;
 	}

@@ -102,4 +102,9 @@ class Auth_Admin {
 		Router::redirect('admin/admin/auth');
 	}
 
+    private static function _sort_permissions($perms)
+    {
+        print_r($perms);
+    }
+
 }

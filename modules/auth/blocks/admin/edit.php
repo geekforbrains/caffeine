@@ -10,15 +10,17 @@
 		<input type="hidden"  name="role_id" value="<?php echo $role['cid']; ?>" />
 
 		<ul>
+			<?php foreach($avail_perms as $module => $permissions): ?>
 			<li class="checkbox">
-				<label>Permissions</label>
-				<?php foreach($avail_perms as $perm): ?>
-					<input type="checkbox" name="perms[]" value="<?php echo $perm; ?>"
-						<?php echo (in_array($perm, $role_perms)) ? 'checked="checked"' : ''; ?>/>
-					<?php echo $perm; ?>
-					<br />
-				<?php endforeach; ?>
+                <label><?php echo ucfirst($module); ?></label>
+                <?php foreach($permissions as $perm): ?>
+                    <input type="checkbox" name="perms[]" value="<?php echo $perm; ?>"
+                        <?php echo (in_array($perm, $role_perms)) ? 'checked="checked"' : ''; ?>/>
+                    <?php echo $perm; ?>
+                    <br />
+                <?php endforeach; ?>
 			</li>
+			<?php endforeach; ?>
 			<li class="buttons">
 				<input type="submit" value="Update Permissions" />
 			</li>

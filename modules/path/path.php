@@ -147,6 +147,8 @@ class Path {
     {
         foreach($data as $p => $d)
         {
+            $d['module'] = str_replace('_events', '', $class);
+
 			// Any paths with wildcards cannot by visible items because
 			// they are dynamic
             if(strstr($p, '%'))

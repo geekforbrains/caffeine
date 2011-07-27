@@ -95,5 +95,33 @@ class Auth {
 		Debug::log('Auth', 'All auth attempts failed. Rejecting access.');
 		return false;
 	}
+    
+    /**
+     * Checks if the current user has a given permission.
+     *
+     * @param string $permission The permission to be checked.
+     * @return boolean
+     */
+    public static function has_access($permission)
+    {
+        $user = User::current();
+        $site = Caffeine::site();
+        $current_site = ($site) ? $site : USER_ROOT_SITE;
+
+        // First check of user is root, if so, always allow on any site
+        if(User::is_root($user['cid']))
+            return true;
+
+        // Second check of user is admin of the current site, if so
+        // allow all on this site
+        if($user['is_admin'] && $user['site'] == $current_site)
+            return true;
+
+        // Check if user has this permission set
+        if(in_array($permission, $user['permissions']))
+            return true;
+        
+        return false;
+    }
 
 }
