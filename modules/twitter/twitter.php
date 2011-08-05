@@ -111,17 +111,25 @@ class Twitter {
 	 */
 	public static function get_recent($username, $limit = 5, $format = 'json')
 	{
-		$tweets = json_decode(file_get_contents(
-			sprintf(
-				'http://api.twitter.com/1/statuses/user_timeline/%s.%s',
-				$username, $format
-			)
-		));
+		try
+		{
+			$get = file_get_contents(sprintf('http://api.twitter.com/1/statuses/user_timeline/%s.%s', $username, $format);
+		}
+		catch {
+			$get = false;
+		}
+		
+		if($get)
+		{
+			$tweets = json_decode($get);
+			
+			if(count($tweets) > $limit)
+				$tweets = array_slice($tweets, 0, $limit);
 
-		if(count($tweets) > $limit)
-			$tweets = array_slice($tweets, 0, $limit);
-
-		return $tweets;
+			return $tweets;			
+		}
+		else
+			return false;
 	}
 
 	/**

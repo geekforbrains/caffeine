@@ -39,9 +39,9 @@ final class Blog_Events {
 				'alias' => 'blog/posts'
             ),
             'blog/posts' => array(
-				'title' => 'Blog Posts',
+					'title' => 'Blog Posts',
                 'callback' => array('Blog', 'posts'),
-				'auth' => true,
+					'auth' => true,
             ),
             'blog/category/%s' => array(
 				'title_callback' => array('Blog', 'category_title'),
