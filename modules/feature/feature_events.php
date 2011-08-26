@@ -30,6 +30,10 @@ final class Feature_Events {
 				'callback' => array('Feature_Admin', 'delete_image'),
 				'auth' => 'delete feature images'
 			),
+            'admin/feature/delete/%d/%d' => array(
+                'callback' => array('Feature_Admin', 'delete'),
+                'auth' => 'delete features'
+            ),
 
 			// Areas
 			'admin/feature/area' => array(

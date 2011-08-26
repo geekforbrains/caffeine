@@ -80,7 +80,7 @@
 					</tr>
 				<?php endforeach; ?>
 			<?php else: ?>
-				<tr><td><em>No features.</em></td></tr>
+				<tr><td colspan="2"><em>No features.</em></td></tr>
 			<?php endif; ?>
 		</table>
 	</div>

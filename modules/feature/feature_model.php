@@ -234,4 +234,17 @@ class Feature_Model {
 		));
 	}
 
+    public static function delete($feature_cid)
+    {
+        // First delete images if any
+        Database::query('SELECT media_cid FROM {feature_images} WHERE feature_cid = %s', $feature_cid);
+            
+        if($images = Database::fetch_all())
+            foreach($images as $image)
+                Media::delete($image['media_cid']);
+
+        Content::delete($feature_cid);
+        return Database::delete('features', array('cid' => $feature_cid));
+    }
+
 }
