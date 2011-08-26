@@ -28,7 +28,7 @@ class Feature_Admin {
 		if($_POST)
 		{
 			if(isset($_POST['create']))
-				self::_create($area);
+				self::_create($area_cid, $area);
 
 			elseif(isset($_POST['update']))
 				self::_update($area, $feature_cid);
@@ -53,7 +53,17 @@ class Feature_Admin {
 		Router::redirect('admin/feature/edit/'.$area_cid.'/'.$feature_cid);
 	}
 
-	private static function _create($area)
+    public static function delete($area_cid, $feature_cid)
+    {
+        if(Feature_Model::delete($feature_cid))
+            Message::store(MSG_OK, 'Feature deleted successfully.');
+        else
+            Message::store(MSG_ERR, 'Error deleting feature. Please try again.');
+
+        Router::redirect('admin/feature/edit/' . $area_cid);
+    }
+
+	private static function _create($area_cid, $area)
 	{
 		$status = true;
 		$media_cid = null;
@@ -101,7 +111,7 @@ class Feature_Admin {
 		if($status)
 		{
 			Message::store(MSG_OK, 'Feature created successfully.');
-			Router::redirect('admin/feature');
+			Router::redirect('admin/feature/edit/' . $area_cid);
 		}
 
 		// If anything went wrong, and an image was uploaded, delete it
