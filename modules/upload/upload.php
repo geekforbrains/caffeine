@@ -256,14 +256,16 @@ class Upload {
 			if(!strlen($file['type']))
 				$file['type'] = 'text/plain';
 			
-			if(move_uploaded_file($file['tmp_name'], self::path($file_path, $file_hash)))
+            $full_path = self::path($file_path, $file_hash);
+			if(move_uploaded_file($file['tmp_name'], $full_path))
 			{
 				return array(
 					'name' => $file['name'],
 					'hash' => $file_hash,
 					'path' => $file_path,
 					'type' => $file['type'],
-					'size' => $file['size']
+					'size' => $file['size'],
+                    'full_path' => $full_path
 				);
 			}
 			else
@@ -307,11 +309,15 @@ class Upload {
 			$za = new ZipArchive();
 			$za->open(self::path($file['path'], $file['hash']));
 			$za->extractTo(self::path($file['path'])); // Extract zip files to same path as zip
-			
+
 			for($i = 0; $i < $za->numFiles; $i++)
 			{
 				$zf = $za->statIndex($i);
 				//$zf_info = new finfo(FILEINFO_MIME);
+
+                // Ignore stupid fucking mac zip dirs
+                if(substr($zf['name'], 0, 8) == '__MACOSX')
+                    continue;
 
 				$zfpath = self::path($file['path'], $zf['name']);
 				$zfhash = md5(uniqid($zf['name'], true));
@@ -323,12 +329,19 @@ class Upload {
 					'hash' => $zfhash,
 					'path' => $file['path'],
 					'type' => self::_determine_mime_type($zfpath),
-					'size' => filesize($zfpath)
+					//'size' => filesize($zfpath)
+                    'size' => (isset($zf['size'])) ? $zf['size'] : 0
 				);
 
 				// Rename file to hash
-				rename($zfpath, self::path($file['path'], $zfhash));
+                if(file_exists($zfpath))
+                    rename($zfpath, self::path($file['path'], $zfhash));
 			}
+
+            // Delete __MACOSX dir if it existed in the zip file
+            $macDir = self::path(self::_determine_upload_path() . '__MACOSX');
+            if(file_exists($macDir))
+                self::_remove_dir($macDir);
 
 			$file['files'] = $zipfiles;
 			return $file;
@@ -336,6 +349,24 @@ class Upload {
 		else
 			return false;
 	}
+    
+    // Will delete non-empty dir
+    private static function _remove_dir($dirPath)
+    {
+        $items = scandir($dirPath);
+        foreach($items as $i)
+        {
+            if($i{0} == '.')
+                continue;
+                
+            $iPath = $dirPath . '/' . $i;
+
+            if(is_dir($iPath))
+                self::_remove_dir($iPath);
+        }
+
+        @rmdir($dirPath);
+    }
 
 	/**
 	 * -------------------------------------------------------------------------
