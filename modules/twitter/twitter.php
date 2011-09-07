@@ -113,9 +113,11 @@ class Twitter {
 	{
 		try
 		{
-			$get = file_get_contents(sprintf('http://api.twitter.com/1/statuses/user_timeline/%s.%s', $username, $format);
-		}
-		catch {
+			$url = sprintf('http://api.twitter.com/1/statuses/user_timeline/%s.%s', $username, $format);
+			$get = file_get_contents($url);
+		} 
+		catch (Exception $e) 
+		{
 			$get = false;
 		}
 		
