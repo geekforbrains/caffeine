@@ -235,8 +235,10 @@ class Menu {
 			$class = '';
 			$title = (isset($item['title']) && strlen($item['title'])) ? ' title="'. $item['title'] .'"' : null;
 
-			if(stristr(Path::current(), $item['path']))
+			if($item['path'] !== '/' && stristr(Path::current(), $item['path']))
+			{
 				$class .= 'active ';
+			}
 
 			if($current_count == 1)
 				$class .= 'first ';
