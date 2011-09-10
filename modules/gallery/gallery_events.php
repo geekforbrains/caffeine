@@ -8,7 +8,13 @@ class Gallery_Events {
             // Front
             'gallery' => array(
                 'title' => 'Photo Gallery',
-                'callback' => array('Gallery', 'view'),
+                'callback' => array('Gallery', 'albums'),
+                'auth' => true
+            ),
+            'gallery/%d' => array(
+                'title' => 'Album',
+                'title_callback' => array('Gallery', 'get_album_title'),
+                'callback' => array('Gallery', 'photos'),
                 'auth' => true
             ),
 
