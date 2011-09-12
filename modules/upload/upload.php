@@ -276,6 +276,34 @@ class Upload {
 		return false;
 	}
 
+    /**
+     * Saves a file from a URL.
+     */
+    public static function save_url($url)
+    {
+        $file_hash = md5($url);
+        $file_path = self::_determine_upload_path(); // YYYY/MM/
+        $full_path = self::path($file_path, $file_hash);  // ROOT/uploads/YYYY/MM/[hash]
+
+        if(file_put_contents($full_path, file_get_contents($url)))
+        {
+            $bits = explode('/', $url);
+
+            return array(
+                'name' => $bits[count($bits) - 1],
+                'hash' => $file_hash,
+                'path' => $file_path,
+                'type' => self::_determine_mime_type($url),
+                'size' => filesize($full_path),
+                'full_path' => $full_path
+            );
+        }
+        else
+            self::$_error = 'Unable to save file from URL.';
+
+        return false;
+    }
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Uploads and extracts a zip file and returns its file contents.
