@@ -25,7 +25,7 @@
             </li>
             <li class="textarea medium">
                 <label>Answer</label>
-                <textarea name="answer"><?php echo $question['answer']; ?></textarea>
+                <textarea name="answer" class="tinymce"><?php echo $question['answer']; ?></textarea>
                 <?php echo Validate::error('answer'); ?>
             </li>
             <li class="buttons">
