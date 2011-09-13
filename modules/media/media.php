@@ -71,6 +71,27 @@ class Media {
 		return false;
 	}
 
+    /**
+     * Same as Media::add except saves a file from the given url. Mostly used for images.
+     */
+    public static function add_from_url($url)
+    {
+        if($data = Upload::save_url($url))
+        {
+            $media_type = self::determine_media_type($data['type']);
+            $exif = self::_read_exif($media_type, $data);
+
+            if($cid = Media_Model::create_file($data, $media_type, $exif))
+                return $cid;
+            else
+                self::$_error = 'Error creating media file. Please try again.';
+        }
+        else
+            self::$_error = Upload::error();
+
+        return false;
+    }
+
 	public static function delete($cid)
 	{
 		$file = Media_Model::get_file($cid);
