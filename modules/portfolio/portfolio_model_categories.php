@@ -1,16 +1,16 @@
 <?php
 
-class FAQ_Model_Categories {
+class Portfolio_Model_Categories {
 
     public static function get_all()
     {
-        Database::query('SELECT * FROM {faq_categories} ORDER BY name ASC');
+        Database::query('SELECT * FROM {portfolio_categories} ORDER BY name ASC');
         return Database::fetch_all();
     }
 
     public static function get_by_cid($cid)
     {
-        Database::query('SELECT * FROM {faq_categories} WHERE cid = %s', $cid);
+        Database::query('SELECT * FROM {portfolio_categories} WHERE cid = %s', $cid);
 
         if(Database::num_rows() > 0)
             return Database::fetch_array();
@@ -19,9 +19,10 @@ class FAQ_Model_Categories {
 
     public static function create($name)
     {
-        $cid = Content::create(FAQ_TYPE_CATEGORY);
-        $status = Database::insert('faq_categories', array(
+        $cid = Content::create(PORTFOLIO_TYPE_CATEGORY);
+        $status = Database::insert('portfolio_categories', array(
             'cid' => $cid,
+            'slug' => String::slugify($name),
             'name' => $name
         ));
 
@@ -33,8 +34,11 @@ class FAQ_Model_Categories {
     public static function update($cid, $name)
     {
         Content::update($cid);
-        return Database::update('faq_categories', 
-            array('name' => $name),
+        return Database::update('portfolio_categories',
+            array(
+                'slug' => String::slugify($name),
+                'name' => $name
+            ),
             array('cid' => $cid)
         );
     }
@@ -42,7 +46,7 @@ class FAQ_Model_Categories {
     public static function delete($cid)
     {
         Content::delete($cid);
-        return Database::delete('faq_categories', array('cid' => $cid));
+        return Database::delete('portfolio_categories', array('cid' => $cid));
     }
 
 }
