@@ -10,8 +10,37 @@ class Video_Model {
 
     public static function get_by_album_cid($album_cid)
     {
-        Database::query('SELECT * FROM {videos} WHERE album_cid = %s', $album_cid);
+        Database::query('
+            SELECT 
+                v.*,
+                c.created
+            FROM {videos} v
+                LEFT JOIN {content} c ON c.id = v.cid
+            WHERE 
+                album_cid = %s
+            ORDER BY
+                c.created DESC
+            ', 
+            $album_cid
+        );
+
         return Database::fetch_all();
+    }
+
+    public static function get_latest()
+    {
+        Database::query('
+            SELECT 
+                v.*,
+                c.created
+            FROM {videos} v
+                LEFT JOIN {content} c ON c.id = v.cid
+            ORDER BY
+                c.created DESC
+            LIMIT 1
+        ');
+
+        return Database::fetch_array();
     }
 
     public static function get_by_cid($cid)

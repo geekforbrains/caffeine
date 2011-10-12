@@ -5,7 +5,18 @@ class Video_Model_Albums {
     public static function get_all()
     {
         Database::query('SELECT * FROM {video_albums} ORDER BY name ASC');
-        return Database::fetch_all();
+
+        if(Database::num_rows() > 0)
+        {
+            $rows = Database::fetch_all();
+
+            foreach($rows as &$row)
+                $row['videos'] = Video_Model::get_by_album_cid($row['cid']);
+
+            return $rows;
+        }
+
+        return array();
     }
 
     public static function get_by_cid($cid)

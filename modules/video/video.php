@@ -17,6 +17,11 @@ class Video {
         ));
     }
 
+    public static function latest()
+    {
+        return Video_Model::get_latest();
+    }
+
     public static function get_album_title($cid)
     {
         $album = Video_Model_Albums::get_by_cid($cid);
@@ -103,7 +108,7 @@ class Video {
     {
         if(stristr($url, 'youtube'))
         {
-            if(preg_match('/v=([A-Za-z0-9]+)/', $url, $match))
+            if(preg_match('/v=([A-Za-z0-9\_\.]+)/', $url, $match))
                 return $match[1];
         }
 
