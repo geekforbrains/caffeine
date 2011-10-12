@@ -17,6 +17,12 @@ class Video_Events {
                 'callback' => array('Video', 'videos'),
                 'auth' => true
             ),
+            'videos/view/%d' => array(
+                'title' => 'Video',
+                'title_callback' => array('Video', 'get_video_title'),
+                'callback' => array('Video', 'view'),
+                'auth' => true
+            ),
 
             // Admin
             'admin/video' => array(

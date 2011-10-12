@@ -45,7 +45,17 @@ class Video_Model {
 
     public static function get_by_cid($cid)
     {
-        Database::query('SELECT * FROM {videos} WHERE cid = %s', $cid);
+        Database::query('
+            SELECT
+                v.*,
+                c.created
+            FROM {videos} v
+                LEFT JOIN {content} c ON c.id = v.cid
+            WHERE
+                v.cid = %s
+            ',
+            $cid
+        );
 
         if(Database::num_rows() > 0)
             return Database::fetch_array();

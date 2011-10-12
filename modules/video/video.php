@@ -28,6 +28,19 @@ class Video {
         return $album['name'];
     }
 
+    public static function view($cid)
+    {
+        View::load('Video', 'view', array(
+            'video' => Video_Model::get_by_cid($cid)
+        ));
+    }
+
+    public static function get_video_title($cid)
+    {
+        $video = Video_Model::get_by_cid($cid);
+        return $video['title'];
+    }
+
     /**
      * Returns the embed code for the given video cid
      */
