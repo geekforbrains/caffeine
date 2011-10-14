@@ -89,4 +89,13 @@ class Video_Model {
         return Database::delete('videos', array('cid' => $cid));
     }
 
+    public static function exists($video_id)
+    {
+        Database::query('SELECT * FROM {videos} WHERE video_id = %s', $video_id);
+
+        if(Database::num_rows() > 0)
+            return true;
+        return false;
+    }
+
 }

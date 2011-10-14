@@ -43,22 +43,27 @@ class Video_Admin {
             {
                 $data = Video::get_data($_POST['url']);
 
-                if($data)
+                if(!Video_Model::exists($data['id']))
                 {
-                    $media_cid = Media::add_from_url($data['thumbnail']);
-
-                    if($media_cid)
+                    if($data)
                     {
-                        if(Video_Model::create($_POST['url'], $album_cid, $media_cid, $data))
-                            Message::set(MSG_OK, 'Video added successfully.');
+                        $media_cid = Media::add_from_url($data['thumbnail']);
+
+                        if($media_cid)
+                        {
+                            if(Video_Model::create($_POST['url'], $album_cid, $media_cid, $data))
+                                Message::set(MSG_OK, 'Video added successfully.');
+                            else
+                                Message::set(MSG_ERR, 'Error creating video. Please try agian.');
+                        }
                         else
-                            Message::set(MSG_ERR, 'Error creating video. Please try agian.');
+                            Message::set(MSG_ERR, Media::error());
                     }
                     else
-                        Message::set(MSG_ERR, Media::error());
+                        Message::set(MSG_ERR, 'Invalid video URL. Only Youtube or Vimeo URLs are supported.');
                 }
                 else
-                    Message::set(MSG_ERR, 'Invalid video URL. Only Youtube or Vimeo URLs are supported.');
+                    Message::set(MSG_ERR, 'That video already exists.');
             }
         }
 
