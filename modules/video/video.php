@@ -76,7 +76,7 @@ class Video {
     public static function get_data($url)
     {
         // Youtube
-        if(stristr($url, 'youtube'))
+        if(stristr($url, 'youtube') || stristr($url, 'youtu.be'))
         {
     	    // http://gdata.youtube.com/feeds/api/videos/%s
             $youtube_id = self::_get_video_id($url);
@@ -119,8 +119,15 @@ class Video {
 
     private static function _get_video_id($url)
     {
+        if(stristr($url, 'youtu.be') || stristr($url, 'youtube.com/user/'))
+        {
+            $bits = explode('/', $url);
+            return $bits[count($bits) - 1];
+        }
+
         if(stristr($url, 'youtube'))
         {
+            // http://www.youtube.com/watch?v=nXtSymt_CVc
             if(preg_match('/v=([A-Za-z0-9\_\.]+)/', $url, $match))
                 return $match[1];
         }
