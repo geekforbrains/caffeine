@@ -5,6 +5,7 @@
  * =============================================================================
  */
 define('BLOG_POSTS_LIMIT', 10); // How many posts to show per page
+define('BLOG_RSS_LIMIT', 25); // How many posts to show in rss feed
 
 /**
  * =============================================================================

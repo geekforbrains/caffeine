@@ -33,15 +33,23 @@ final class Blog_Events {
     public static function path_callbacks()
     {  
         return array(
+            // RSS
+            'blog.rss' => array(
+                'title' => 'RSS',
+                'callback' => array('Blog', 'rss'),
+                'auth' => true,
+                'visible' => false
+            ),
+
             // Front
             'blog' => array(
                 'title' => 'Blog',
 				'alias' => 'blog/posts'
             ),
             'blog/posts' => array(
-					'title' => 'Blog Posts',
+                'title' => 'Blog Posts',
                 'callback' => array('Blog', 'posts'),
-					'auth' => true,
+                'auth' => true,
             ),
             'blog/category/%s' => array(
 				'title_callback' => array('Blog', 'category_title'),

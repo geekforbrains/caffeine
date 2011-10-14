@@ -119,4 +119,35 @@ class Blog {
 			return $post['title'];
 	}
 
+    public static function rss()
+    {
+        header("Content-Type: application/rss+xml; charset=ISO-8859-1");
+
+        $rssfeed = '<?xml version="1.0" encoding="ISO-8859-1"?>';
+        $rssfeed .= '<rss version="2.0">';
+        $rssfeed .= '<channel>';
+        $rssfeed .= '<title>Blog RSS feed</title>';
+        $rssfeed .= '<link>' . Router::full_url('/') . '</link>';
+        $rssfeed .= '<description>RSS feed of recent blog posts</description>';
+        $rssfeed .= '<language>en-us</language>';
+        $rssfeed .= '<copyright>Copyright (C) ' . date('Y') . ' ' . Router::base() . '</copyright>';
+
+        $posts = Blog_Model_Posts::get_all(1, BLOG_RSS_LIMIT);
+
+        foreach($posts as $p)
+        {
+            $rssfeed .= '<item>';
+            $rssfeed .= '<title>' . $p['title'] . '</title>';
+            $rssfeed .= '<description>' . substr(strip_tags($p['content']), 0, 255) . '...</description>';
+            $rssfeed .= '<link>' . Router::full_url('blog/post/%s', $p['slug']) . '</link>';
+            $rssfeed .= '<pubDate>' . date("D, d M Y H:i:s O", $p['updated']) . '</pubDate>';
+            $rssfeed .= '</item>';
+        }
+ 
+        $rssfeed .= '</channel>';
+        $rssfeed .= '</rss>';
+
+        die($rssfeed);
+    }
+
 }
