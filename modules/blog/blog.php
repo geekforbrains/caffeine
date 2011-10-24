@@ -139,7 +139,7 @@ class Blog {
             $rssfeed .= '<item>';
             $rssfeed .= '<title>' . $p['title'] . '</title>';
             $rssfeed .= '<description>' . substr(strip_tags($p['content']), 0, 255) . '...</description>';
-            $rssfeed .= '<link>' . Router::full_url('blog/post/%s', $p['slug']) . '</link>';
+            $rssfeed .= '<link>' . Router::full_url('blog/%s', $p['slug']) . '</link>';
             $rssfeed .= '<pubDate>' . date("D, d M Y H:i:s O", $p['updated']) . '</pubDate>';
             $rssfeed .= '</item>';
         }
