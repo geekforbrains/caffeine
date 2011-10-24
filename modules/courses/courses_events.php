@@ -8,12 +8,12 @@ class Courses_Events {
             // Front
             'courses' => array(
                 'title' => 'Courses',
-                'callback' => array('Courses', 'all'),
+                'callback' => array('Courses_Front', 'courses'),
                 'auth' => true
             ),
             'courses/%d' => array(
                 'title' => 'Course',
-                'callback' => array('Courses', 'details'),
+                'callback' => array('Courses_Front', 'details'),
                 'auth' => true
             ),
 

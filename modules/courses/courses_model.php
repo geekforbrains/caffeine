@@ -15,15 +15,36 @@ class Courses_Model {
             '
         );
 
-        return Database::fetch_all();
+        if(Database::num_rows() > 0)
+        {
+            $rows = Database::fetch_all();
+
+            foreach($rows as &$row)
+                $row['photos'] = self::get_photos($row['cid']);
+
+            return $rows;
+        }
+
+        return array();
     }
 
     public static function get_by_cid($cid)
     {
-        Database::query('SELECT * FROM {courses} WHERE cid = %s', $cid);
+        Database::query('
+            SELECT 
+                c.* ,
+                cc.name AS category
+            FROM {courses} c
+                JOIN {course_categories} cc ON cc.cid = c.category_cid
+            WHERE c.cid = %s', $cid);
 
         if(Database::num_rows() > 0)
-            return Database::fetch_array();
+        {
+            $row = Database::fetch_array();
+            $row['photos'] = self::get_photos($row['cid']);
+            return $row;
+        }
+
         return false;
     }
 
