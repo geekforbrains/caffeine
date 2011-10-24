@@ -8,7 +8,7 @@ class Courses_Events {
             // Front
             'courses' => array(
                 'title' => 'Courses',
-                'callback' => arary('Courses', 'all'),
+                'callback' => array('Courses', 'all'),
                 'auth' => true
             ),
             'courses/%d' => array(
@@ -42,6 +42,10 @@ class Courses_Events {
                 'callback' => array('Courses_Admin', 'edit'),
                 'auth' => 'edit courses'
             ),
+            'admin/courses/courses/edit/%d/delete-photo/%d' => array(
+                'callback' => array('Courses_Admin', 'delete_photo'),
+                'auth' => 'delete course photos'
+            ),
             'admin/courses/courses/delete/%d' => array(
                 'callback' => array('Courses_Admin', 'delete'),
                 'auth' => 'delete courses'
@@ -50,7 +54,7 @@ class Courses_Events {
             // Admin Categories
             'admin/courses/categories' => array(
                 'title' => 'Categories',
-                'alias' =. 'admin/courses/categories/manage'
+                'alias' => 'admin/courses/categories/manage'
             ),
             'admin/courses/categories/manage' => array(
                 'title' => 'Manage',
@@ -137,7 +141,7 @@ class Courses_Events {
                         'type' => 'text',
                         'size' => 'normal',
                         'not null' => true
-                    )
+                    ),
                     'length' => array( // measured in days
                         'type' => 'int',
                         'size' => 'normal',

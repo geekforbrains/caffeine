@@ -16,7 +16,7 @@
             </li>
             <li class="textarea medium">
                 <label>Long Description</label>
-                <textarea name="long_desc"><?php echo $category['long_desc']; ?></textarea>
+                <textarea class="tinymce" name="long_desc"><?php echo $category['long_desc']; ?></textarea>
                 <?php echo Validate::error('long_desc'); ?>
             </li>
             <li class="buttons">
