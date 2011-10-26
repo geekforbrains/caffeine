@@ -17,12 +17,21 @@ class Portfolio_Model_Categories {
         return false;
     }
 
+    public static function get_by_slug($slug)
+    {
+        Database::query('SELECT * FROM {portfolio_categories} WHERE slug = %s', $slug);
+
+        if(Database::num_rows() > 0)
+            return Database::fetch_array();
+        return false;
+    }
+
     public static function create($name)
     {
         $cid = Content::create(PORTFOLIO_TYPE_CATEGORY);
         $status = Database::insert('portfolio_categories', array(
             'cid' => $cid,
-            'slug' => String::slugify($name),
+            'slug' => String::tagify($name),
             'name' => $name
         ));
 
@@ -36,7 +45,7 @@ class Portfolio_Model_Categories {
         Content::update($cid);
         return Database::update('portfolio_categories',
             array(
-                'slug' => String::slugify($name),
+                'slug' => String::tagify($name),
                 'name' => $name
             ),
             array('cid' => $cid)

@@ -16,6 +16,11 @@ class Portfolio_Events {
                 'callback' => array('Portfolio', 'items'),
                 'auth' => true
             ),
+            'portfolio/item/%d' => array(
+                'title' => 'Portfolio Item',
+                'callback' => array('Portfolio', 'item'),
+                'auth' => true
+            ),
 
             // Admin Aliases
             'admin/portfolio' => array(
@@ -68,9 +73,12 @@ class Portfolio_Events {
                 'auth' => 'create categories'
             ),
             'admin/portfolio/categories/edit/%d' => array(
-                'title' => 'Edit',
                 'callback' => array('Portfolio_Admin_Categories', 'edit'),
                 'auth' => 'edit categories'
+            ),
+            'admin/portfolio/categories/delete/%d' => array(
+                'callback' => array('Portfolio_Admin_Categories', 'delete'),
+                'auth' => 'delete categories'
             )
         );
     }
