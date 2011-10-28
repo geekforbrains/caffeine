@@ -37,9 +37,7 @@ class Portfolio_Model_Items {
 
     public static function get_by_category_slug($category_slug)
     {
-        Database::query('
-            SELECT
-                
+
     }
 
     public static function get_by_category_cid($category_cid)
