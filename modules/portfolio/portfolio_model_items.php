@@ -14,7 +14,25 @@ class Portfolio_Model_Items {
                 pc.name, pi.name ASC
         ');
 
-        return Database::fetch_all();
+        if(Database::num_rows() > 0)
+        {
+            $rows = Database::fetch_all();
+
+            foreach($rows as &$row)
+            {
+                $data = self::get_data_by_cid($row['cid']);
+
+                foreach($data as $d)
+                    $row[$d['name']] = $d['value'];
+
+                $row['photos'] = self::get_photos_by_cid($row['cid']);
+                $row['videos'] = self::get_videos_by_cid($row['cid']);
+            }
+
+            return $rows;
+        }
+
+        return array();
     }
 
     public static function get_by_cid($cid)
@@ -29,6 +47,9 @@ class Portfolio_Model_Items {
             foreach($data as $d)
                 $row[$d['name']] = $d['value'];
 
+            $row['photos'] = self::get_photos_by_cid($cid);
+            $row['videos'] = self::get_videos_by_cid($cid);
+
             return $row;
         }
 
@@ -37,12 +58,61 @@ class Portfolio_Model_Items {
 
     public static function get_by_category_slug($category_slug)
     {
+        Database::query('
+            SELECT
+                pi.*
+            FROM {portfolio_items} pi
+                JOIN {portfolio_categories} pc ON pc.cid = pi.category_cid
+            WHERE
+                pc.slug = %s
+            ',
+            $category_slug
+        );
 
+        if(Database::num_rows() > 0)
+        {
+            $rows = Database::fetch_all();
+
+            foreach($rows as &$row)
+            {
+                $data = self::get_data_by_cid($row['cid']);
+
+                foreach($data as $d)
+                    $row[$d['name']] = $d['value'];
+
+                $row['photos'] = self::get_photos_by_cid($row['cid']);
+                $row['videos'] = self::get_videos_by_cid($row['cid']);
+            }
+
+            return $rows;
+        }
+
+        return array();
     }
 
     public static function get_by_category_cid($category_cid)
     {
+        Database::query('SELECT * FROM {portfolio_items} WHERE category_cid = %s', $category_cid);
 
+        if(Database::num_rows() > 0)
+        {
+            $rows = Database::fetch_all();
+
+            foreach($rows as &$row)
+            {
+                $data = self::get_data_by_cid($row['cid']);
+
+                foreach($data as $d)
+                    $row[$d['name']] = $d['value'];
+
+                $row['photos'] = self::get_photos_by_cid($row['cid']);
+                $row['videos'] = self::get_videos_by_cid($row['cid']);
+            }
+
+            return $rows;
+        }
+
+        return array();
     }
 
     public static function create($category_cid, $name, $desc)
@@ -58,6 +128,18 @@ class Portfolio_Model_Items {
         if($status)
             return $cid;
         return false;
+    }
+
+    public static function update($cid, $category_cid, $name, $desc)
+    {
+        return Database::update('portfolio_items',
+            array(
+                'category_cid' => $category_cid,
+                'name' => $name,
+                'description' => $desc
+            ),
+            array('cid' => $cid)
+        );
     }
 
     public static function get_data_by_cid($item_cid)

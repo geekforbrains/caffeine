@@ -12,7 +12,15 @@ class Portfolio {
     public static function items($category_slug)
     {
         View::load('Portfolio', 'items', array(
+            'category' => Portfolio_Model_Categories::get_by_slug($category_slug),
             'items' => Portfolio_Model_Items::get_by_category_slug($category_slug)
+        ));
+    }
+
+    public static function item($cid)
+    {
+        View::load('Portfolio', 'item', array(
+            'item' => Portfolio_Model_Items::get_by_cid($cid)
         ));
     }
 

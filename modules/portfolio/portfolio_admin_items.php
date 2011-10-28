@@ -46,7 +46,7 @@ class Portfolio_Admin_Items {
 
             if(Validate::passed())
             {
-                if($cid = Portfolio_Model_Items::update($cid, $_POST['category_cid'], $_POST['name'], $_POST['description']))
+                if(Portfolio_Model_Items::update($cid, $_POST['category_cid'], $_POST['name'], $_POST['description']))
                 {
                     // Update extra fields
                     Portfolio_Model_Items::add_data($cid, 'client', $_POST['client']);
