@@ -25,7 +25,7 @@
                 </li>
                 <li class="textarea medium">
                     <label>Description</label>
-                    <textarea name="description"><?php echo $item['description']; ?></textarea>
+                    <textarea name="description" class="tinymce"><?php echo $item['description']; ?></textarea>
                 </li>
 
                 <!-- start extra data fields -->

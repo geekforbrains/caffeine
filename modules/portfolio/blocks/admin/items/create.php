@@ -23,7 +23,7 @@
             </li>
             <li class="textarea medium">
                 <label>Description</label>
-                <textarea name="description"></textarea>
+                <textarea name="description" class="tinymce"></textarea>
             </li>
 
             <!-- start extra data fields -->

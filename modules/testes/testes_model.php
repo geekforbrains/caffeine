@@ -35,6 +35,28 @@ class Testes_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
+    public static function get_random($limit = 0)
+    {
+		// apply limit 
+		($limit)? $limit = ' LIMIT '.$limit : $limit = '';
+
+		Database::query('
+			SELECT 
+				*
+			FROM {testes}
+			ORDER BY RAND()'.
+			$limit,
+			User::current_site()
+		);
+
+		return Database::fetch_all();
+    }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function create($content, $author)
     {
 
