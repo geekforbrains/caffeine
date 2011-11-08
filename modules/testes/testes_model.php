@@ -35,6 +35,17 @@ class Testes_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
+    public static function get_by_id($id)
+    {
+        Database::query('SELECT * FROM {testes} WHERE id = %s', $id);
+        return Database::fetch_array();
+    }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_random($limit = 0)
     {
 		// apply limit 
@@ -77,19 +88,15 @@ class Testes_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-    public static function update($cid, $title, $content, $slug, $published)
+    public static function update($id, $content, $author)
     {
-		Content::update($cid);
-
-		Database::update('blog_posts',
-			array(
-				'title' => $title,
-				'content' => $content,
-				'slug' => $slug,
-				'published' => $published
-			),
-			array('cid' => $cid)
-		);
+        return Database::update('testes',
+            array(
+                'content' => $content,
+                'author' => $author
+            ),
+            array('id' => $id)
+        );
     }
     
 	/**

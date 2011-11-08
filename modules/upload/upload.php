@@ -384,13 +384,15 @@ class Upload {
         $items = scandir($dirPath);
         foreach($items as $i)
         {
-            if($i{0} == '.')
+            if($i == '.' || $i == '..')
                 continue;
                 
             $iPath = $dirPath . '/' . $i;
 
             if(is_dir($iPath))
                 self::_remove_dir($iPath);
+            else
+                @unlink($iPath);
         }
 
         @rmdir($dirPath);

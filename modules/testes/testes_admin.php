@@ -56,10 +56,28 @@ class Testes_Admin {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-    public static function edit($id) 
+    public static function edit($id)
     {
-		  $data = array(); // some key / value pair data to send to view
-        View::load('Testes', 'admin/edit', $data);
+        if($_POST)
+        {
+            Validate::check('content', 'Content', array('required'));
+            Validate::check('author', 'Author', array('required'));
+
+            if(Validate::passed())
+            {
+                if(Testes_Model::update($id, $_POST['content'], $_POST['author']))
+                {
+                    Message::store(MSG_OK, 'Testimonial updated successfully.');
+                    Router::redirect('admin/testes');
+                }
+                else
+                    Message::set(MSG_ERR, 'Error updating testimonial. Pleae try again.');
+            }
+        }
+
+        View::load('Testes', 'admin/edit', array(
+            'teste' => Testes_Model::get_by_id($id)
+        ));
     }
 
 	/**

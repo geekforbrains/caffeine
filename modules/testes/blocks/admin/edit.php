@@ -4,24 +4,24 @@
 </div>
 
 <div class="area right">
-	<h2>Create Testimonial</h2>
+	<h2>Edit Testimonial</h2>
 
-	<form method="post" action="<?php l('admin/testes/create'); ?>">
+	<form method="post" action="<?php echo Router::current_url(); ?>">
 		<ul>
 			<li class="textarea full">
 				<label>Content</label>
 				<textarea class="tinymce" name="content">
-					<?php echo Input::post('content'); ?>
+                    <?php echo $teste['content']; ?>
 				</textarea>
 				<?php Validate::error('content'); ?>
 			</li>
 			<li class="text small">
 				<label>Author</label>
-				<input type="text" name="author" value="<?php echo Input::post('author'); ?>" />
+				<input type="text" name="author" value="<?php echo $teste['author']; ?>" />
 				<?php Validate::error('author'); ?>
 			</li>			
 			<li class="buttons">
-				<input type="submit" name="save" value="Save" />
+				<input type="submit" name="update" value="Update" />
 			</li>
 		</ul>
 	</form>
