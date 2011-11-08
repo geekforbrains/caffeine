@@ -27,7 +27,6 @@
         /**
          * Checks if the current module has a views directory with a custom admin view named after the controller
          * and method.
-         */
         'view.load' => function($module, $controller, $method)
         {
             $viewFile = Load::getModulePath($module) . Config::get('view.dir') . sprintf('%s_%s', $controller, $method) . EXT;
@@ -39,6 +38,7 @@
                 return $viewFile;
             }
         }
+        */
 
     )
 

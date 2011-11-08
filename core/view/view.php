@@ -34,6 +34,12 @@ class View extends Module {
     private static $_loadOverride = false;
 
     /**
+     * Stores the current view title. This is used to output the titles to views as well as the <title>
+     * for seo.
+     */
+    private static $_title = null;
+
+    /**
      * Callback for the view.load event. Sets the returned value as the view to load and sets
      * the _loadOverride property to true.
      */
@@ -44,6 +50,20 @@ class View extends Module {
             self::$_loadOverride = true;
             self::$_views[] = $response;
         }
+    }
+
+    /**
+     * Sets the current page title.
+     */
+    public static function setTitle($title) {
+        self::$_title = $title;
+    }
+
+    /**
+     * Gets the current page title.
+     */
+    public static function getTitle() {
+        return self::$_title;
     }
 
     /**
@@ -69,6 +89,16 @@ class View extends Module {
         if(is_null(self::$_path))
             self::$_path = Site::getPath() . Config::get('view.dir');
         return self::$_path;
+    }
+
+    /**
+     * Gets the relative URL to the current view base href. This is used for setting the <base href="" />
+     * tag within view files.
+     */
+    public static function getBaseHref()
+    {
+        $bits = explode(ROOT, self::getPath());
+        return Url::to($bits[1]);
     }
 
     /**

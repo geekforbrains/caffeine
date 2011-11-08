@@ -70,7 +70,7 @@ class Url extends Module {
                 self::$_current = rtrim($_GET['r'], '/');
         }
 
-        return self::$_current;
+        return self::base() . '/' . self::$_current;
     }
 
     /**

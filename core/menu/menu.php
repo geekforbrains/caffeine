@@ -139,6 +139,10 @@ class Menu {
 
             foreach($routes as $route => $routeData)
             {
+                // TODO Actually check if user has the permissions needed
+                if(isset($routeData['permissions']))
+                    continue;
+
                 // Ignore paths without a title
                 /*
                 if(!isset($routeData['title']) || is_null($routeData['title']))

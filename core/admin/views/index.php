@@ -9,12 +9,12 @@
     </div>
 
     <div class="area right">
-        <h2>The Title</h2>
+        <h2><?php echo View::getTitle(); ?></h2>
         <?php echo $adminContent; ?>
     </div>
 <?php else: ?>
     <div class="area">
-        <h2>The Title</h2>
+        <h2><?php echo View::getTitle(); ?></h2>
         <?php echo $adminContent; ?>
     </div>
 <?php endif; ?>

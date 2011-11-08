@@ -34,7 +34,10 @@ class Html_Form {
             if(isset($fieldData['class']))
                 $html .= sprintf(' class="%s"', $fieldData['class']);
             else
-                $html .= sprintf(' class="small %s"', $fieldData['type']);
+            {
+                $type = $fieldData['type'] == 'password' ? 'text' : $fieldData['type'];
+                $html .= sprintf(' class="small %s"', $type);
+            }
 
             $html .= '>';
 
@@ -83,8 +86,13 @@ class Html_Form {
      *      - default_value: The default value to give the field
      *      - attributes: An array of key value pairs for attributes (ex: array('class' => 'my_class'))
      */
-    private static function _text($name, $data) {
-        return sprintf('<input%s type="text" name="%s" value="%s" />', self::_attributes($data), $name, self::_default_value($data));
+    private static function _text($name, $data, $type = 'text') {
+        return sprintf('<input%s type="%s" name="%s" value="%s" />', self::_attributes($data), $type, $name, self::_default_value($data));
+    }
+
+    // Alias of text input, but as a password type
+    private static function _password($name, $data) {
+        return self::_text($name, $data, 'password');
     }
     
     /**

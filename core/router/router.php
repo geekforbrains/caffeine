@@ -59,9 +59,13 @@ class Router extends Module {
             // If no exact match, check matches with regex
             foreach(self::$_routes as $route => $routeData)
             {
+                /*
                 $regexRoute = str_replace(':num', '([0-9]+)', $route);
                 $regexRoute = str_replace(':slug', '([A-Za-z0-9\-]+)', $regexRoute);
                 $regexRoute = str_replace(':any', '(.*?)', $regexRoute);
+                */
+
+                $regexRoute = String::regify($route);
 
                 if(preg_match('@^' . $regexRoute . '$@', $currentRoute, $matches))
                 {

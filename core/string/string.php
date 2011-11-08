@@ -211,9 +211,26 @@ class String extends Module {
 	 */
 	public static function regify($string)
 	{
+        /*
 		return str_replace('%', '(.*?)',
 			str_replace('%d', '([0-9]+)', 
 			str_replace('%s', '([A-Za-z\-]+)', $string)));
+        */
+
+        $replacements = array(
+            '([A-Za-z0-9\-]+)' => array(':slug'),
+            '([A-Za-z\-]+)' => array('%s', ':alpha'),
+            '([0-9]+)' => array('%d', ':num'),
+            '(.*?)' => array('%', ':any')
+        );
+
+        foreach($replacements as $r => $keys)
+        {
+            foreach($keys as $k)
+                $string = str_replace($k, $r, $string);
+        }
+
+        return $string;
 	}
 
     /**
