@@ -142,5 +142,47 @@ class String {
 
 	    return $output;
 	}
+	
+	/**
+	 * -------------------------------------------------------------------------
+	 * Returns an array of <img src="" /> from a long string
+	 * -------------------------------------------------------------------------
+	 */	
+   public static function extractImageTags($haystack)
+   {
+      // grab all the images into an array
+      preg_match_all('/<img.*?\/?>/is',$haystack, $needles);
+      return $needles[0];       
+   }
+   
+	/**
+	 * -------------------------------------------------------------------------
+	 * Receives the src value of an image tag
+	 * -------------------------------------------------------------------------
+	 */
+   public static function extractImgSrc($imgTag)
+   {
+      preg_match('/src=\\\?"(.*?)\\\?"/',$imgTag, $srcValue);
+      /* preg_match('/src=(["\'])(.*?)\1/',$imgTag,$srcValue);     */
+      return $srcValue[1];
+   }	
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * Get's the CID of the first image src in a string
+	 * -------------------------------------------------------------------------
+	 */
+   public static function getFirstImg($haystack)
+   {
+		$imgs = self::extractImageTags($haystack);
+		if($imgs)
+		{
+			$src = self::extractImgSrc($imgs[0]);
+			$cid = substr($src, -11, 3);
+			return $cid;
+		}
+		else
+			return 0;
+   }
 
 }

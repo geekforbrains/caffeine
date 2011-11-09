@@ -15,7 +15,7 @@ class Blog_Admin_Posts {
 	 */
     public static function manage() 
     {
-		$published = Blog_Model_Posts::get_all(1);
+		$published = Blog_Model_Posts::get_all(1, 1000);
 		$drafts = Blog_Model_Posts::get_all(0);
 
         View::load('Blog', 'admin/manage_posts',
