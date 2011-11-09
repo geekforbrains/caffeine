@@ -17,8 +17,7 @@
             'title' => function($slug) {
                 return 'Some Page';
             },
-            'callback' => array('page', 'view'),
-            'permissions' => array('page.view_own', 'page.view_all')
+            'callback' => array('page', 'view')
         ),
 
         // Admin

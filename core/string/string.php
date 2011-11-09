@@ -266,4 +266,9 @@ class String extends Module {
         return $string;
     }
 
+    // Alias of String::truncate
+    public static function shorten($string, $length, $append = null, $striptags = true) {
+        return self::truncate($string, $length, $append, $striptags);
+    }
+
 }
