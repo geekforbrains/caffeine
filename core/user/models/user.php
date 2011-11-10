@@ -6,6 +6,8 @@ class User_UserModel extends Model {
 
     public $_belongsTo = array('user.account');
 
+    public $_hasAndBelongsToMany = array('user.role');
+
     public $_fields = array(
         'email' => array(
             'type' => 'varchar',

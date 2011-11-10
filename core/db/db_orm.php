@@ -279,7 +279,7 @@ class Db_Orm extends Db_Query {
             }
 
             // Delete actual record
-            parent::delete($this->id);
+            return parent::delete($this->id);
         }
 
     }

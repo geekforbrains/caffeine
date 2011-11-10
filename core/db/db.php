@@ -20,6 +20,7 @@ class Db extends Module {
         $debugSql = $sql;
         foreach($bindings as $value)
             $debugSql = preg_replace('/\?/', "'".$value."'", $debugSql, 1);
+        Dev::debug('db', $debugSql);
 
         $query = self::$_conn->prepare($sql);
         $result = $query->execute($bindings);

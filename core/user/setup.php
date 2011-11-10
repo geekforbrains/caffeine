@@ -52,6 +52,29 @@
             'callback' => array('user_admin', 'delete'),
             'hidden' => true,
             //'permissions' => array('user.delete')
+        ),
+
+        'admin/user/role' => array(
+            'title' => 'Roles',
+            'redirect' => 'admin/user/role/manage'
+        ),
+        'admin/user/role/manage' => array(
+            'title' => 'Manage',
+            'callback' => array('user_role_admin', 'manage')
+        ),
+        'admin/user/role/create' => array(
+            'title' => 'Create',
+            'callback' => array('user_role_admin', 'create')
+        ),
+        'admin/user/role/edit/%d' => array(
+            'title' => 'Edit Role',
+            'callback' => array('user_role_admin', 'edit'),
+            'hidden' => true
+        ),
+        'admin/user/role/delete/%d' => array(
+            'title' => 'Delete Role',
+            'callback' => array('user_role_admin', 'delete'),
+            'hidden' => true
         )
     ),
 
