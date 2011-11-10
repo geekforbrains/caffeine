@@ -17,7 +17,7 @@ class Html_A {
             $attr = trim($attr);
         }
 
-        return sprintf('<a href="%s"%s>%s</a>', $url, $attr, $title);
+        return sprintf('<a href="%s"%s>%s</a>', Url::to($url), $attr, $title);
     }
 
 }

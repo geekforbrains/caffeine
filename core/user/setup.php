@@ -34,17 +34,19 @@
         'admin/user/create' => array(
             'title' => 'Create',
             'callback' => array('user_admin', 'create'),
-            'permissions' => array('user.create')
+            //'permissions' => array('user.create')
         ),
         'admin/user/edit/%d' => array(
             'title' => 'Edit User',
             'callback' => array('user_admin', 'edit'),
-            'permissions' => array('user.edit', 'user.edit_mine')
+            'hidden' => true,
+            //'permissions' => array('user.edit', 'user.edit_mine')
         ),
         'admin/user/delete/%d' => array(
             'title' => 'Delete User',
             'callback' => array('user_admin', 'delete'),
-            'permissions' => array('user.delete')
+            'hidden' => true,
+            //'permissions' => array('user.delete')
         )
     ),
 

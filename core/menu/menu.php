@@ -68,8 +68,16 @@ class Menu {
 
     private static function _getHtml($sorted, $data)
     {
-        // The current route is used to determine if the menu item is active or not
-        $currentRoute = Router::getCurrentRoute();
+        // Determine count of actual items about to be displayed, this is used to determine
+        // the "first" and "last" classes to be added to the current item, but also if we should just return
+        $totalCount = 0;
+        foreach($sorted as $route => $routeData)
+            if($routeData['hidden'] !== true && !is_null($routeData['title']))
+                $totalCount++;
+
+        // If no items, just return
+        if($totalCount == 0)
+            return null;
 
         $html = '<ul';
 
@@ -79,13 +87,8 @@ class Menu {
 
         $html .= '>';
         
-        // Determine count of actual items about to be displayed, this is used to determine
-        // the "first" and "last" classes to be added to the current item
-        $totalCount = 0;
-        foreach($sorted as $route => $routeData)
-            if($routeData['hidden'] !== true && !is_null($routeData['title']))
-                $totalCount++;
-
+        // The current route is used to determine if the menu item is active or not
+        $currentRoute = Router::getCurrentRoute();
         $currentCount = 1;
 
         foreach($sorted as $route => $routeData)

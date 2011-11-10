@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('.cal').datepicker({
+    $('.datepicker').datepicker({
         dateFomrat: 'yy-mm-dd'
     });
 
@@ -19,16 +19,6 @@ $(document).ready(function() {
     });
 
     $('.stripe tr:nth-child(odd)').addClass('alt')
-
-    $('.notify').slideDown('slow')
-    $('.notify').click(function() {
-        $(this).slideToggle('slow');
-    })
-
-    $('.error').slideDown('slow')
-    $('.error').click(function() {
-        $(this).slideToggle('slow');
-    })
 });
 
 tinyMCE.init({

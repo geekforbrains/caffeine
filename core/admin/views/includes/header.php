@@ -30,11 +30,14 @@
         </div>
     </div>
 
-    <?php /*
-    <div id="messages">
-        <div class="notify">Notify</div>
-        <div class="error">Error</div>
-    </div>
-    */ ?>
+    <?php if($messages = Message::get()): ?>
+        <div id="messages">
+            <?php foreach($messages as $type => $m): ?>
+                <?php foreach($m as $n): ?>
+                    <div class="<?php echo $type; ?>"><?php echo $n; ?></div>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
     <div id="content">

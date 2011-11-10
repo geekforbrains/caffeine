@@ -133,7 +133,7 @@ h1 {
 /* ====================================
    NOTIFY / ERROR STYLES
 =====================================*/
-#messages .notify, #messages .error {padding: 10px 15px; font-size: 14px; font-weight: bold; display: none}
+#messages .notify, #messages .error {padding: 10px 15px; font-size: 14px; font-weight: bold;}
 #messages .error {
     background-image: url('../images/error_bg.gif');
     background-repeat: repeat-x;
