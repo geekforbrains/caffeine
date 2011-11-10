@@ -121,6 +121,11 @@ class Db_Orm extends Db_Query {
                     $property = $refBits[1];
 
                     //$id = (is_int($this->{$property})) ? $this->{$property} : $this->{$property}->id; // Value might be int or instance
+
+                    // If property isn't set, default to a null value
+                    if(!isset($this->{$property}))
+                        $this->{$property} = null;
+
                     $id = $this->_getPropertyId($this->{$property});
                     $data[$refBits[1] . '_id'] = $id;
                 }
@@ -137,7 +142,6 @@ class Db_Orm extends Db_Query {
                 $timestamp = time();
                 $data['created_at'] = $timestamp;
                 $data['updated_at'] = $timestamp;
-
             }
 
             if($id = $this->insert($data, true))

@@ -138,8 +138,11 @@ class View extends Module {
      *
      * @param string $view The relative path to the view file to insert
      */
-    public static function insert($view) {
-        require(self::getPath() . $view . EXT);        
+    public static function insert($view)
+    {
+        $viewFile = self::getPath() . $view . EXT;
+        Dev::debug('view', 'Inserting view: ' . $viewFile);
+        require($viewFile);
     }
 
     /**

@@ -83,6 +83,7 @@ class Url extends Module {
             $path = self::to($path);
 
         header(sprintf('Location: %s', $path));
+        exit(); // Ensures redirect happend right away, no other part of the application is loaded
     }
 
     /**

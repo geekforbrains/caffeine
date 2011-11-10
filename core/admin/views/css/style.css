@@ -133,18 +133,18 @@ h1 {
 /* ====================================
    NOTIFY / ERROR STYLES
 =====================================*/
-#messages .notify, #messages .error {padding: 10px 15px; font-size: 14px; font-weight: bold;}
+#messages .ok, #messages .error, #messages .info {padding: 10px 15px; font-size: 14px; font-weight: bold;}
 #messages .error {
-    background-image: url('../images/error_bg.gif');
-    background-repeat: repeat-x;
     background-color: #efbebe;
     color: #6f1212
 }
-#messages .notify {
-    background-image: url('../images/notify_bg.gif');
-    background-repeat: repeat-x;
+#messages .ok {
     background-color: #c3efbe;
     color: #1b6c11
+}
+#messages .info {
+    background-color: #F5F1C1;
+    color: #806600;
 }
 
 

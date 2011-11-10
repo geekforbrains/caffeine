@@ -15,8 +15,8 @@
         <div class="center">
             <h1>Control Panel</h1>
             <span>
-                Logged in as <a href="<?php echo Url::to('admin/user/edit/1'); ?>">Administrator</a> &nbsp;|&nbsp;
-                <a href="#">Logout</a>
+                Logged in as <?php Html::a('Administrator', 'admin/user/edit/1'); ?> &nbsp;|&nbsp;
+                <?php Html::a('Logout', 'admin/logout'); ?>
             </span>
             <div class="tabs">
                 <?php echo Menu::build(0, 'admin', array('attributes' => array('class' => 'left'))); ?>

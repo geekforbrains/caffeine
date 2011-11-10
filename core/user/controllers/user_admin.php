@@ -2,60 +2,20 @@
 
 class User_User_AdminController extends Controller {
 
-    public static function login()
-    {
-        if($_POST)
-        {
-            $user = User::user()
-                ->where('email', '=', $_POST['email'])
-                ->andWhere('pass', '=', md5($_POST['password']))->first();
-
-            if($user)
-            {
-                $_SESSION['user_id'] = $user->id;  
-                Url::redirect(Config::get('user.login_success_redirect'));
-            }
-        }
-
-        $fields = array(
-            'email' => array(
-                'title' => 'Email',
-                'type' => 'text'
-            ),
-            'password' => array(
-                'title' => 'Password',
-                'type' => 'password'
-            ),
-            'submit' => array(
-                'value' => 'Login',
-                'type' => 'submit'
-            )
-        );
-
-        return Html::form()->build($fields);
-    }
-
-    public static function logout()
-    {
-        unset($_SESSION['user']);
-        Url::redirect(Config::get('user.logout_redirect'));
-    }
-
+    /**
+     * Displays a table of current users.
+     */
     public static function manage()
     {
         $headers = array(
-            'Username',
             array(
-                Html::a()->get('Delete', 'delete'),
-                'attributes' => array(
-                    'style' => 'text-align: right'
-                )
+                'Username',
+                'attributes' => array('colspan' => 2)
             )
         );
 
         $rows = array();
-
-        if($users = User::user()->all())
+        if($users = User::user()->orderBy('email')->all())
         {
             foreach($users as $user)
             {
@@ -63,20 +23,27 @@ class User_User_AdminController extends Controller {
                     Html::a()->get($user->email, 'admin/user/edit/' . $user->id),
                     array(
                         Html::a()->get('Delete', 'admin/user/delete/' . $user->id),
-                        'attributes' => array(
-                            'align' => 'right'
-                        )
+                        'attributes' => array('align' => 'right')
                     )
                 );
             }
         }
         else
-            $rows[] = array('<em>No users.</em>');
-
+        {
+            $rows[] = array(
+                array(
+                    '<em>No users.</em>',
+                    'attributes' => array('colspan' => '2')
+                )
+            );
+        }
 
         return Html::table()->build($headers, $rows);
     }
 
+    /**
+     * Displays a form for creating a new user.
+     */
     public static function create()
     {
         if($_POST)
@@ -89,12 +56,12 @@ class User_User_AdminController extends Controller {
                 $user->pass = md5($_POST['password']);
 
                 if($user->save())
-                    Message::set('success', 'User created successfully.');
+                    Message::ok('User created successfully.');
                 else
-                    Message::set('error', 'Error creating user.');
+                    Message::error('Error creating user.');
             }
             else
-                Message::set('error', 'A user with that email exists.');
+                Message::error('A user with that email exists.');
         }
 
         $fields = array(
@@ -119,9 +86,31 @@ class User_User_AdminController extends Controller {
         return Html::form()->build($fields);
     }
 
+    /**
+     * Displays a form for editing a current user.
+     */
     public static function edit($id)
     {
         $user = User::user()->find($id);
+
+        if($_POST)
+        {
+            // First check if new email is already in use
+            if($_POST['email'] == $user->email || !User::user()->where('email', '=', $_POST['email'])->first())
+            {
+                $user->email = $_POST['email'];
+
+                if(strlen($_POST['pass']))
+                    $user->pass = md5($_POST['pass']);
+
+                if($user->save())
+                    Message::ok('User updated successfully.');
+                else
+                    Message::error('Error updating user.');
+            }
+            else
+                Message::error('That email address is already in use.');
+        }
 
         $fields = array(
             'email' => array(
@@ -129,7 +118,7 @@ class User_User_AdminController extends Controller {
                 'type' => 'text',
                 'default_value' => $user->email
             ),
-            'password' => array(
+            'pass' => array(
                 'title' => 'Password',
                 'type' => 'password'
             ),
@@ -142,12 +131,15 @@ class User_User_AdminController extends Controller {
         return Html::form()->build($fields);
     }
 
+    /**
+     * Deletes a user and redirects to manage page.
+     */
     public static function delete($id)
     {
-        if(User::user()->delete($id))
-            Message::set('success', 'User deleted successfully.');
+        if($response = User::user()->delete($id))
+            Message::ok('User deleted successfully.');
         else
-            Message::set('error', 'Error deleting user.');
+            Message::error('Error deleting user.');
 
         Url::redirect('admin/user/manage');
     }

@@ -3,7 +3,7 @@
     'configs' => array(
         'user.access_denied_redirect' => '',
         'user.login_redirect' => '',
-        'user.logout_redirect' => 'admin/logout'
+        'user.logout_redirect' => 'admin/login'
     ),
 
     'permissions' => array(
@@ -17,7 +17,12 @@
     'routes' => array(
         'admin/login' => array(
             'title' => 'Login',
-            'callback' => array('user_admin', 'login'),
+            'callback' => array('user_login', 'login'),
+            'hidden' => true
+        ),
+        'admin/logout' => array(
+            'title' => 'Logout',
+            'callback' => array('user_login', 'logout'),
             'hidden' => true
         ),
 
