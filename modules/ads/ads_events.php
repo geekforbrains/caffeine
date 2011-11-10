@@ -5,6 +5,10 @@ class Ads_Events {
     public static function path_callbacks()
     {
         return array(
+            'ads/click/%d' => array(
+                'callback' => array('Ads', 'click'),
+                'auth' => true
+            ),
             'admin/ads' => array(
                 'title' => 'Ads',
                 'alias' => 'admin/ads/campaigns/manage'
@@ -32,6 +36,10 @@ class Ads_Events {
             'admin/ads/campaigns/stop/%d' => array(
                 'callback' => array('Ads_Admin_Campaigns', 'stop'),
                 'auth' => 'stop campaigns'
+            ),
+            'admin/ads/campaigns/delete/%d' => array(
+                'callback' => array('Ads_Admin_Campaigns', 'delete'),
+                'auth' => 'delete campaigns'
             ),
 
             // Ads

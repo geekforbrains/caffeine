@@ -4,6 +4,18 @@ class Ads_Model_Campaigns {
 
     public static function get_by_status($status, $limit = null)
     {
+        $sort = 'ORDER BY ac.end_date ASC';
+
+        // Determine sort based on status
+        if($status == 'active')
+            $sort = 'ORDER BY ac.end_date ASC, a.name ASC';
+
+        elseif($status == 'scheduled')
+            $sort = 'ORDER BY ac.start_date ASC, a.name ASC';
+
+        elseif($status == 'complete')
+            $sort = 'ORDER BY ac.end_date DESC, a.name ASC';
+
         Database::query('
             SELECT
                 ac.*,
@@ -12,7 +24,8 @@ class Ads_Model_Campaigns {
                 JOIN {ads} a ON a.cid = ac.ad_cid
             WHERE
                 ac.status = %s
-            ',
+            ' . $sort
+            ,
             $status
         );
 
@@ -74,5 +87,25 @@ class Ads_Model_Campaigns {
             return $cid;
         return false;
     }
+
+    public static function stop($cid)
+    {
+        Content::update($cid);
+        return Database::update('ads_campaigns',
+            array(
+                'end_date' => strtotime('today'),
+                'status' => 'complete'
+            ),
+            array('cid' => $cid)
+        );
+    }
+
+    public static function delete($cid)
+    {
+        Content::delete($cid);
+        Database::delete('ads_campaign_stats', array('campaign_cid' => $cid));
+        return Database::delete('ads_campaigns', array('cid' => $cid));
+    }
+
 
 }

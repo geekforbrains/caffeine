@@ -4,6 +4,8 @@ class Ads_Admin_Campaigns {
 
     public static function manage()
     {
+        Ads_Model::check_dates();
+
         View::load('Ads', 'admin/campaigns/manage', array(
             'active' => Ads_Model_Campaigns::get_by_status('active'),
             'scheduled' => Ads_Model_Campaigns::get_by_status('scheduled'),
@@ -51,7 +53,22 @@ class Ads_Admin_Campaigns {
 
     public static function stop($cid)
     {
+        if(Ads_Model_Campaigns::stop($cid))
+            Message::store(MSG_OK, 'Campaign stopped successfully.');
+        else
+            Message::store(MSG_ERR, 'Error stopping campaign. Please try again.');
 
+        Router::redirect('admin/ads/campaigns/manage');
+    }
+
+    public static function delete($cid)
+    {
+        if(Ads_Model_Campaigns::delete($cid))
+            Message::store(MSG_OK, 'Campaign deleted successfully.');   
+        else
+            Message::store(MSG_ERR, 'Error deleting campaign. Please try again.');
+
+        Router::redirect('admin/ads/campaigns/manage');
     }
 
 }
