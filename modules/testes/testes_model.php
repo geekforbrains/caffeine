@@ -68,12 +68,13 @@ class Testes_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-    public static function create($content, $author)
+    public static function create($content, $author, $title)
     {
 
 		$success = Database::insert('testes', array(
 			'content' => $content,
 			'author' => $author,
+			'title' => $title,
 			'created' => time()
 		));
 
@@ -88,12 +89,13 @@ class Testes_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
-    public static function update($id, $content, $author)
+    public static function update($id, $content, $author, $title)
     {
         return Database::update('testes',
             array(
                 'content' => $content,
-                'author' => $author
+                'author' => $author,
+					 'title' => $title
             ),
             array('id' => $id)
         );

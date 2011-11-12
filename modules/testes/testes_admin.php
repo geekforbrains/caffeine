@@ -34,7 +34,8 @@ class Testes_Admin {
 			{
 				$id = Testes_Model::create(
 					$_POST['content'],
-					$_POST['author']
+					$_POST['author'],
+					$_POST['title']
 				);
 
 				if($id)
@@ -65,7 +66,7 @@ class Testes_Admin {
 
             if(Validate::passed())
             {
-                if(Testes_Model::update($id, $_POST['content'], $_POST['author']))
+                if(Testes_Model::update($id, $_POST['content'], $_POST['author'], $_POST['title']))
                 {
                     Message::store(MSG_OK, 'Testimonial updated successfully.');
                     Router::redirect('admin/testes');

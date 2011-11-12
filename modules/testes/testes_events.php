@@ -70,6 +70,11 @@ final class Testes_Events {
                       	'length' => 255,
                       	'not null' => true
                   	),
+               	'title' => array(
+                   	'type' => 'varchar',
+                   	'length' => 255,
+                   	'not null' => true
+               	),
                     'content' => array(
                         'type' => 'text',
                         'size' => 'big',

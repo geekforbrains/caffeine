@@ -19,7 +19,11 @@
 				<label>Author</label>
 				<input type="text" name="author" value="<?php echo $teste['author']; ?>" />
 				<?php Validate::error('author'); ?>
-			</li>			
+			</li>		
+				<li class="text small">
+					<label>Title</label>
+					<input type="text" name="title" value="<?php echo $teste['title']; ?>" />
+				</li>				
 			<li class="buttons">
 				<input type="submit" name="update" value="Update" />
 			</li>

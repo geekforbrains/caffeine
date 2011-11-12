@@ -19,7 +19,11 @@
 				<label>Author</label>
 				<input type="text" name="author" value="<?php echo Input::post('author'); ?>" />
 				<?php Validate::error('author'); ?>
-			</li>			
+			</li>	
+				<li class="text small">
+					<label>Title</label>
+					<input type="text" name="title" value="<?php echo Input::post('title'); ?>" />
+				</li>					
 			<li class="buttons">
 				<input type="submit" name="save" value="Save" />
 			</li>
