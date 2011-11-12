@@ -73,28 +73,50 @@ class User_User_Role_AdminController extends Controller {
         return Html::form()->build($fields);
     }
 
+    /**
+     * Displays a form for updating a role name and a table of available permissions that
+     * can be checked to add to the role.
+     */
     public static function edit($id)
     {
+        $role = User::role()->find($id);
+
         if($_POST)
         {
             if(isset($_POST['update_role']))
             {
                 // Check if name is in use
+                if($_POST['name'] == $role->name || !User::role()->where('name', 'LIKE', $_POST['name'])->first())
+                {
+                    $role->name = $_POST['name'];
+                    
+                    if($role->save())
+                        Message::ok('Role updated successfully.');
+                    else
+                        Message::info('Nothing changed.');
+                }
+                else
+                    Message::error('A role with that name is already in use.');
             }
 
             if(isset($_POST['update_roles']))
             {
-                // Clear permissions associated with this role and re-insert all new ones
                 User::role()->find($id)->permission()->delete();
 
-                foreach($_POST['permissions'] as $permission)
+                if(isset($_POST['permissions']))
                 {
-                    $permission = User::permission();
+                    foreach($_POST['permissions'] as $permission)
+                    {
+                        $perm = User::permission();
+                        $perm->role = $role;
+                        $perm->permission = $permission;
+                        $perm->save();
+                    }
                 }
+
+                Message::ok('Permissions updated successfully.');
             }
         }
-
-        $role = User::role()->find($id);
 
         $fields = array(
             'name' => array(
@@ -118,9 +140,16 @@ class User_User_Role_AdminController extends Controller {
             )
         );
 
-        $permissions = User::getSortedPermissions();
+        $sortedPermissions = User::getSortedPermissions();
+        $setPermissions = User::permission()->where('role_id', '=', $id)->all();
 
-        foreach($permissions as $module => $modulePermissions)
+        $tmp = array();
+        foreach($setPermissions as $ap)
+            $tmp[] = $ap->permission;
+
+        $setPermissions = $tmp;
+
+        foreach($sortedPermissions as $module => $modulePermissions)
         {
             $rows[] = array(
                 array(
@@ -131,9 +160,11 @@ class User_User_Role_AdminController extends Controller {
 
             foreach($modulePermissions as $permission => $desc)
             {
+                $checked = in_array($permission, $setPermissions) ? ' checked="checked"' : '';
+
                 $rows[] = array(
                     array(
-                        '<input type="checkbox" name="permissions[]" value="' . $permission . '" />',
+                        '<input type="checkbox" name="permissions[]" value="' . $permission . '"' . $checked . ' />',
                         'attributes' => array('width' => 10)
                     ),
                     $desc

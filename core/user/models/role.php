@@ -2,7 +2,9 @@
 
 class User_RoleModel extends Model {
 
-    public $_hasAndBelongsToMany = array('user.user', 'user.permission');
+    public $_hasMany = array('user.permission');
+
+    public $_hasAndBelongsToMany = array('user.user');
 
     public $_fields = array(
         'name' => array(

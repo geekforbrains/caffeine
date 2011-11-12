@@ -1,5 +1,5 @@
 <?php
 
-class Model extends Db_Orm {
+class Model extends Db_Query {
 
 }

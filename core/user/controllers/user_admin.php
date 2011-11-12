@@ -50,19 +50,39 @@ class User_User_AdminController extends Controller {
         {
             if(!User::user()->where('email', '=', $_POST['email'])->first())
             {
-                $user = User::user();
-                $user->account = 0;
-                $user->email = $_POST['email'];
-                $user->pass = md5($_POST['password']);
+                $userId = User::user()->insert(array(
+                    'email' => $_POST['email'],
+                    'pass' => md5($_POST['password'])
+                ));
 
-                if($user->save())
+                if($userId && isset($_POST['role_id']))
+                {
+                    foreach($_POST['role_id'] as $roleId)
+                    {
+                        Db::table('roles_users')->insert(array(
+                            'role_id' => $roleId,
+                            'user_id' => $userId
+                        ));
+                    }
+                }
+
+                if($userId)
+                {
                     Message::ok('User created successfully.');
+                    Url::redirect('admin/user/manage');
+                }
                 else
                     Message::error('Error creating user.');
             }
             else
                 Message::error('A user with that email exists.');
         }
+
+        $options = array();
+        $roles = User::role()->all();
+
+        foreach($roles as $role)
+            $options[$role->id] = $role->name;
 
         $fields = array(
             'email' => array(
@@ -76,6 +96,12 @@ class User_User_AdminController extends Controller {
             'confirm_password' => array(
                 'title' => 'Confirm Password',
                 'type' => 'password'
+            ),
+            'role_cid[]' => array(
+                'title' => 'Roles',
+                'type' => 'select',
+                'options' => $options,
+                'attributes' => array('multiple' => 'multiple')
             ),
             'submit' => array(
                 'value' => 'Create User',
@@ -98,12 +124,24 @@ class User_User_AdminController extends Controller {
             // First check if new email is already in use
             if($_POST['email'] == $user->email || !User::user()->where('email', '=', $_POST['email'])->first())
             {
-                $user->email = $_POST['email'];
+                $status = User::user()->insert(array(
+                    'email' => $_POST['email'],
+                    'pass' => isset($_POST['pass']) ? md5($_POST['pass']) : $user->pass
+                ));
 
-                if(strlen($_POST['pass']))
-                    $user->pass = md5($_POST['pass']);
+                if($status && isset($_POST['role_id']))
+                {
+                    Db::table('roles_users')->where('user_id', '=', $user->id)->delete();
+                    foreach($_POST['role_id'] as $roleId)
+                    {
+                        Db::table('roles_users')->insert(array(
+                            'role_id' => $roleId,
+                            'user_id' => $user->id
+                        ));
+                    }
+                }
 
-                if($user->save())
+                if($status)
                     Message::ok('User updated successfully.');
                 else
                     Message::error('Error updating user.');
@@ -111,6 +149,18 @@ class User_User_AdminController extends Controller {
             else
                 Message::error('That email address is already in use.');
         }
+
+        $options = array();
+        $selected = array();
+
+        $roles = User::role()->all();
+        $selectedRoles = Db::table('roles_users')->where('user_id', '=', $id)->all();
+
+        foreach($roles as $role)
+            $options[$role->id] = $role->name;
+
+        foreach($selectedRoles as $role)
+            $selected[] = $role->role_id;
 
         $fields = array(
             'email' => array(
@@ -121,6 +171,13 @@ class User_User_AdminController extends Controller {
             'pass' => array(
                 'title' => 'Password',
                 'type' => 'password'
+            ),
+            'role_id[]' => array(
+                'title' => 'Roles',
+                'type' => 'select',
+                'options' => $options,
+                'selected' => $selected,
+                'attributes' => array('multiple' => 'multiple')
             ),
             'submit' => array(
                 'value' => 'Update User',

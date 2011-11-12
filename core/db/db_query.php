@@ -2,8 +2,8 @@
 
 class Db_Query extends Module {
 
-    public $tableName    = null;
-    public $fieldNames   = array();
+    public $tableName       = null;
+    public $fieldNames      = array();
 
     private $_table         = null;
     private $_class         = null;
@@ -17,7 +17,15 @@ class Db_Query extends Module {
     private $_limit         = '';
     private $_bindings      = array();
 
-    // Holds the values of a "DESCRIBE" method call on a table, avoid repetitive calls on db
+    protected $_timestamps  = false;
+    protected $_indexes     = array();
+    protected $_fulltext    = array();
+
+    protected $_hasOne      = array();
+    protected $_hasMany     = array();
+    protected $_belongsTo   = array();
+    protected $_hasAndBelongsToMany = array();
+
     private static $_describes = array();
 
     public function __construct($table = null)
@@ -31,11 +39,10 @@ class Db_Query extends Module {
         $this->_table = $this->tableName;
         $this->_from = sprintf(' FROM %s', $this->_table);
 
-        // Produce result items that are of the same class as this
+        // Produce query results that are of the same class as this model
         $this->_class = get_called_class(); 
 
         // Setup blank properties for this class based on table description
-        // TODO Improve this for less calls
         $fields = $this->describe();
         foreach($fields as $field)
         {
@@ -70,6 +77,13 @@ class Db_Query extends Module {
         $columns = array();
         $values = array();
 
+        if($this->_timestamps)
+        {
+            $timestamp = time();
+            $data['created_at'] = $timestamp;
+            $data['updated_at'] = $timestamp;
+        }
+
         foreach($data as $c => $v)
         {
             $columns[] = $c;
@@ -92,6 +106,9 @@ class Db_Query extends Module {
     {
         $columns = array();
         $values = array();
+
+        if($this->_timestamps)
+            $data['updated_at'] = time();
 
         foreach($data as $c => $v)
         {
@@ -119,6 +136,13 @@ class Db_Query extends Module {
             $sql = sprintf('TRUNCATE TABLE %s', $this->_table);
 
         return Db::query($sql, $this->_bindings);
+    }
+
+    // Alias of delete that forces a truncate by removing ids and where clauses
+    public function truncate()
+    {
+        $this->_where = '';
+        return $this->delete();
     }
 
     /**

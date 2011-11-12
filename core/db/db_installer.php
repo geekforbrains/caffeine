@@ -61,7 +61,8 @@ class Db_Installer {
 
                         $class = sprintf('%s_%sModel', ucfirst($module), ucfirst(str_replace(EXT, '', $model)));
                         $model = new $class();
-                        $model->createTable();
+                        //$model->createTable();
+                        self::install($model);
                         //call_user_func(array(ucfirst($module), $model))->createTable();
                     }
                 }

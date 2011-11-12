@@ -135,18 +135,30 @@ class Html_Form {
                 $html .= sprintf('<optgroup label="%s">', $k);
 
                 foreach($v as $k2 => $v2)
-                    $html .= sprintf('<option value="%s">%s</option>', $k2, $v2);
+                    $html .= sprintf('<option value="%s"%s>%s</option>', $k2, self::_getSelected($data, $k2), $v2);
 
                 $html .= '</optgroup>';
             }
 
             // Otherwise create regular option
             else
-                $html .= sprintf('<option value="%s">%s</option>', $k, $v);
+                $html .= sprintf('<option value="%s"%s>%s</option>', $k, self::_getSelected($data, $k), $v);
         }
 
         $html .= '</select>';
         return $html;
+    }
+
+    private static function _getSelected($data, $key)
+    {
+        if(isset($data['selected']))
+        {
+            $selected = $data['selected'];
+            if((is_array($data) && in_array($key, $selected)) || $selected == $key)
+                return ' selected="selected"';
+        }
+
+        return null;
     }
 
     private static function _checkbox($name, $data)
