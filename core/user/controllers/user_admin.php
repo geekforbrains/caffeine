@@ -48,7 +48,9 @@ class User_User_AdminController extends Controller {
     {
         if($_POST)
         {
-            if(!User::user()->where('email', '=', $_POST['email'])->first())
+            Html::form()->validate();
+
+            if(!User::user()->where('email', 'LIKE', $_POST['email'])->first())
             {
                 $userId = User::user()->insert(array(
                     'email' => $_POST['email'],
@@ -87,15 +89,18 @@ class User_User_AdminController extends Controller {
         $fields = array(
             'email' => array(
                 'title' => 'Email',
-                'type' => 'text'
+                'type' => 'text',
+                'validate' => array('required', 'email')
             ),
             'password' => array(
                 'title' => 'Password',
-                'type' => 'password'
+                'type' => 'password',
+                'validate' => array('required')
             ),
             'confirm_password' => array(
                 'title' => 'Confirm Password',
-                'type' => 'password'
+                'type' => 'password',
+                'validate' => array('required', 'matches:password')
             ),
             'role_cid[]' => array(
                 'title' => 'Roles',
@@ -124,14 +129,16 @@ class User_User_AdminController extends Controller {
             // First check if new email is already in use
             if($_POST['email'] == $user->email || !User::user()->where('email', '=', $_POST['email'])->first())
             {
-                $status = User::user()->insert(array(
+                $status = User::user()->where('id', '=', $id)->update(array(
                     'email' => $_POST['email'],
                     'pass' => isset($_POST['pass']) ? md5($_POST['pass']) : $user->pass
                 ));
 
-                if($status && isset($_POST['role_id']))
+                // Always clear current roles when updating, new roles will be inserted after
+                Db::table('roles_users')->where('user_id', '=', $user->id)->delete();
+
+                if(isset($_POST['role_id']))
                 {
-                    Db::table('roles_users')->where('user_id', '=', $user->id)->delete();
                     foreach($_POST['role_id'] as $roleId)
                     {
                         Db::table('roles_users')->insert(array(

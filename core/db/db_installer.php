@@ -121,7 +121,7 @@ class Db_Installer {
             $key = $bits[1] . '_id';
 
             // Foreign keys should be indexed
-            array_push($model->_indexes, $key);
+            $model->addIndex($key);
 
             $fields = array_merge(array(
                 $key => array(

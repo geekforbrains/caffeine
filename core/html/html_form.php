@@ -16,12 +16,37 @@ class Html_Form {
     }
 
     /**
+     * Validates the stored fields in session based on the given form id.
+     */
+    public function validate()
+    {
+        $formId = $_POST['form_id'];
+
+        if(isset($_SESSION['forms'][$formId]))
+        {
+            $fields = $_SESSION['forms'][$formId];
+
+            foreach($fields as $fieldName => $validation)
+                Validate::check($fieldName, $validation);
+
+            return Validate::passed();
+        }
+
+        return false;
+    }
+
+    /**
      *  Options:
      *  - type: The type of field (text, textarea, select, checkbox, radio, file, submit, button)
      */
     public function build($fields, $action = null, $method = 'post', $enctype = false)
     {
+        $formId = md5(uniqid()); // Used to determine form being posted when validating feilds
+
         $html = Html::form()->open($action, $method, $enctype);
+
+        // Insert form id as hidden field
+        $html .= '<input type="hidden" name="form_id" value="' . $formId . '" />';
 
         // Calls the associated method based on the field type
         // Ex: type "textarea" calls self::_textarea($fieldName, $fieldData);
@@ -29,6 +54,10 @@ class Html_Form {
 
         foreach($fields as $fieldName => $fieldData)
         {
+            // Check for validation, add to session under form id it present
+            if(isset($fieldData['validate']))
+                $_SESSION['forms'][$formId][$fieldName] = $fieldData['validate'];
+
             $html .= '<li';
             
             if(isset($fieldData['class']))

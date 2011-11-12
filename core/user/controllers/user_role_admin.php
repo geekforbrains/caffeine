@@ -44,13 +44,14 @@ class User_User_Role_AdminController extends Controller {
         {
             if(!User::role()->where('name', 'LIKE', '%' . $_POST['name'] . '%')->first())
             {
-                $role = User::role();
-                $role->name = $_POST['name'];
+                $roleId = User::role()->insert(array(
+                    'name' => $_POST['name']
+                ));
 
-                if($role->save())
+                if($roleId)
                 {
                     Message::ok('Role created successfully.');
-                    Url::redirect('admin/user/role/edit/' . $role->id);
+                    Url::redirect('admin/user/role/edit/' . $roleId);
                 }
                 else
                     Message::error('Error creating role.');
@@ -88,9 +89,11 @@ class User_User_Role_AdminController extends Controller {
                 // Check if name is in use
                 if($_POST['name'] == $role->name || !User::role()->where('name', 'LIKE', $_POST['name'])->first())
                 {
-                    $role->name = $_POST['name'];
+                    $status = User::role()->where('id', '=', $id)->update(array(
+                        'name' => $_POST['name']
+                    ));
                     
-                    if($role->save())
+                    if($status)
                         Message::ok('Role updated successfully.');
                     else
                         Message::info('Nothing changed.');
@@ -101,16 +104,16 @@ class User_User_Role_AdminController extends Controller {
 
             if(isset($_POST['update_roles']))
             {
-                User::role()->find($id)->permission()->delete();
+                User::permission()->where('role_id', '=', $role->id)->delete();
 
                 if(isset($_POST['permissions']))
                 {
                     foreach($_POST['permissions'] as $permission)
                     {
-                        $perm = User::permission();
-                        $perm->role = $role;
-                        $perm->permission = $permission;
-                        $perm->save();
+                        User::permission()->insert(array(
+                            'role_id' => $id,
+                            'permission' => $permission
+                        ));
                     }
                 }
 

@@ -28,6 +28,16 @@ class Db_Query extends Module {
 
     private static $_describes = array();
 
+    /**
+     * Allow access to private properties.
+     */
+    public function __get($name) {
+        return $this->{$name};
+    }
+    
+    /**
+     * TODO
+     */
     public function __construct($table = null)
     {
         if(!is_null($table))
@@ -50,6 +60,13 @@ class Db_Query extends Module {
             if(!isset($this->{$field->Field}))
                 $this->{$field->Field} = null;
         }
+    }
+
+    /**
+     * Adds a new table index to the end of the index array.
+     */
+    public function addIndex($key) {
+        array_push($this->_indexes, $key);
     }
 
     /**
