@@ -76,4 +76,11 @@ class User extends Module {
             self::$_permissionStatus = false;
     }
 
+    /**
+     * Singleton method for getting the instance of the current user.
+     */
+    public static function current() {
+        return User_Current::singleton();
+    }
+
 }

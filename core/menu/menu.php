@@ -142,9 +142,9 @@ class Menu {
 
             foreach($routes as $route => $routeData)
             {
-                // TODO Actually check if user has the permissions needed
-                if(isset($routeData['permissions']))
-                    continue;
+                if(isset($routeData['permissions']) && $routeData['permissions'])
+                    if(!User::current()->hasPermission($routeData['permissions']))
+                        continue;
 
                 // Ignore paths without a title
                 /*

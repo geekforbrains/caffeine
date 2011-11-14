@@ -14,6 +14,21 @@ class Html_Form {
     public function close() {
         return '</form>';
     }
+    
+    /**
+     * Clears any form validation data stored with the Cache module. This method is called during the
+     * caffeine.start event to clear any un-used form data. 
+     */
+    public function clear()
+    {
+        if(isset($_SESSION['forms']))
+        {
+            foreach($_SESSION['forms'] as $formId)
+                Cache::clear($formId);
+        }
+
+        unset($_SESSION['forms']);
+    }
 
     /**
      * Validates the stored fields in session based on the given form id.
@@ -21,10 +36,11 @@ class Html_Form {
     public function validate()
     {
         $formId = $_POST['form_id'];
+        $data = Cache::get($formId);
 
-        if(isset($_SESSION['forms'][$formId]))
+        if($data)
         {
-            $fields = $_SESSION['forms'][$formId];
+            $fields = unserialize($data);
 
             foreach($fields as $fieldName => $validation)
                 Validate::check($fieldName, $validation);
@@ -42,6 +58,7 @@ class Html_Form {
     public function build($fields, $action = null, $method = 'post', $enctype = false)
     {
         $formId = md5(uniqid()); // Used to determine form being posted when validating feilds
+        $formData = array();
 
         $html = Html::form()->open($action, $method, $enctype);
 
@@ -56,7 +73,8 @@ class Html_Form {
         {
             // Check for validation, add to session under form id it present
             if(isset($fieldData['validate']))
-                $_SESSION['forms'][$formId][$fieldName] = $fieldData['validate'];
+                $formData[$fieldName] = $fieldData['validate'];
+                //$_SESSION['forms'][$formId][$fieldName] = $fieldData['validate'];
 
             $html .= '<li';
             
@@ -80,7 +98,23 @@ class Html_Form {
 
         $html .= Html::form()->close();
 
+        // Cache validation fields, if set
+        if($formData)
+            $this->_cache($formId, $formData);
+
         return $html;
+    }
+
+    /** 
+     * Cache form data for validation after posting.
+     */
+    private static function _cache($formId, $formData)
+    {
+        if(!isset($_SESSION['forms']))
+            $_SESSION['forms'] = array();
+
+        $_SESSION['forms'][] = $formId; // Store form id with session so we can keep track of which data to clear
+        Cache::store($formId, serialize($formData));
     }
 
     private static function _validate()

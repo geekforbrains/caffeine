@@ -85,6 +85,7 @@ class Router extends Module {
             // If data was found and not redirecting, must be the route we want
             elseif($data)
             {
+                // First check permissions, if any, for current user
                 self::$_currentRoute = array(
                     'route' => $currentRoute,
                     'data' => $data

@@ -21,6 +21,7 @@ spl_autoload_register('Load::auto');
 Load::setupFiles();
 Db::install();
 
+Event::trigger('caffeine.started');
 $data = Router::getRouteData();
 
 if($data)
@@ -52,4 +53,6 @@ else
     View::error(ERROR_NOTFOUND);
 
 View::render();
+Event::trigger('caffeine.finished');
+
 Dev::outputDebug();

@@ -12,9 +12,11 @@ class User_User_LoginController extends Controller {
 
             if($user)
             {
-                $_SESSION['user_id'] = $user->id;  
-                Url::redirect(Config::get('user.login_success_redirect'));
+                $_SESSION[Config::get('user.session_key')] = $user->id;
+                Url::redirect(Config::get('user.login_redirect'));
             }
+            else
+                Message::error('Invalid login details.');
         }
 
         $fields = array(

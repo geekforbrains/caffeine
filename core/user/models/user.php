@@ -18,7 +18,14 @@ class User_UserModel extends Model {
             'type' => 'varchar',
             'length' => 32,
             'not null' => true
+        ),
+        'is_admin' => array(
+            'type' => 'int',
+            'length' => 1,
+            'not null' => true
         )
     );
+
+    public $_indexes = array('is_admin');
 
 }

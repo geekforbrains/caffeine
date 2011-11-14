@@ -1,7 +1,13 @@
 <?php return array(
 
     'configs' => array(
-        'cache.default_expire_time' => 1440 // Measured in minutes, 1440 == 24 hours
+        'cache.default_expire_time' => '24 hours' // Uses the strtotime function, any supporting syntax will work
+    ),
+
+    'events' => array(
+        'cron.run' => function() {
+            Cache::clearExpired();
+        }
     )
 
 );

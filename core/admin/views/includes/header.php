@@ -15,8 +15,10 @@
         <div class="center">
             <h1>Control Panel</h1>
             <span>
-                Logged in as <?php Html::a('Administrator', 'admin/user/edit/1'); ?> &nbsp;|&nbsp;
-                <?php Html::a('Logout', 'admin/logout'); ?>
+                <?php if(User::current()->id > 0): ?>
+                    Logged in as <?php Html::a(User::current()->email, 'admin/user/edit/1'); ?> &nbsp;|&nbsp;
+                    <?php Html::a('Logout', 'admin/logout'); ?>
+                <?php endif; ?>
             </span>
             <div class="tabs">
                 <?php echo Menu::build(0, 'admin', array('attributes' => array('class' => 'left'))); ?>
