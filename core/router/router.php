@@ -94,11 +94,14 @@ class Router extends Module {
                 break;
             }
         }
+        
+        if($data && !isset($data['permissions']))
+            $data['permissions'] = array();
 
         // Let other areas of the application make use of route data
         Event::trigger('router.data', array($currentRoute, $data));
 
-        return $data;
+        return array($currentRoute, $data);
     }
 
 }

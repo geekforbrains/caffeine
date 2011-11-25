@@ -22,37 +22,65 @@ Load::setupFiles();
 Db::install();
 
 Event::trigger('caffeine.started');
-$data = Router::getRouteData();
+list($route, $data) = Router::getRouteData();
 
 if($data)
 {
-    list($module, $controller, $method) = $data['callback'];
-    $params = Router::getParams();
+    $hasPermission = false;
 
-    // Make sure controller words are upper
-    $conBits = explode('_', $controller);
-    foreach($conBits as &$bit)
-        $bit = ucfirst($bit);
-    $controller = implode('_', $conBits);
-
-    $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
-    $response = call_user_func_array(array($controller, $method), $params);
-
-    // If the response is an int, assume its a pre-defined error code
-    if(!is_int($response))
+    if(empty($data['permissions']) || User::current()->hasPermission($data['permissions']))
     {
-        Event::trigger('module.response', array($response));
-        View::load($module, $controller, $method);
-    }
+        $hasPermission = true;
+        Dev::debug('user', 'User has permission');
 
-    // All other method responses are assumed to be errors. Load their views.
+        foreach($data['permissions'] as $k)
+        {
+            Event::trigger(sprintf('user.permission[%s]', $k), 
+                array($route, $data), 
+                array('User', 'permissionCallback')
+            );
+
+            if(User::getPermissionStatus() === false)
+            {
+                Dev::debug('user', 'Custom permission callback failed, setting access denied');
+                $hasPermission = false;
+                break;
+            }
+        }
+    }
     else
-        View::error($response);
+        Dev::debug('user', 'User does NOT have permissions');
+
+    if($hasPermission)
+    {
+        list($module, $controller, $method) = $data['callback'];
+        $params = Router::getParams();
+
+        // Make sure controller words are upper
+        $conBits = explode('_', $controller);
+        foreach($conBits as &$bit)
+            $bit = ucfirst($bit);
+        $controller = implode('_', $conBits);
+
+        $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
+        $response = call_user_func_array(array($controller, $method), $params);
+
+        // If the response is an int, assume its a pre-defined error code
+        if(!is_int($response))
+        {
+            Event::trigger('module.response', array($response));
+            View::load($module, $controller, $method);
+        }
+
+        // All other method responses are assumed to be errors. Load their views.
+        else
+            View::error($response);
+    }
+    else
+        View::error(ERROR_ACCESSDENIED);
 }
 else
     View::error(ERROR_NOTFOUND);
 
 View::render();
 Event::trigger('caffeine.finished');
-
-Dev::outputDebug();

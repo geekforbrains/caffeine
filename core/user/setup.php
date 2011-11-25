@@ -9,10 +9,10 @@
 
     'permissions' => array(
         'user.admin' => 'Administer users',
-        'user.manage' => 'Manage users',
         'user.create' => 'Create users',
         'user.edit' => 'Edit user profiles',
         'user.edit_mine' => 'Edit my profile',
+        'user.delete' => 'Delete users',
 
         'user.admin_roles' => 'Administer roles',
         'user.manage_roles' => 'Manage roles',
@@ -41,7 +41,7 @@
         'admin/user/manage' => array(
             'title' => 'Manage',
             'callback' => array('user_admin', 'manage'),
-            'permissions' => array('user.manage')
+            'permissions' => array('user.admin')
         ),
         'admin/user/create' => array(
             'title' => 'Create',
@@ -91,33 +91,15 @@
     ),
 
     'events' => array(
-        'router.data' => function($currentRoute, $routeData)
+        'user.permission[user.edit_mine]' => function($route, $data)
         {
-            if(isset($routeData['permissions']))
-            {
-                if(User::current()->hasPermission($routeData['permissions']))
-                {
-                    Dev::debug('user', 'User has permission');
+            $params = Router::getParams();
+            $userId = $params[0];
 
-                    foreach($routeData['permissions'] as $k)
-                    {
-                        Event::trigger(sprintf('user.permission[%s]', $k), 
-                            array($currentRoute, $routeData), 
-                            array('User', 'permissionCallback')
-                        );
-
-                        if(User::getPermissionStatus() === false)
-                        {
-                            Dev::debug('user', 'Custom permission callback failed, setting access denied');
-                            View::error(ERROR_ACCESSDENIED);
-                            break;
-                        }
-                    }
-                }
-                else
-                    Dev::debug('user', 'User does NOT have permissions');
-            }
-        },
+            if(User::current()->id == $userId)
+                return true;
+            return false;
+        }
     )
 
 );

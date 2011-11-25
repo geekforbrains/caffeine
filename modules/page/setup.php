@@ -57,9 +57,19 @@
      * to determine the functionality of a permission check.
      */
     'events' => array(
+        'user.permission[page.create_mine]' => function()
+        {
+            // TODO
+        },
+
+        'user.permission[page.edit_mine]' => function()
+        {
+            // TODO
+        },
+
         'user.permission[page.delete_mine]' => function() 
         {
-
+            // TODO
         }
     )
 
