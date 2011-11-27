@@ -46,6 +46,17 @@ class Testes_Model {
 	 * TODO
 	 * -------------------------------------------------------------------------
 	 */
+    public static function get_by_page_cid($cid)
+    {
+        	Database::query('SELECT * FROM {testes} WHERE page_cid = %s', $cid);
+			return Database::fetch_all();
+    }
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * TODO
+	 * -------------------------------------------------------------------------
+	 */
     public static function get_random($limit = 0)
     {
 		// apply limit 
