@@ -10,6 +10,7 @@
 		<table class="stripe" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<th>Author</th>
+				<th>Content</th>				
 				<th style="text-align: right">Created</th>
 				<th style="text-align: right" width="20">Delete</th>
 			</tr>
@@ -21,6 +22,9 @@
 							<a href="<?php l('admin/testes/edit/%d', $teste['id']); ?>">
 								<?php echo $teste['author']; ?>
 							</a>
+						</td>
+						<td>
+							"<?php echo String::truncate($teste['content'], 70, '...'); ?>"
 						</td>
 						<td align="right"><?php echo date('M jS, Y', $teste['created']); ?></a></td>
 						<td align="right">
