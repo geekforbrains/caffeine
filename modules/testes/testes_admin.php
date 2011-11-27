@@ -35,7 +35,8 @@ class Testes_Admin {
 				$id = Testes_Model::create(
 					$_POST['content'],
 					$_POST['author'],
-					$_POST['title']
+					$_POST['title'], 
+					$_POST['page_cid']
 				);
 
 				if($id)
@@ -48,7 +49,7 @@ class Testes_Admin {
 			}
        }
        
-		$data = array();
+		$data = array('pages' => Page_Model::get_all());
       View::load('Testes', 'admin/create', $data);
     }
 
@@ -66,7 +67,7 @@ class Testes_Admin {
 
             if(Validate::passed())
             {
-                if(Testes_Model::update($id, $_POST['content'], $_POST['author'], $_POST['title']))
+                if(Testes_Model::update($id, $_POST['content'], $_POST['author'], $_POST['title'], $_POST['page_cid']))
                 {
                     Message::store(MSG_OK, 'Testimonial updated successfully.');
                     Router::redirect('admin/testes');
@@ -77,6 +78,7 @@ class Testes_Admin {
         }
 
         View::load('Testes', 'admin/edit', array(
+				'pages' => Page_Model::get_all(), 
             'teste' => Testes_Model::get_by_id($id)
         ));
     }

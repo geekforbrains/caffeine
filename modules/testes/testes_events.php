@@ -80,6 +80,11 @@ final class Testes_Events {
                         'size' => 'big',
                         'not null' => true
                     ),
+              		'page_cid' => array(
+                  	'type' => 'int',
+                  	'size' => 'small',
+                  	'not null' => true
+              			),
 						 'created' => array(
 							'type' => 'int',
 							'size' => 'big',

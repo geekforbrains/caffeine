@@ -20,10 +20,19 @@
 				<input type="text" name="author" value="<?php echo $teste['author']; ?>" />
 				<?php Validate::error('author'); ?>
 			</li>		
-				<li class="text small">
-					<label>Title</label>
-					<input type="text" name="title" value="<?php echo $teste['title']; ?>" />
-				</li>				
+			<li class="text small">
+				<label>Title</label>
+				<input type="text" name="title" value="<?php echo $teste['title']; ?>" />
+			</li>				
+			<li class="text small">
+				<label>Associate To Page</label>
+				<select name="page_cid">
+					<option value="0">None</option>
+					<?php if($pages): foreach($pages as $p): ?> 
+						<option value="<?php echo $p['cid']; ?>"<?=($teste['page_cid']==$p['cid'])?" selected":"";?>><?php echo $p['title']; ?></option>
+					<?php endforeach; endif; ?>
+				</select>
+			</li>			
 			<li class="buttons">
 				<input type="submit" name="update" value="Update" />
 			</li>
