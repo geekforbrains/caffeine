@@ -96,7 +96,7 @@ class User_User_AdminController extends Controller {
             'password' => array(
                 'title' => 'Password',
                 'type' => 'password',
-                'validate' => array('required')
+                'validate' => array('required', 'min:4')
             ),
             'confirm_password' => array(
                 'title' => 'Confirm Password',

@@ -42,28 +42,32 @@ class User_User_Role_AdminController extends Controller {
     {
         if($_POST)
         {
-            if(!User::role()->where('name', 'LIKE', '%' . $_POST['name'] . '%')->first())
+            if(Html::form()->validate())
             {
-                $roleId = User::role()->insert(array(
-                    'name' => $_POST['name']
-                ));
-
-                if($roleId)
+                if(!User::role()->where('name', 'LIKE', '%' . $_POST['name'] . '%')->first())
                 {
-                    Message::ok('Role created successfully.');
-                    Url::redirect('admin/user/role/edit/' . $roleId);
+                    $roleId = User::role()->insert(array(
+                        'name' => $_POST['name']
+                    ));
+
+                    if($roleId)
+                    {
+                        Message::ok('Role created successfully.');
+                        Url::redirect('admin/user/role/edit/' . $roleId);
+                    }
+                    else
+                        Message::error('Error creating role.');
                 }
                 else
-                    Message::error('Error creating role.');
+                    Message::error('A role with that name already exists.');
             }
-            else
-                Message::error('A role with that name already exists.');
         }
 
         $fields = array(
             'name' => array(
                 'title' => 'Name',
-                'type' => 'text'
+                'type' => 'text',
+                'validate' => array('required')
             ),
             'submit' => array(
                 'value' => 'Create Role',
@@ -125,7 +129,8 @@ class User_User_Role_AdminController extends Controller {
             'name' => array(
                 'title' => 'Name',
                 'type' => 'text',
-                'default_value' => $role->name
+                'default_value' => $role->name,
+                'validate' => array('required')
             ),
             'update_role' => array(
                 'value' => 'Update Role',

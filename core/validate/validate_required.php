@@ -2,12 +2,10 @@
 
 class Validate_Required {
 
-    public static function check($fieldName, $fieldTitle, $fieldValue)
+    public static function check($fieldName, $fieldValue)
     {
-        Dev::debug('validate', 'checking that field exists.');
-
-        if(is_array($fieldValue) && count($fieldValue) <= 0 || !strlen($fieldValue))
-            Validate::setError($fieldName, sprintf('%s is required', $fieldTitle));
+        if(is_array($fieldValue) && count($fieldValue) <= 0 || !strlen(trim($fieldValue)))
+            Validate::setError($fieldName, 'Cannot be empty');
     }
 
 }

@@ -4,8 +4,17 @@ class Validate extends Module {
 
     private static $_errors = array();
 
+    /**
+     * Gets an error for a given field. If no error is set, null is returned.
+     */
+    public static function error($field)
+    {
+        if(isset(self::$_errors[$field]))
+            return sprintf('<div class="error"><span>%s</span></div>', self::$_errors[$field]);
+        return null;
+    }
+
     public static function setError($field, $message) {
-        Message::error($message);
         self::$_errors[$field] = $message;
     }
 
@@ -14,7 +23,7 @@ class Validate extends Module {
         if(!self::$_errors)
             return true;
 
-        Message::error('Form errors');
+        Message::error('Missing or invalid fields.');
         return false;
     }
 
@@ -31,7 +40,7 @@ class Validate extends Module {
             $bits = explode(':', $v);
             $class = array_shift($bits);
 
-            $params = array_merge(array($fieldName, $fieldTitle, $fieldValue), $bits);
+            $params = array_merge(array($fieldName, $fieldValue), $bits);
 
             call_user_func_array(array(sprintf('Validate_%s', ucfirst($class)), 'check'), $params);
         }

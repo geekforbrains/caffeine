@@ -3,6 +3,7 @@ session_start();
 
 define('ROOT', __DIR__ . '/');
 define('EXT', '.php');
+define('VERSION', '1.0');
 
 define('ERROR_NOTFOUND', 404);
 define('ERROR_ACCESSDENIED', 401);

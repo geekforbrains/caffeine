@@ -2,10 +2,10 @@
 
 class Validate_Matches {
 
-    public static function check($fieldName, $fieldTitle, $fieldValue, $compareField)
+    public static function check($fieldName, $fieldValue, $compareFieldName)
     {
-        // "Field" does not match "Field"
-        Dev::debug('validate', sprintf('comparing field %s to %s', $fieldName, $compareField));
+        if($fieldValue != $_POST[$compareFieldName])
+           Validate::setError($fieldName, 'Does not match other field');
     }
 
 }

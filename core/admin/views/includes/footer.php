@@ -3,8 +3,8 @@
 
 
     <div id="footer">
-        Powered by - Caffeine 1.0<br />
-        Page loaded in 0.00 seconds
+        System Time: <?php echo date('M jS, g:i:s A'); ?> (<?php echo Config::get('system.timezone'); ?>)<br />
+        Powered by Caffeine <?php echo VERSION; ?>
     </div>
 </body>
 </html>

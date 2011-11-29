@@ -92,6 +92,7 @@ class Html_Form {
             if(isset($fieldData['title']))
                 $html .= '<label>' . $fieldData['title'] . '</label>';
             $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
+            $html .= Validate::error($fieldName);
             $html .= '</li>';
         }
 

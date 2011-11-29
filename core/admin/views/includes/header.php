@@ -17,6 +17,7 @@
             <span>
                 <?php if(User::current()->id > 0): ?>
                     Logged in as <?php Html::a(User::current()->email, 'admin/user/edit/' . User::current()->id); ?> &nbsp;|&nbsp;
+                    <?php Html::a('My Profile', 'admin/user/edit/' . User::current()->id); ?> &nbsp;|&nbsp;
                     <?php Html::a('Logout', 'admin/logout'); ?>
                 <?php endif; ?>
             </span>
