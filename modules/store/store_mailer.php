@@ -40,7 +40,7 @@ class Store_Mailer {
             // Send email to customer
             Mailer::to($customer['email'], $customer['first_name'] . ' ' . $customer['last_name']);
             Mailer::from(STORE_EMAIL_FROM, STORE_EMAIL_FROM_NAME);
-            Mailer::subject(self::$_subjects[$order['status']);
+            Mailer::subject(self::$_subjects[$order['status']]);
             Mailer::body($html, true) // true = is html
             Mailer::send();
 
@@ -49,7 +49,7 @@ class Store_Mailer {
             {
                 Mailer::to(STORE_EMAIL_ADMIN);
                 Mailer::from(STORE_EMAIL_FROM, STORE_EMAIL_FROM_NAME);
-                Mailer::subject(self::$_subjects[$order['status']);
+                Mailer::subject(self::$_subjects[$order['status']]);
                 Mailer::body($html, true) // true = is html
                 Mailer::send();
             }
