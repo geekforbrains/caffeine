@@ -48,36 +48,37 @@ class User_User_AdminController extends Controller {
     {
         if($_POST)
         {
-            Html::form()->validate();
-
-            if(!User::user()->where('email', 'LIKE', $_POST['email'])->first())
+            if(Html::form()->validate())
             {
-                $userId = User::user()->insert(array(
-                    'email' => $_POST['email'],
-                    'pass' => md5($_POST['password'])
-                ));
-
-                if($userId && isset($_POST['role_id']))
+                if(!User::user()->where('email', 'LIKE', $_POST['email'])->first())
                 {
-                    foreach($_POST['role_id'] as $roleId)
+                    $userId = User::user()->insert(array(
+                        'email' => $_POST['email'],
+                        'pass' => md5($_POST['password'])
+                    ));
+
+                    if($userId && isset($_POST['role_id']))
                     {
-                        Db::table('roles_users')->insert(array(
-                            'role_id' => $roleId,
-                            'user_id' => $userId
-                        ));
+                        foreach($_POST['role_id'] as $roleId)
+                        {
+                            Db::table('roles_users')->insert(array(
+                                'role_id' => $roleId,
+                                'user_id' => $userId
+                            ));
+                        }
                     }
-                }
 
-                if($userId)
-                {
-                    Message::ok('User created successfully.');
-                    Url::redirect('admin/user/manage');
+                    if($userId)
+                    {
+                        Message::ok('User created successfully.');
+                        Url::redirect('admin/user/manage');
+                    }
+                    else
+                        Message::error('Error creating user.');
                 }
                 else
-                    Message::error('Error creating user.');
+                    Message::error('A user with that email exists.');
             }
-            else
-                Message::error('A user with that email exists.');
         }
 
         $options = array();
@@ -102,7 +103,7 @@ class User_User_AdminController extends Controller {
                 'type' => 'password',
                 'validate' => array('required', 'matches:password')
             ),
-            'role_cid[]' => array(
+            'role_id[]' => array(
                 'title' => 'Roles',
                 'type' => 'select',
                 'options' => $options,

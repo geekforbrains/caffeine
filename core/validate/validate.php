@@ -5,6 +5,7 @@ class Validate extends Module {
     private static $_errors = array();
 
     public static function setError($field, $message) {
+        Message::error($message);
         self::$_errors[$field] = $message;
     }
 
@@ -12,6 +13,8 @@ class Validate extends Module {
     {
         if(!self::$_errors)
             return true;
+
+        Message::error('Form errors');
         return false;
     }
 
@@ -19,19 +22,18 @@ class Validate extends Module {
      * Calls a corresponding class based on the validation option for the given posted
      * field.
      */
-    public static function check($field, $validation)
+    public static function check($fieldName, $fieldTitle, $validation)
     {
-        // TODO Need a way to get a field title
-        // TODO Need a way to get field value, so all we pass is the field name
+        $fieldValue = isset($_POST[$fieldName]) ? $_POST[$fieldName] : null;
 
         foreach($validation as $v)
         {
             $bits = explode(':', $v);
-            $validation = array_shift($bits);
-            $params = $bits;
+            $class = array_shift($bits);
 
-            array_unshift($params, $_POST[$field]);
-            call_user_func_array(array(sprintf('Validate_%s', ucfirst($validation)), 'check'), $params);
+            $params = array_merge(array($fieldName, $fieldTitle, $fieldValue), $bits);
+
+            call_user_func_array(array(sprintf('Validate_%s', ucfirst($class)), 'check'), $params);
         }
     }
 

@@ -33,18 +33,22 @@ if($data)
         $hasPermission = true;
         Dev::debug('user', 'User has permission');
 
-        foreach($data['permissions'] as $k)
+        // Only do callbacks if user is admin, otherwise always allow
+        if(User::current()->is_admin <= 0)
         {
-            Event::trigger(sprintf('user.permission[%s]', $k), 
-                array($route, $data), 
-                array('User', 'permissionCallback')
-            );
-
-            if(User::getPermissionStatus() === false)
+            foreach($data['permissions'] as $k)
             {
-                Dev::debug('user', 'Custom permission callback failed, setting access denied');
-                $hasPermission = false;
-                break;
+                Event::trigger(sprintf('user.permission[%s]', $k), 
+                    array($route, $data), 
+                    array('User', 'permissionCallback')
+                );
+
+                if(User::getPermissionStatus() === false)
+                {
+                    Dev::debug('user', 'Custom permission callback failed, setting access denied');
+                    $hasPermission = false;
+                    break;
+                }
             }
         }
     }

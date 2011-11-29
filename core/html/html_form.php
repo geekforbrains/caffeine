@@ -42,8 +42,9 @@ class Html_Form {
         {
             $fields = unserialize($data);
 
-            foreach($fields as $fieldName => $validation)
-                Validate::check($fieldName, $validation);
+            foreach($fields as $fieldName => $fieldData)
+                if(isset($fieldData['validate']))
+                    Validate::check($fieldName, $fieldData['title'], $fieldData['validate']);
 
             return Validate::passed();
         }
@@ -73,7 +74,7 @@ class Html_Form {
         {
             // Check for validation, add to session under form id it present
             if(isset($fieldData['validate']))
-                $formData[$fieldName] = $fieldData['validate'];
+                $formData[$fieldName] = $fieldData;
                 //$_SESSION['forms'][$formId][$fieldName] = $fieldData['validate'];
 
             $html .= '<li';

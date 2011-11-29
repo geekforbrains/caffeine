@@ -16,7 +16,7 @@
             <h1>Control Panel</h1>
             <span>
                 <?php if(User::current()->id > 0): ?>
-                    Logged in as <?php Html::a(User::current()->email, 'admin/user/edit/1'); ?> &nbsp;|&nbsp;
+                    Logged in as <?php Html::a(User::current()->email, 'admin/user/edit/' . User::current()->id); ?> &nbsp;|&nbsp;
                     <?php Html::a('Logout', 'admin/logout'); ?>
                 <?php endif; ?>
             </span>

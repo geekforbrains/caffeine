@@ -77,6 +77,17 @@ class User_Current extends Module {
     }
 
     /**
+     * Determines if a user is logged in (anonymous) or not. A user with an ID of 0 is always
+     * anonymous and not logged in.
+     */
+    public static function isAnonymous()
+    {
+        if(self::$_user['id'] > 0)
+            return false;
+        return true;
+    }
+
+    /**
      * Checks of the current user has the given permission.
      *
      * Ex: User::current()->hasPermission('user.manage');

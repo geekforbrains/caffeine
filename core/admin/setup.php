@@ -10,8 +10,13 @@
         {
             if(String::startsWith($currentRoute, 'admin'))
             {
-                Admin::setInAdmin(true);
-                View::setPath(ROOT . 'core/admin/');
+                if(!String::startsWith($currentRoute, 'admin/login') && User::current()->isAnonymous())
+                    Url::redirect('admin/login');
+                else
+                {
+                    Admin::setInAdmin(true);
+                    View::setPath(ROOT . 'core/admin/');
+                }
             }
         },
 
