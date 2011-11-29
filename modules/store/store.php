@@ -319,8 +319,9 @@ class Store {
 
         if($data['ACK'] == 'Success')
         {
-            // Update current order to status of "paid"
             Store_Model_Orders::update_status($_SESSION['store_order_cid'], 'new');
+
+            Store_Mailer::send($_SESSION['store_order_cid']);
 
             // Clear order data from session
             unset($_SESSION['store_data']); 

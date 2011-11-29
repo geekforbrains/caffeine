@@ -269,7 +269,8 @@ class Store_Model_Products {
             'long_description' => $data['long_description'],
             'sku' => $data['sku'],
             'price' => $data['price'],
-            'is_used' => $data['is_used']
+            'is_used' => $data['is_used'],
+            'is_featured' => $data['is_featured']
         ));
 
         if($status)

@@ -26,7 +26,8 @@ class Store_Admin_Products {
             if(Validate::passed())
             {
                 $_POST['slug'] = String::tagify($_POST['title']);
-                $_POST['is_used'] = (isset($_POST['is_featured'])) ? 1 : 0;
+                $_POST['is_featured'] = (isset($_POST['is_featured'])) ? 1 : 0;
+                $_POST['is_used'] = (isset($_POST['is_used'])) ? 1 : 0;
 
                 if($product_cid = Store_Model_Products::create($_POST))
                 {

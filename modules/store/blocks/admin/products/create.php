@@ -55,8 +55,13 @@
                 </select>
             </li>
             <li class="small checkbox">
+                <label>Is Featured</label>
+                <input type="checkbox" name="is_featured" />
+                Product is featured
+            </li>
+            <li class="small checkbox">
                 <label>Is Used</label>
-                <input type="checkbox" name="is_used" <?php if($product['is_used'] > 0) echo 'checked="checked"'; ?>/> 
+                <input type="checkbox" name="is_used" />
                 Product is used
             </li>
             <li class="buttons">

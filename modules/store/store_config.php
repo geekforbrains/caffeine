@@ -4,6 +4,15 @@
  * Store Configurations
  * =============================================================================
  */
+define('STORE_EMAIL_FROM', 'orders@example.com'); // The email used when sending emails to customers
+define('STORE_EMAIL_FROM_NAME', 'My Store'); // The name used when sending emails to customers
+define('STORE_EMAIL_ADMIN', ''); // The email sent to when notifying admin of orders
+
+/**
+ * =============================================================================
+ * Store Constants
+ * =============================================================================
+ */
 define('STORE_TYPE_COUNTRY', 'store_country');
 define('STORE_TYPE_STATE', 'store_state');
 define('STORE_TYPE_SIZE', 'store_size');

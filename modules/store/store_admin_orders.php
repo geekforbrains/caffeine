@@ -25,6 +25,7 @@ class Store_Admin_Orders {
         if($_POST)
         {
             Store_Model_Orders::update_status($order_cid, $_POST['status']);
+            Store_Mailer::send($order_cid); // Send update notification, the mailer determines which statuses to send
             Message::set(MSG_OK, 'Status updated successfully.');
         }
 

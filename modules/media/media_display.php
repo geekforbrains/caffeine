@@ -108,7 +108,6 @@ class Media_Display {
 		if(MEDIA_ENABLE_CACHE && file_exists($thumb_path))
 		{
 			header('Content-Type: ' . $file['type']);
-            header('Content-Length: ' . $file['size']);
 			readfile($thumb_path);
 		}
 		else

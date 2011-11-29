@@ -15,7 +15,14 @@
     <img src="<?php l('media/image/0/150/150'); ?>" />
 <?php endif; ?>
 
-<p><?php echo $product['description']; ?></p>
+<h2>Short Description</h2>
+<p><?php echo $product['short_description']; ?></p>
+
+<h2>Detailed Description</h2>
+<p><?php echo $product['long_description']; ?></p>
+
+<p>Is Featured: <?php echo $product['is_featured'] ? 'Yes' : 'No'; ?></p>
+<p>Is Used: <?php echo $product['is_used'] ? 'Yes' : 'No'; ?></p>
 
 <form method="post" action="<?php l('store/cart'); ?>">
     <input type="hidden" name="add_to_cart" value="true" />
