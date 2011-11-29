@@ -1,0 +1,128 @@
+
+NEW STUFF TO ADD
+-----
+- short description for products
+- sku for products
+- billing address and shipping address seperation 
+- track the progress of an order
+- send email notification
+- guest order or user account order
+- product add/edit options
+- product add/edit photos
+- product order photos
+-----
+
+
+
+products
+photos
+shipping
+product options, linked info
+
+flexible options, avoid duplicate data, easy to store option when creating
+an order form.
+
+shipping is based on sizes. sizes and prices can be set globally, country wide or
+province/state wide. each closer option overrides the previous. products specify 
+their size and thats how shipping is calculated.
+
+---------------------------
+
+store_products
+	- cid
+    - shipping_size_cid
+	- title
+    - slug
+	- description
+	- price
+
+store_product_categories
+    - product_cid
+    - category_cid
+
+store_product_photos
+	- product_cid
+	- media_cid
+	- weight (for ordering)
+	
+store_product_option_types
+    - cid
+    - product_cid
+    - name (Size, Color etc.)
+    
+store_product_options
+    - cid
+    - product_option_type_cid
+    - name (12oz, Blue etc.)
+	
+---------------------------
+
+store_categories
+    - cid
+    - parent_cid
+    - name
+    - slug
+
+---------------------------
+
+store_orders
+	- cid
+	- subtotal
+	- shipping
+	- tax
+	- total
+
+store_order_customer
+	- order_cid
+	- first_name
+	- last_name
+	- address1
+	- address2
+	- city
+	- state
+	- zip
+	- country
+	
+store_order_products
+	- order_cid
+	- product_cid
+	- title
+	- price
+	
+store_order_product_options
+    - order_cid
+    - product_cid
+    - product_option_type_cid
+    - product_option_cid
+	
+---------------------------
+
+store_shipping_sizes
+    - cid
+    - name (Small, Medium, Large etc.)
+    - price (global price) for sizes
+    
+store_shipping_country_sizes (override for shipping sizes based initial sizes set)
+    - shipping_country_cid
+    - shipping_sizes_cid
+    - price
+    
+store_shipping_state_sizes (override for shipping sizes)
+    - shipping_state_cid
+    - shipping_sizes_cid
+    - price
+       
+store_shipping_countries (countries available to ship to)
+    - cid
+    - name
+    
+store_shipping_states (states/provindes avail to ship to)
+    - cid
+    - shipping_country_cid
+    - name
+
+---------------------------
+
+store_settings
+	- currency
+	- tax
