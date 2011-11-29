@@ -103,18 +103,18 @@ class Media_Display {
 
 		$file = Media_Model::get_file($cid);
 		$thumb_hash = md5($cid . $rotate . $wp . $h);
-
 		$thumb_path = self::path($thumb_hash);
-		$file_path = Upload::path($file['path'], $file['hash']);
 
 		if(MEDIA_ENABLE_CACHE && file_exists($thumb_path))
 		{
-			Debug::log('Media', 'Loading image from cache: ' . $thumb_path);
-			header('Content-type: ' . $file['type']);
+			header('Content-Type: ' . $file['type']);
+            header('Content-Length: ' . $file['size']);
 			readfile($thumb_path);
 		}
 		else
 		{
+		    $file_path = Upload::path($file['path'], $file['hash']);
+
 			Imager::open($file_path);
 
 			// Check for resize by percent

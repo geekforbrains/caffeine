@@ -4,7 +4,7 @@
  * Media Configurations
  * =============================================================================
  */
-define('MEDIA_ENABLE_CACHE', false);
+define('MEDIA_ENABLE_CACHE', true);
 define('MEDIA_FONT', 'arial.ttf');
 
 /**
