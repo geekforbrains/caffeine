@@ -87,5 +87,5 @@ if($data)
 else
     View::error(ERROR_NOTFOUND);
 
-View::render();
+View::output();
 Event::trigger('caffeine.finished');

@@ -114,10 +114,10 @@ class Menu {
 
             $html .= '<a href="' . Url::to($route) . '">';
 
-            if(is_string($routeData['title']))
-                $html .= $routeData['title'];
+            if(is_callable($routeData['title']))
+                $html .= call_user_func($routeData['title']); // TODO Parameters
             else
-                $html .= call_user_func($routeData['title'], 1); // TODO Parameters
+                $html .= $routeData['title'];
 
             $html .= '</a>';
 
@@ -189,6 +189,10 @@ class Menu {
 
                             if(isset($routeData['hidden']))
                                 $ref[$path]['hidden'] = $routeData['hidden'];
+
+                            // Always hide param based items
+                            if(strstr($path, '%') || strstr($path, ':'))
+                                $ref[$path]['hidden'] = true;
                         }
                     }
                     

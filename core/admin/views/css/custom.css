@@ -1,0 +1,23 @@
+/**
+ * This file contains custom styles for the 960 grid that are specific to the admin theme
+ */
+.messages p {
+    padding: 10px;
+    margin: 0 0 9px 0;
+    font-size: 1.5em;
+}
+
+.messages .error {
+    color: #990000;
+    background-color: #FFB3B3;
+}
+
+.messages .success {
+    color: #008000;
+    background-color: #CCFFCC;
+}
+
+.messages .info {
+    color: #666600;
+    background-color: #FFFFB3;
+}

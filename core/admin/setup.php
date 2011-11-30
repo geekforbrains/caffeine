@@ -1,5 +1,9 @@
 <?php return array(
 
+    'configs' => array(
+        'admin.title' => 'Control Panel' // The main title displayed on admin pages
+    ),
+
     'events' => array(
         
         /**
@@ -32,18 +36,30 @@
         /**
          * Checks if the current module has a views directory with a custom admin view named after the controller
          * and method.
+         *
+         * Check order:
+         * 1. views/controller/method.php
+         * 2. views/controller_method.php
+         */
         'view.load' => function($module, $controller, $method)
         {
-            $viewFile = Load::getModulePath($module) . Config::get('view.dir') . sprintf('%s_%s', $controller, $method) . EXT;
-            Dev::debug('admin', 'Checking for custom view: ' . $viewFile);
+            $paths = array(
+                sprintf('%s/%s', $controller, $method),
+                sprintf('%s_%s', $controller, $method)
+            );
 
-            if(file_exists($viewFile))
+            foreach($paths as $path)
             {
-                Dev::debug('admin', 'Loading custom view: ' . $viewFile);
-                return $viewFile;
+                $viewFile = Load::getModulePath($module) . Config::get('view.dir') . $path . EXT;
+                Dev::debug('admin', 'Checking for custom view: ' . $viewFile);
+
+                if(file_exists($viewFile))
+                {
+                    Dev::debug('admin', 'Loading custom view: ' . $viewFile);
+                    return $viewFile;
+                }
             }
         }
-        */
 
     )
 

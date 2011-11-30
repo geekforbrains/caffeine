@@ -35,7 +35,12 @@ class User_User_Role_AdminController extends Controller {
             );
         }
 
-        return Html::table()->build($headers, $rows);
+        return array(
+            array(
+                'title' => 'Manage Roles',
+                'content' => Html::table()->build($headers, $rows)
+            )
+        );
     }
 
     public static function create()
@@ -75,7 +80,12 @@ class User_User_Role_AdminController extends Controller {
             )
         );
 
-        return Html::form()->build($fields);
+        return array(
+            array(
+                'title' => 'Create Role',
+                'content' => Html::form()->build($fields)
+            )
+        );
     }
 
     /**
@@ -186,7 +196,16 @@ class User_User_Role_AdminController extends Controller {
         $tableHtml .= '<div class="buttons"><input type="submit" name="update_roles" value="Update Permissions" /></div>';
         $tableHtml .= Html::form()->close();
 
-        return array($formHtml, array('title' => 'Edit Role Permissions', 'content' => $tableHtml));
+        return array(
+            array(
+                'title' => 'Edit Role',
+                'content' => $formHtml
+            ),
+            array(
+                'title' => 'Edit Role Permissions', 
+                'content' => $tableHtml
+            )
+        );
     }
 
     public static function delete($id)

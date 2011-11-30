@@ -95,10 +95,7 @@ class User_Current extends Module {
     public function hasPermission($permission)
     {
         if(self::$_user['is_admin'] > 0)
-        {
-            Dev::debug('user', 'User is admin, ignore permissions.');
             return true;
-        }
 
         if(is_array($permission))
         {

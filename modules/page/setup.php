@@ -40,13 +40,17 @@
             'title' => function($id) {
                 return 'Edit Some Title';
             },
+            //'title' => 'TEST EDIT',
             'callback' => array('page_admin', 'edit'),
-            'permissions' => array('page.edit', 'page.edit_mine')
+            'permissions' => array('page.edit', 'page.edit_mine'),
         ),
         'admin/page/delete/%d' => array(
+            /*
             'title' => function($id) {
                 return 'Delete Some Title';
             },
+            */
+            'title' => 'TEST',
             'callback' => array('page_admin', 'delete'),
             'permissions' => array('page.delete', 'page.delete_mine')
         )

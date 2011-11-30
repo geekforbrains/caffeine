@@ -3,8 +3,8 @@
 class Cache extends Module {
 
     /**
-     * Caches a string referenced by a given key. The key is turned into an md5 hash. Defaults to a 24
-     * hour expire time (1440 minutes) which is set in the setup.php file via configs.
+     * Caches a string referenced by a given key. The key is turned into an md5 hash. The key is set via configs
+     * in the setup.php file. Fromat used should be compatible with the php strtotime method.
      *
      * @param string $key The key to associate with the cached data. Must be unique.
      * @param string $data The actual string of data to cache.

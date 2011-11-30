@@ -199,17 +199,48 @@ class View extends Module {
     }
 
     /**
-     * Renders any loaded views to the browser.
+     * Used for loading a file from its path, providing variable data and 
+	 * returning the generated HTML.
+     *
+     * @param $path string
+     *      The full file path to be loaded.
+     *
+     * @param $data array
+     *      An optional array of view data to be made available to the loaded.
+     *
+     * @return
+     *      Returns a string of generated HTML.
      */
-    public static function render()
+    public static function render($view_path, $view_data = array())
     {
-        foreach(self::$_data as $k => $v)
-            $$k = $v;
+        if($view_data)
+            foreach($view_data as $k => $v)
+                $$k = $v;
+        
+        ob_start();
+        eval('?>' .file_get_contents($view_path). '<?');
+        $buffer = ob_get_contents();
+        ob_end_clean();
+        
+        return $buffer;
+    }
+
+    /**
+     * Renders any views and outputs them to the browser.
+     */
+    public static function output()
+    {
+        Dev::debug('view', 'Outputting views to browser');
 
         if(self::$_error === 0)
         {
-            foreach(self::$_views as $filePath)
-                require_once($filePath);
+            $html = '';
+
+            foreach(self::$_views as $viewFile)
+                $html .= self::render($viewFile, self::$_data);
+
+            // TODO Add caching (Cache::store())
+            echo $html;
         }
         else
             require_once(self::$_error);

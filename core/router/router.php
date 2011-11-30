@@ -18,6 +18,13 @@ class Router extends Module {
         return self::$_params;
     }
 
+    public static function getParam($num)
+    {
+        if(isset(self::$_params[$num]))
+            return self::$_params[$num];
+        return false;
+    }
+
     /**
      * Loads a modules routes. If a modules callback only contains two items,
      * the current module name is prepended to the callback.

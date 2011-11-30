@@ -7,6 +7,9 @@ class User_User_AdminController extends Controller {
      */
     public static function manage()
     {
+        $users = User::user()->orderBy('email')->all();
+
+        $rows = array();
         $headers = array(
             array(
                 'Username',
@@ -14,8 +17,7 @@ class User_User_AdminController extends Controller {
             )
         );
 
-        $rows = array();
-        if($users = User::user()->orderBy('email')->all())
+        if($users)
         {
             foreach($users as $user)
             {
@@ -38,7 +40,12 @@ class User_User_AdminController extends Controller {
             );
         }
 
-        return Html::table()->build($headers, $rows);
+        return array(
+            array(
+                'title' => 'Manage Users',
+                'content' => Html::table()->build($headers, $rows)
+            )
+        );
     }
 
     /**
@@ -115,7 +122,12 @@ class User_User_AdminController extends Controller {
             )
         );
 
-        return Html::form()->build($fields);
+        return array(
+            array(
+                'title' => 'Create User',
+                'content' => Html::form()->build($fields)
+            )
+        );
     }
 
     /**
@@ -193,7 +205,12 @@ class User_User_AdminController extends Controller {
             )
         );
 
-        return Html::form()->build($fields);
+        return array(
+            array(
+                'title' => 'Edit User',
+                'content' => Html::form()->build($fields)
+            )
+        );
     }
 
     /**
