@@ -25,7 +25,7 @@ class User_User_AdminController extends Controller {
                     Html::a()->get($user->email, 'admin/user/edit/' . $user->id),
                     array(
                         Html::a()->get('Delete', 'admin/user/delete/' . $user->id),
-                        'attributes' => array('align' => 'right')
+                        'attributes' => array('class' => 'right')
                     )
                 );
             }
@@ -94,31 +94,33 @@ class User_User_AdminController extends Controller {
         foreach($roles as $role)
             $options[$role->id] = $role->name;
 
-        $fields = array(
-            'email' => array(
-                'title' => 'Email',
-                'type' => 'text',
-                'validate' => array('required', 'email')
-            ),
-            'password' => array(
-                'title' => 'Password',
-                'type' => 'password',
-                'validate' => array('required', 'min:4')
-            ),
-            'confirm_password' => array(
-                'title' => 'Confirm Password',
-                'type' => 'password',
-                'validate' => array('required', 'matches:password')
-            ),
-            'role_id[]' => array(
-                'title' => 'Roles',
-                'type' => 'select',
-                'options' => $options,
-                'attributes' => array('multiple' => 'multiple')
-            ),
-            'submit' => array(
-                'value' => 'Create User',
-                'type' => 'submit'
+        $fields[] = array(
+            'fields' => array(
+                'email' => array(
+                    'title' => 'Email',
+                    'type' => 'text',
+                    'validate' => array('required', 'email')
+                ),
+                'password' => array(
+                    'title' => 'Password',
+                    'type' => 'password',
+                    'validate' => array('required', 'min:4')
+                ),
+                'confirm_password' => array(
+                    'title' => 'Confirm Password',
+                    'type' => 'password',
+                    'validate' => array('required', 'matches:password')
+                ),
+                'role_id[]' => array(
+                    'title' => 'Roles',
+                    'type' => 'select',
+                    'options' => $options,
+                    'attributes' => array('multiple' => 'multiple')
+                ),
+                'submit' => array(
+                    'value' => 'Create User',
+                    'type' => 'submit'
+                )
             )
         );
 
@@ -182,26 +184,28 @@ class User_User_AdminController extends Controller {
         foreach($selectedRoles as $role)
             $selected[] = $role->role_id;
 
-        $fields = array(
-            'email' => array(
-                'title' => 'Email',
-                'type' => 'text',
-                'default_value' => $user->email
-            ),
-            'pass' => array(
-                'title' => 'Password',
-                'type' => 'password'
-            ),
-            'role_id[]' => array(
-                'title' => 'Roles',
-                'type' => 'select',
-                'options' => $options,
-                'selected' => $selected,
-                'attributes' => array('multiple' => 'multiple')
-            ),
-            'submit' => array(
-                'value' => 'Update User',
-                'type' => 'submit'
+        $fields[] = array(
+            'fields' => array(
+                'email' => array(
+                    'title' => 'Email',
+                    'type' => 'text',
+                    'default_value' => $user->email
+                ),
+                'pass' => array(
+                    'title' => 'Password',
+                    'type' => 'password'
+                ),
+                'role_id[]' => array(
+                    'title' => 'Roles',
+                    'type' => 'select',
+                    'options' => $options,
+                    'selected' => $selected,
+                    'attributes' => array('multiple' => 'multiple')
+                ),
+                'submit' => array(
+                    'value' => 'Update User',
+                    'type' => 'submit'
+                )
             )
         );
 

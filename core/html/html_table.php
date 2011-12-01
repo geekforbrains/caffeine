@@ -20,17 +20,28 @@ class Html_Table {
         $html .= '>';
 
         // Create headers
+        $html .= '<thead>';
         $html .= '<tr>';
         $html .= self::_row($headers, 'th');
         $html .= '</tr>';
+        $html .= '</thead>';
 
         // Create rows
+        $count = 1;
+        $html .= '<tbody>';
         foreach($rows as $row)
         {
-            $html .= '<tr>';     
-            $html .= self::_row($row, 'td');
+            $class = ($count % 2) ? 'odd' : 'even';
+
+            $html .= '<tr class="' . $class . '">';
+            $html .= self::_row($row, 'td', $class);
             $html .= '</tr>';
+
+            $count++;
         }
+        $html .= '</tbody>';
+
+        // TODO Add <tfooter>
 
         $html .= '</table>';
         return $html;

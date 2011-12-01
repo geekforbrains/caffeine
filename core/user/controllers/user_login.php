@@ -18,23 +18,6 @@ class User_User_LoginController extends Controller {
             else
                 Message::error('Invalid login details.');
         }
-
-        $fields = array(
-            'email' => array(
-                'title' => 'Email',
-                'type' => 'text'
-            ),
-            'password' => array(
-                'title' => 'Password',
-                'type' => 'password'
-            ),
-            'submit' => array(
-                'value' => 'Login',
-                'type' => 'submit'
-            )
-        );
-
-        return Html::form()->build($fields);
     }
 
     public static function logout()

@@ -3,7 +3,7 @@
  */
 .messages p {
     padding: 10px;
-    margin: 0 0 9px 0;
+    margin: 0;
     font-size: 1.5em;
 }
 
@@ -12,7 +12,7 @@
     background-color: #FFB3B3;
 }
 
-.messages .success {
+.messages .success, .messages .ok {
     color: #008000;
     background-color: #CCFFCC;
 }
@@ -20,4 +20,23 @@
 .messages .info {
     color: #666600;
     background-color: #FFFFB3;
+}
+
+form .error {
+    margin-top: -9px;
+}
+
+form .error span {
+    color: #990000;
+    background-color: #FFB3B3;
+    padding: 5px;
+}
+
+th.right,
+td.right {
+	text-align:right;
+}
+
+ul.main li.active a {
+    background: #555;
 }

@@ -321,6 +321,7 @@ fieldset.login p {
 fieldset p label {
 	width:98%;
 }
+fieldset p textarea,
 fieldset p input {
 	width:98%;
 }

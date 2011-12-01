@@ -20,7 +20,7 @@ class User_User_Role_AdminController extends Controller {
                     Html::a()->get($role->name, 'admin/user/role/edit/' . $role->id),
                     array(
                         Html::a()->get('Delete', 'admin/user/role/delete/' . $role->id),
-                        'attributes' => array('align' => 'right')
+                        'attributes' => array('class' => 'right')
                     )
                 );
             }
@@ -68,15 +68,17 @@ class User_User_Role_AdminController extends Controller {
             }
         }
 
-        $fields = array(
-            'name' => array(
-                'title' => 'Name',
-                'type' => 'text',
-                'validate' => array('required')
-            ),
-            'submit' => array(
-                'value' => 'Create Role',
-                'type' => 'submit'
+        $fields[] = array(
+            'fields' => array(
+                'name' => array(
+                    'title' => 'Name',
+                    'type' => 'text',
+                    'validate' => array('required')
+                ),
+                'submit' => array(
+                    'value' => 'Create Role',
+                    'type' => 'submit'
+                )
             )
         );
 
@@ -135,16 +137,18 @@ class User_User_Role_AdminController extends Controller {
             }
         }
 
-        $fields = array(
-            'name' => array(
-                'title' => 'Name',
-                'type' => 'text',
-                'default_value' => $role->name,
-                'validate' => array('required')
-            ),
-            'update_role' => array(
-                'value' => 'Update Role',
-                'type' => 'submit'
+        $fields[] = array(
+            'fields' => array(
+                'name' => array(
+                    'title' => 'Name',
+                    'type' => 'text',
+                    'default_value' => $role->name,
+                    'validate' => array('required')
+                ),
+                'update_role' => array(
+                    'value' => 'Update Role',
+                    'type' => 'submit'
+                )
             )
         );
 
@@ -192,8 +196,8 @@ class User_User_Role_AdminController extends Controller {
 
         // This is a bit hacky, figure a better way to make tables into forms
         $tableHtml = Html::form()->open();
-        $tableHtml .= Html::table()->build($headers, $rows, array('class' => 'stripe'));
-        $tableHtml .= '<div class="buttons"><input type="submit" name="update_roles" value="Update Permissions" /></div>';
+        $tableHtml .= Html::table()->build($headers, $rows);
+        $tableHtml .= '<input type="submit" name="update_roles" value="Update Permissions" />';
         $tableHtml .= Html::form()->close();
 
         return array(

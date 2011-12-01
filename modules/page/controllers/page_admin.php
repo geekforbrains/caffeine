@@ -22,7 +22,7 @@ class Page_Page_AdminController extends Controller {
                     Html::a()->get($page->title, 'admin/page/edit/' . $page->id),
                     array(
                         Html::a()->get('Delete', 'admin/page/delete/' . $page->id),
-                        'attributes' => array('align' => 'right')
+                        'attributes' => array('class' => 'right')
                     )
                 );
             }
@@ -39,7 +39,12 @@ class Page_Page_AdminController extends Controller {
             );
         }
 
-        return Html::table()->build($headers, $rows);
+        return array(
+            array(
+                'title' => 'Manage Page',
+                'content' => Html::table()->build($headers, $rows)
+            )
+        );
     }
 
     public static function create()
@@ -63,72 +68,82 @@ class Page_Page_AdminController extends Controller {
             }
         }
 
-        $fields = array(
-            'page_id' => array(
-                'title' => 'Parent',
-                'type' => 'select',
-                'options' => array('-')
-            ),
-            'title' => array(
-                'title' => 'Title',
-                'type' => 'text',
-                'validate' => array('required')
-            ),
-            'body' => array(
-                'title' => 'Body',
-                'type' => 'textarea',
-                'class' => 'medium textarea',
-                'attributes' => array(
-                    'class' => 'tinymce'
+        $fields[] = array(
+            'fields' => array(
+                'page_id' => array(
+                    'title' => 'Parent',
+                    'type' => 'select',
+                    'options' => array('-')
+                ),
+                'title' => array(
+                    'title' => 'Title',
+                    'type' => 'text',
+                    'validate' => array('required')
+                ),
+                'body' => array(
+                    'title' => 'Body',
+                    'type' => 'textarea',
+                    'attributes' => array(
+                        'class' => 'tinymce'
+                    )
+                ),
+                'submit' => array(
+                    'value' => 'Create Page',
+                    'type' => 'submit',
                 )
-            ),
-            'submit' => array(
-                'value' => 'Create Page',
-                'type' => 'submit'
             )
         );
 
-        return Html::form()->build($fields);
+        return array(
+            array(
+                'title' => 'Create Page',
+                'content' => Html::form()->build($fields)
+            )
+        );
     } 
 
     public static function edit($id)
     {
         $page = Page::page()->find($id);
 
-        $fields = array(
-            'page_id' => array(
-                'title' => 'Parent',
-                'type' => 'select',
-                'options' => array('-')
-            ),
-            'title' => array(
-                'title' => 'Title',
-                'type' => 'text',
-                'default_value' => $page->title,
-                'validate' => array('required')
-            ),
-            'slug' => array(
-                'title' => 'Slug',
-                'type' => 'text',
-                'default_value' => $page->slug,
-                'validate' => array('required')
-            ),
-            'body' => array(
-                'title' => 'Body',
-                'type' => 'textarea',
-                'class' => 'medium textarea',
-                'attributes' => array(
-                    'class' => 'tinymce'
+        $fields[] = array(
+            'fields' => array(
+                'page_id' => array(
+                    'title' => 'Parent',
+                    'type' => 'select',
+                    'options' => array('-')
                 ),
-                'default_value' => $page->body
-            ),
-            'submit' => array(
-                'value' => 'Create Page',
-                'type' => 'submit'
+                'title' => array(
+                    'title' => 'Title',
+                    'type' => 'text',
+                    'default_value' => $page->title,
+                    'validate' => array('required')
+                ),
+                'slug' => array(
+                    'title' => 'Slug',
+                    'type' => 'text',
+                    'default_value' => $page->slug,
+                    'validate' => array('required')
+                ),
+                'body' => array(
+                    'title' => 'Body',
+                    'type' => 'textarea',
+                    'default_value' => $page->body,
+                    'attributes' => array('class' => 'tinymce')
+                ),
+                'submit' => array(
+                    'value' => 'Create Page',
+                    'type' => 'submit',
+                )
             )
         );
 
-        return Html::form()->build($fields);
+        return array(
+            array(
+                'title' => 'Edit User',
+                'content' => Html::form()->build($fields)
+            )
+        );
     }
 
     public static function delete($id)

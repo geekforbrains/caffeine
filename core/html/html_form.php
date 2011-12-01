@@ -56,7 +56,7 @@ class Html_Form {
      *  Options:
      *  - type: The type of field (text, textarea, select, checkbox, radio, file, submit, button)
      */
-    public function build($fields, $action = null, $method = 'post', $enctype = false)
+    public function build($fieldsets, $action = null, $method = 'post', $enctype = false)
     {
         $formId = md5(uniqid()); // Used to determine form being posted when validating feilds
         $formData = array();
@@ -68,35 +68,40 @@ class Html_Form {
 
         // Calls the associated method based on the field type
         // Ex: type "textarea" calls self::_textarea($fieldName, $fieldData);
-        $html .= '<ul>';
+        //$html .= '<ul>';
 
-        foreach($fields as $fieldName => $fieldData)
+        foreach($fieldsets as $fieldsetData)
         {
-            // Check for validation, add to session under form id it present
-            if(isset($fieldData['validate']))
-                $formData[$fieldName] = $fieldData;
-                //$_SESSION['forms'][$formId][$fieldName] = $fieldData['validate'];
+            $html .= '<fieldset>';
 
-            $html .= '<li';
-            
-            if(isset($fieldData['class']))
-                $html .= sprintf(' class="%s"', $fieldData['class']);
-            else
+            if(isset($fieldsetData['legend']))
+                $html .= '<legend>' . $fieldsetData['legend'] . '</legend>';
+
+            foreach($fieldsetData['fields'] as $fieldName => $fieldData)
             {
-                $type = $fieldData['type'] == 'password' ? 'text' : $fieldData['type'];
-                $html .= sprintf(' class="small %s"', $type);
+                // Check for validation, add to session under form id it present
+                if(isset($fieldData['validate']))
+                    $formData[$fieldName] = $fieldData;
+
+                $html .= '<p';
+                if(isset($fieldData['class']))
+                    $html .= sprintf(' class="%s"', $fieldData['class']);
+                else
+                {
+                    $type = $fieldData['type'] == 'password' ? 'text' : $fieldData['type'];
+                    $html .= sprintf(' class="%s"', $type);
+                }
+                $html .= '>';
+
+                if(isset($fieldData['title']))
+                    $html .= '<label>' . $fieldData['title'] . '</label>';
+                $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
+                $html .= Validate::error($fieldName);
+                $html .= '</p>';
             }
 
-            $html .= '>';
-
-            if(isset($fieldData['title']))
-                $html .= '<label>' . $fieldData['title'] . '</label>';
-            $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
-            $html .= Validate::error($fieldName);
-            $html .= '</li>';
+            $html .= '</fieldset>';
         }
-
-        $html .= '</ul>';
 
         $html .= Html::form()->close();
 
