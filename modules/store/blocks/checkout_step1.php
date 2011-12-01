@@ -1,7 +1,7 @@
 <h1>Checkout - Step 1</h1>
 <h2>Shipping Information</h2>
 
-<form method="post" action="<?php l('store/checkout'); ?>">
+<form method="post" action="<?php echo Router::current_url(); ?>">
     First Name
     <input type="text" name="first_name" />
     <?php Validate::error('first_name'); ?>

@@ -184,11 +184,132 @@ class PayPal {
 			'status' => false
 		);
 	}
+
+    /**
+     * SetExpressCheckout
+     *
+     * @param double $amount
+     * @param string $currenty Can be USD, GBP, EUR, JPY, CAD, AUD
+     * @param string $return_url
+     * @param string $cancel_url
+     * @param string $payment_type Can be Authorization, Sale or Order
+     */
+    public static function expressRedirect($amount, $currency, $return_url, $cancel_url, $extra_data = '', $payment_type = 'Sale')
+    {
+        $request = sprintf(
+            '&PAYMENTREQUEST_0_AMT=%s&RETURNURL=%s&CANCELURL=%s&PAYMENTREQUEST_0_PAYMENTACTION=%s&PAYMENTREQUEST_0_CURRENCYCODE=%s',
+            urlencode($amount),
+            urlencode($return_url),
+            urlencode($cancel_url),
+            urlencode($payment_type),
+            urlencode($currency)
+        );
+
+        $request .= $extra_data;
+
+        $response = self::_post_request('SetExpressCheckout', $request);
+
+        if(strtoupper($response['ACK']) ==='SUCCESS' || strtoupper($response['ACK']) == 'SUCCESSWITHWARNING')
+        {
+            $token = urldecode($response['TOKEN']);
+            $checkout_url = PAYPAL_EXPRESS_API_CHECKOUT_URL . $token;
+            Router::redirect($checkout_url);
+            die();
+        }
+
+        return false;
+    }
+
+    /**
+     * GetExpressCheckoutDetails
+     */
+    public static function expressDetails()
+    {
+        if(!isset($_REQUEST['token']))
+            die('Token not set.');
+
+        $token = urlencode(htmlspecialchars($_REQUEST['token']));
+        $request = '&TOKEN=' . $token;
+        $response = self::_post_request('GetExpressCheckoutDetails', $request);
+
+        if(strtoupper($response['ACK']) == 'SUCCESS' || strtoupper($response['ACK']) == 'SUCCESSWITHWARNING')
+            return $response;
+
+        return false;
+    }
+
+    /**
+     * DoExpressCheckoutPayment
+     */
+    public static function expressProcess($payer_id, $amount, $currency, $payment_type = 'Sale')
+    {
+        $token = urlencode($_REQUEST['token']);
+
+        $request = sprintf(
+            '&TOKEN=%s&PAYERID=%s&PAYMENTACTION=%s&AMT=%s&CURRENCYCODE=%s',
+            $token,
+            $payer_id,
+            $payment_type,
+            $amount,
+            $currency
+        );
+
+        $response = self::_post_request('DoExpressCheckoutPayment', $request);
+
+        if(strtoupper($response['ACK']) == 'SUCCESS' || strtoupper($response['ACK']) == 'SUCCESSWITHWARNING')
+            return $response;
+
+        return false;
+    }
+
+    /**
+     * TODO
+     */
+    private static function _post_request($method, $request)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, PAYPAL_EXPRESS_API_URL);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $nvpreq = sprintf(
+            'METHOD=%s&VERSION=%s&PWD=%s&USER=%s&SIGNATURE=%s%s',
+            urlencode($method),
+            urlencode(PAYPAL_EXPRESS_API_VERSION),
+            urlencode(PAYPAL_EXPRESS_API_PASS),
+            urlencode(PAYPAL_EXPRESS_API_USER),
+            urlencode(PAYPAL_EXPRESS_API_SIGN),
+            $request
+        );
+            
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
+        $httpResponse = curl_exec($ch);
+
+        if(!$httpResponse)
+            die(curl_error($ch) . '(' . curl_errno($ch) . ')');
+
+        $httpResponseAr = explode('&', $httpResponse);
+
+        $httpParsedResponseAr = array();
+        foreach ($httpResponseAr as $i => $value) {
+            $tmpAr = explode("=", $value);
+            if(sizeof($tmpAr) > 1) {
+                $httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+            }
+        }
+
+        if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {
+            die(print_r($httpParsedResponseAr, true));
+        }
+
+        return $httpParsedResponseAr;
+    }
 	
 	/**
-	 * -------------------------------------------------------------------------
 	 * Parses a PayPal payment response into an array of key, value pairs.
-	 * -------------------------------------------------------------------------
 	 */
 	private static function _parse_response($response)
 	{

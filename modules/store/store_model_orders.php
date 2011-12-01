@@ -146,4 +146,12 @@ class Store_Model_Orders {
         return Database::fetch_all();
     }
 
+    public static function delete($order_cid)
+    {
+        Content::delete($order_cid);
+        Database::delete('store_order_product_options', array('order_cid' => $order_cid));
+        Database::delete('store_order_products', array('order_cid' => $order_cid));
+        return Database::delete('store_orders', array('cid' => $order_cid));
+    }
+
 }
