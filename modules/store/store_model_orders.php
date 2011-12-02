@@ -125,7 +125,17 @@ class Store_Model_Orders {
             $order_cid
         );
 
-        return Database::fetch_all();
+        if(Database::num_rows() > 0)
+        {
+            $rows = Database::fetch_all();
+
+            foreach($rows as &$row)
+                $row['options'] = self::get_options_by_order_product_cid($row['order_product_cid']);
+
+            return $rows;
+        }
+
+        return false;
     }
 
     public static function get_options_by_order_product_cid($order_product_cid)
