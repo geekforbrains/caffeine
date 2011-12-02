@@ -12,4 +12,13 @@ class Admin {
         self::$_inAdmin = $boolean;
     }
 
+    /**
+     * Determines if admin has been installed by checking if an admin
+     * user has been created.
+     */
+    public static function isConfigured()
+    {
+        return false;
+    }
+
 }

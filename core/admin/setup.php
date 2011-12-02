@@ -4,6 +4,13 @@
         'admin.title' => 'Control Panel' // The main title displayed on admin pages
     ),
 
+    'routes' => array(
+        'admin/install' => array(
+            'title' => 'Install',
+            'callback' => array('admin', 'install')
+        )
+    ),
+
     'events' => array(
         
         /**
@@ -14,13 +21,17 @@
         {
             if(String::startsWith($currentRoute, 'admin'))
             {
-                if(!String::startsWith($currentRoute, 'admin/login') && User::current()->isAnonymous())
-                    Url::redirect('admin/login');
-                else
+                if(!Admin::isConfigured())
                 {
-                    Admin::setInAdmin(true);
-                    View::setPath(ROOT . 'core/admin/');
+                    if(!String::startsWith($currentRoute, 'admin/install'))
+                        Url::redirect('admin/install');
                 }
+
+                elseif(!String::startsWith($currentRoute, 'admin/login') && User::current()->isAnonymous())
+                    Url::redirect('admin/login');
+
+                Admin::setInAdmin(true);
+                View::setPath(ROOT . 'core/admin/');
             }
         },
 
