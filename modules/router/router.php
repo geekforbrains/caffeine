@@ -90,6 +90,13 @@ class Router {
             rtrim(call_user_func_array('sprintf', $args), '/'));
     }
 
+	public static function secure_url()
+	{
+		$args = func_get_args();
+		$url = call_user_func_array(array('self', 'url'), $args);
+		return 'https://' . self::$_host . $url;
+	}
+
 	public static function full_url()
 	{
 		$args = func_get_args();
@@ -174,6 +181,12 @@ class Router {
 function l($path) {
 	$args = func_get_args();
 	echo call_user_func_array(array('Router', 'url'), $args);
+}
+
+// Shorthand function for Router::secure_url
+function sl($path) {
+	$args = func_get_args();
+	echo call_user_func_array(array('Router', 'secure_url'), $args);
 }
 
 // Shorthand function for Router::full_url
