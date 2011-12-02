@@ -20,8 +20,11 @@ class Feature_Admin {
 		// If not feature cid set, get first feature for area
 		if(is_null($feature_cid))
 		{
-			$feature = Feature_Model::get_by_area_cid($area_cid);
-			$feature_cid = $feature['cid'];
+            if($area['multiple_features'] == 0)
+            {
+                $feature = Feature_Model::get_by_area_cid($area_cid);
+                $feature_cid = $feature['cid'];
+            }
 		}
 
 		// Handle creations and updates
@@ -31,19 +34,24 @@ class Feature_Admin {
 				self::_create($area_cid, $area);
 
 			elseif(isset($_POST['update']))
-				self::_update($area, $feature_cid);
+            {
+			    if(self::_update($area, $feature_cid) && $area['multiple_features'] > 0)
+                {
+                    Message::store(MSG_OK, 'Featured updated successfully.');
+                    Router::redirect('admin/feature/edit/' . $area_cid);
+                }
+            }
 		}
 
-		$feature = ($area['multiple_features'] == 0) ? Feature_Model::get_by_cid($feature_cid) : null;
+		//$feature = ($area['multiple_features'] == 0) ? Feature_Model::get_by_cid($feature_cid) : null;
+        $feature = Feature_Model::get_by_cid($feature_cid);
 		$features = Feature_Model::get_all_by_area_cid($area_cid);
 
-		View::load('Feature', 'admin/feature/edit',
-			array(
-				'area' => $area,
-				'feature' => $feature,
-				'features' => $features
-			)
-		);
+		View::load('Feature', 'admin/feature/edit', array(
+            'area' => $area,
+            'feature' => $feature,
+            'features' => $features
+		));
 	}
 
 	public static function delete_image($area_cid, $feature_cid, $media_cid)
@@ -171,11 +179,16 @@ class Feature_Admin {
 		}
 
 		if($status)
+        {
 			Message::set(MSG_OK, 'Feature updated successfully.');
+            return true;
+        }
 
 		// If anything went wrong, and an image was uploaded, delete it
 		elseif($media_cid)
 			Media::delete($media_cid);
+
+        return false;
 	}
 
 }

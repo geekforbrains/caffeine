@@ -22,7 +22,7 @@ final class Feature_Events {
 			),
 			// %d1 = area_id, %d2 = feature_id
 			'admin/feature/edit/%d/%d' => array(
-				'title' => 'Edit Features',
+				'title' => 'Edit Feature',
 				'callback' => array('Feature_Admin', 'edit'),
 				'auth' => 'edit features'
 			),
