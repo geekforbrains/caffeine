@@ -316,6 +316,7 @@ class Store {
     {
         $data = $_SESSION['store_data']['data'];
         $view = 'checkout_error';
+        $order_cid = $_SESSION['store_order_cid'];
 
         if($data['ACK'] == 'Success')
         {
@@ -333,8 +334,15 @@ class Store {
         }
 
         View::load('Store', $view, array(
-            'data' => $data
+            'data' => $data,
+            'order' => Store_Model_Orders::get_by_cid($order_cid),
+            'products' => Store_Model_Orders::get_products_by_order_cid($order_cid)
         ));
+    }
+
+    // Needed public access, but had to keep private method for backwards compatability
+    public static function create_order($customer_cid, $state_cid, $country_cid) {
+        return self::_create_order($customer_cid, $state_cid, $country_cid);
     }
 
     /**

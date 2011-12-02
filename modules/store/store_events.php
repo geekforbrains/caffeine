@@ -56,6 +56,23 @@ final class Store_Events {
                 'auth' => true
             ),
 
+            // PayPal Express Checkout
+            'store/express-checkout' => array(
+                'callback' => array('Store_Express', 'checkout'),
+                'visible' => false,
+                'auth' => true
+            ),
+            'store/express-checkout/finish/%d/%' => array(
+                'callback' => array('Store_Express', 'finish'),
+                'visible' => false,
+                'auth' => true
+            ),
+            'store/express-checkout/cancel/%d/%' => array(
+                'callback' => array('Store_Express', 'cancel'),
+                'visible' => false,
+                'auth' => true
+            ),
+
             // Admin
             'admin/store' => array(
                 'title' => 'Store',

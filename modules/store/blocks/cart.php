@@ -44,9 +44,18 @@
         <?php else: ?>
             <tr><td colspan="4"><em>Cart is empty.</em></td></tr>
         <?php endif; ?>
-    </table>
 
-    <input type="submit" name="update_cart" value="Update Cart" />
-    <input type="submit" name="empty_cart" value="Empty Cart" />
-    <a href="<?php l('store/checkout'); ?>">Checkout</a>
+        <tr>
+            <td colspan="3">
+                <input type="submit" name="update_cart" value="Update Cart" />
+                <input type="submit" name="empty_cart" value="Empty Cart" />
+            </td>
+            <td colspan="2">
+                <a href="<?php l('store/express-checkout'); ?>">
+                    <img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;">
+                </a>
+                <a href="<?php l('store/checkout'); ?>">Regular Checkout</a>
+            </td>
+        </tr>
+    </table>
 </form>

@@ -11,7 +11,7 @@
 			<?php if($area['has_title']): ?>
 				<li class="text small">
 					<label>Title</label>
-					<input type="text" name="title" value="<?php if($feature) echo $feature['title']; ?>" />
+					<input type="text" name="title" value="<?php echo $feature['title']; ?>" />
 					<?php echo Validate::error('title'); ?>
 				</li>
 			<?php endif; ?>
