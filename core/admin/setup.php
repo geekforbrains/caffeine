@@ -1,13 +1,19 @@
 <?php return array(
 
     'configs' => array(
-        'admin.title' => 'Control Panel' // The main title displayed on admin pages
+        'admin.title' => 'Control Panel', // The main title displayed on admin pages
+        'admin.default_route' => 'admin/user' // The default route to redirect to when accessing "/admin"
     ),
 
     'routes' => array(
+        'admin' => array(
+            'title' => 'Admin',
+            'callback' => array('admin', 'redirect'),
+        ),
         'admin/install' => array(
             'title' => 'Install',
-            'callback' => array('admin', 'install')
+            'callback' => array('admin', 'install'),
+            'hidden' => true
         )
     ),
 

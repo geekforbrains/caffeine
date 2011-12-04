@@ -12,14 +12,18 @@
     <?php endif; ?>
 
     <div class="grid_<?php echo ($subNav) ? '9' : '12'; ?>">
-        <?php foreach($adminContent as $content): ?>
-            <div class="box">
-                <h2><?php echo $content['title']; ?></h2>
-                <div class="block">
-                    <?php echo $content['content']; ?>
+        <?php if($adminContent): ?>
+            <?php foreach($adminContent as $content): ?>
+                <div class="box">
+                    <h2><?php echo $content['title']; ?></h2>
+                    <div class="block">
+                        <?php echo $content['content']; ?>
+                    </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p><em>Nothing to display</em></p>
+        <?php endif; ?>
     </div>
 
 <?php View::insert('includes/footer'); ?>

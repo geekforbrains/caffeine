@@ -44,7 +44,7 @@ class Html_Form {
 
             foreach($fields as $fieldName => $fieldData)
                 if(isset($fieldData['validate']))
-                    Validate::check($fieldName, $fieldData['title'], $fieldData['validate']);
+                    Validate::check($fieldName, $fieldData['validate']);
 
             return Validate::passed();
         }

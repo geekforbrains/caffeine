@@ -11,14 +11,17 @@
                         <p>
                             <label>Admin Email: </label>
                             <input type="text" name="email" />
+                            <?php echo Validate::error('email'); ?>
                         </p>
                         <p>
                             <label>Admin Password: </label>
                             <input type="password" name="password" />
+                            <?php echo Validate::error('password'); ?>
                         </p>
                         <p>
                             <label>Confirm Password: </label>
                             <input type="password" name="conf_password" />
+                            <?php echo Validate::error('conf_password'); ?>
                         </p>
                         <input class="login button" type="submit" value="Install" />
                     </fieldset>

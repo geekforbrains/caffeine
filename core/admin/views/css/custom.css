@@ -26,6 +26,10 @@ form .error {
     margin-top: -9px;
 }
 
+form .login .error {
+    margin-left: 35%;
+}
+
 form .error span {
     color: #990000;
     background-color: #FFB3B3;

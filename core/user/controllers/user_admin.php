@@ -21,12 +21,19 @@ class User_User_AdminController extends Controller {
         {
             foreach($users as $user)
             {
-                $rows[] = array(
-                    Html::a()->get($user->email, 'admin/user/edit/' . $user->id),
-                    array(
+                $attributes = null;
+
+                if($user->is_admin <= 0)
+                {
+                    $attributes = array(
                         Html::a()->get('Delete', 'admin/user/delete/' . $user->id),
                         'attributes' => array('class' => 'right')
-                    )
+                    );
+                }
+
+                $rows[] = array(
+                    Html::a()->get($user->email, 'admin/user/edit/' . $user->id),
+                    $attributes
                 );
             }
         }
@@ -222,10 +229,15 @@ class User_User_AdminController extends Controller {
      */
     public static function delete($id)
     {
-        if($response = User::user()->delete($id))
-            Message::ok('User deleted successfully.');
+        if(User::user()->find($id)->is_admin > 0)
+            Message::error('Admin user cannot be deleted.');
         else
-            Message::error('Error deleting user.');
+        {
+            if($response = User::user()->delete($id))
+                Message::ok('User deleted successfully.');
+            else
+                Message::error('Error deleting user.');
+        }
 
         Url::redirect('admin/user/manage');
     }

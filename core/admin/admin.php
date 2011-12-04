@@ -18,6 +18,8 @@ class Admin {
      */
     public static function isConfigured()
     {
+        if(User::user()->where('is_admin', '>', 0)->first())
+            return true;
         return false;
     }
 

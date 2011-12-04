@@ -31,7 +31,7 @@ class Validate extends Module {
      * Calls a corresponding class based on the validation option for the given posted
      * field.
      */
-    public static function check($fieldName, $fieldTitle, $validation)
+    public static function check($fieldName, $validation)
     {
         $fieldValue = isset($_POST[$fieldName]) ? $_POST[$fieldName] : null;
 
