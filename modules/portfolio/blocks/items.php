@@ -3,9 +3,7 @@
 <ul>
     <?php foreach($items as $i): ?>
         <li>
-            <?php if($i['photos']): ?>
-                <img src="<?php l('media/image/%d/0/50/50', $i['photos'][0]['cid']); ?>" />
-            <?php endif; ?>
+            <img src="<?php l('media/image/%d/0/50/50', $i['thumb_cid']); ?>" />
 
             <a href="<?php l('portfolio/item/%d', $i['cid']); ?>">
                 <?php echo $i['name']; ?>

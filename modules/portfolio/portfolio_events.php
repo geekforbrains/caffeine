@@ -21,6 +21,11 @@ class Portfolio_Events {
                 'callback' => array('Portfolio', 'item'),
                 'auth' => true
             ),
+            'portfolio/item/%s' => array( // Get by slug
+                'title' => 'Portfolio Item',
+                'callback' => array('Portfolio', 'item'),
+                'auth' => true
+            ),
 
             // Admin Aliases
             'admin/portfolio' => array(
@@ -59,6 +64,10 @@ class Portfolio_Events {
             'admin/portfolio/items/edit/%d/delete-video/%d' => array(
                 'callback' => array('Portfolio_Admin_Items', 'delete_video'),
                 'auth' => 'delete item videos'
+            ),
+            'admin/portfolio/items/delete/%d' => array(
+                'callback' => array('Portfolio_Admin_Items', 'delete'),
+                'auth' => 'delete portfolio items'
             ),
 
             // Admin Categories
@@ -127,6 +136,12 @@ class Portfolio_Events {
                         'unsigned' => true,
                         'not null' => true
                     ),
+                    'thumb_cid' => array( // Media cid
+                        'type' => 'int',
+                        'size' => 'big',
+                        'unsigned' => true,
+                        'not null' => true
+                    ),
                     'name' => array(
                         'type' => 'varchar',
                         'length' => 255,
@@ -140,7 +155,8 @@ class Portfolio_Events {
                 ),
 
                 'indexes' => array(
-                    'category_cid' => array('category_cid')
+                    'category_cid' => array('category_cid'),
+                    'thumb_cid' => array('thumb_cid')
                 ),
 
                 'primary key' => array('cid')

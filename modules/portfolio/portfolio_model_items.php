@@ -115,12 +115,13 @@ class Portfolio_Model_Items {
         return array();
     }
 
-    public static function create($category_cid, $name, $desc)
+    public static function create($category_cid, $name, $desc, $thumb_cid)
     {
         $cid = Content::create(PORTFOLIO_TYPE_ITEM);
         $status = Database::insert('portfolio_items', array(
             'cid' => $cid,
             'category_cid' => $category_cid,
+            'thumb_cid' => $thumb_cid,
             'name' => $name,
             'description' => $desc
         ));
@@ -130,16 +131,18 @@ class Portfolio_Model_Items {
         return false;
     }
 
-    public static function update($cid, $category_cid, $name, $desc)
+    public static function update($cid, $category_cid, $name, $desc, $thumb_cid = 0)
     {
-        return Database::update('portfolio_items',
-            array(
-                'category_cid' => $category_cid,
-                'name' => $name,
-                'description' => $desc
-            ),
-            array('cid' => $cid)
+        $update = array(
+            'category_cid' => $category_cid,
+            'name' => $name,
+            'description' => $desc
         );
+
+        if($thumb_cid > 0)
+            $update['thumb_cid'] = $thumb_cid;
+
+        return Database::update('portfolio_items', $update, array('cid' => $cid));
     }
 
     public static function get_data_by_cid($item_cid)

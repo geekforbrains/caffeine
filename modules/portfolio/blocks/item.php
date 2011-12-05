@@ -1,3 +1,5 @@
+<img src="<?php l('media/image/%d', $item['thumb_cid']); ?>" />
+
 <h1><?php echo $item['name']; ?></h1>
 
 Description: <?php echo $item['description']; ?><br />
