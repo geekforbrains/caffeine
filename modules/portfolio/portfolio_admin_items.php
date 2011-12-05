@@ -22,7 +22,9 @@ class Portfolio_Admin_Items {
                 {
                     if($thumb_cid = Media::add('thumb'))
                     {
-                        if($cid = Portfolio_Model_Items::create($_POST['category_cid'], $_POST['name'], $_POST['description'], $thumb_cid))
+                        $slug = String::tagify($_POST['name']); 
+
+                        if($cid = Portfolio_Model_Items::create($_POST['category_cid'], $_POST['name'], $_POST['description'], $slug, $thumb_cid))
                         {
                             // Add extra data fields
                             Portfolio_Model_Items::add_data($cid, 'client', $_POST['client']);
@@ -54,6 +56,7 @@ class Portfolio_Admin_Items {
         {
             Validate::check('category_cid', 'Category', array('required'));
             Validate::check('name', 'Name', array('required')); 
+            Validate::check('slug', 'Slug', array('required')); 
 
             if(Validate::passed())
             {
@@ -61,7 +64,7 @@ class Portfolio_Admin_Items {
                 {
                     $thumb_cid = ($_FILES['thumb']['size'] > 0) ? Media::add('thumb') : 0; 
 
-                    Portfolio_Model_Items::update($cid, $_POST['category_cid'], $_POST['name'], $_POST['description'], $thumb_cid);
+                    Portfolio_Model_Items::update($cid, $_POST['category_cid'], $_POST['name'], $_POST['description'], $_POST['slug'], $thumb_cid);
                     Portfolio_Model_Items::add_data($cid, 'client', $_POST['client']);
                     Portfolio_Model_Items::add_data($cid, 'role', $_POST['role']);
                     Portfolio_Model_Items::add_data($cid, 'date', strtotime($_POST['date']));

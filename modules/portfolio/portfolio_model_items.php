@@ -56,6 +56,27 @@ class Portfolio_Model_Items {
         return false;
     }
 
+    public static function get_by_slug($slug)
+    {
+        Database::query('SELECT * FROM {portfolio_items} WHERE slug = %s', $slug);
+        
+        if(Database::num_rows() > 0)
+        {
+            $row = Database::fetch_array();
+            $data = self::get_data_by_cid($row['cid']);
+
+            foreach($data as $d)
+                $row[$d['name']] = $d['value'];
+
+            $row['photos'] = self::get_photos_by_cid($row['cid']);
+            $row['videos'] = self::get_videos_by_cid($row['cid']);
+
+            return $row;
+        }
+
+        return false;
+    }
+
     public static function get_by_category_slug($category_slug)
     {
         Database::query('
@@ -115,13 +136,14 @@ class Portfolio_Model_Items {
         return array();
     }
 
-    public static function create($category_cid, $name, $desc, $thumb_cid)
+    public static function create($category_cid, $name, $desc, $slug, $thumb_cid)
     {
         $cid = Content::create(PORTFOLIO_TYPE_ITEM);
         $status = Database::insert('portfolio_items', array(
             'cid' => $cid,
             'category_cid' => $category_cid,
             'thumb_cid' => $thumb_cid,
+            'slug' => $slug,
             'name' => $name,
             'description' => $desc
         ));
@@ -131,10 +153,11 @@ class Portfolio_Model_Items {
         return false;
     }
 
-    public static function update($cid, $category_cid, $name, $desc, $thumb_cid = 0)
+    public static function update($cid, $category_cid, $name, $desc, $slug, $thumb_cid = 0)
     {
         $update = array(
             'category_cid' => $category_cid,
+            'slug' => $slug,
             'name' => $name,
             'description' => $desc
         );

@@ -142,6 +142,11 @@ class Portfolio_Events {
                         'unsigned' => true,
                         'not null' => true
                     ),
+                    'slug' => array(
+                        'type' => 'varchar',
+                        'length' => 255,
+                        'not null' => true
+                    ),
                     'name' => array(
                         'type' => 'varchar',
                         'length' => 255,
@@ -156,7 +161,8 @@ class Portfolio_Events {
 
                 'indexes' => array(
                     'category_cid' => array('category_cid'),
-                    'thumb_cid' => array('thumb_cid')
+                    'thumb_cid' => array('thumb_cid'),
+                    'slug' => array('slug')
                 ),
 
                 'primary key' => array('cid')
