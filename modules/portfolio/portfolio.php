@@ -17,11 +17,21 @@ class Portfolio {
         ));
     }
 
-    public static function item($cid)
+    public static function item($cidOrSlug)
     {
-        View::load('Portfolio', 'item', array(
-            'item' => Portfolio_Model_Items::get_by_cid($cid)
-        ));
+        if(is_numeric($cidOrSlug))
+            $item = Portfolio_Model_Items::get_by_cid($cidOrSlug);
+        else
+            $item = Portfolio_Model_Items::get_by_slug($cidOrSlug);
+
+        if($item)
+        {
+            View::load('Portfolio', 'item', array(
+                'item' => $item
+            ));
+        }
+        else
+            return false;
     }
 
     // Convenience method for custom views

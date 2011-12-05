@@ -3,7 +3,7 @@
 <div class="area right">
     <div class="area">
         <h2>Edit Item</h2>
-        <form method="post" action="<?php echo Router::current_url(); ?>">
+        <form method="post" action="<?php echo Router::current_url(); ?>" enctype="multipart/form-data">
             <ul>
                 <li class="select small">
                     <label>Category</label>
@@ -23,9 +23,24 @@
                     <input type="text" name="name" value="<?php echo $item['name']; ?>" />
                     <?php echo Validate::error('name'); ?>
                 </li>
+                <li class="text small">
+                    <label>Slug</label>
+                    <input type="text" name="slug" value="<?php echo $item['slug']; ?>" />
+                    <?php echo Validate::error('slug'); ?>
+                </li>
                 <li class="textarea medium">
                     <label>Description</label>
                     <textarea name="description" class="tinymce"><?php echo $item['description']; ?></textarea>
+                </li>
+                <li class="text small">
+                    <label>Thumbnail</label>
+                    <input type="file" name="thumb" />
+
+                    <?php if($item['thumb_cid'] > 0): ?>
+                        <br /><br />
+                        
+                        <img src="<?php l('media/image/%d/0/75/75', $item['thumb_cid']); ?>" />
+                    <?php endif; ?>
                 </li>
 
                 <!-- start extra data fields -->
