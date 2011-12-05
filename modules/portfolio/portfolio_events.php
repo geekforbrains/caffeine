@@ -136,7 +136,12 @@ class Portfolio_Events {
                         'type' => 'text',
                         'size' => 'normal',
                         'not null' => true
-                    )
+                    ),
+                 	  'weight' => array(
+                     	'type' => 'int',
+                     	'size' => 'small',
+                     	'not null' => true
+                 		)
                 ),
 
                 'indexes' => array(

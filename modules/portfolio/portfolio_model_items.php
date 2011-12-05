@@ -11,7 +11,7 @@ class Portfolio_Model_Items {
             FROM {portfolio_items} pi
                 LEFT JOIN {portfolio_categories} pc ON pc.cid = pi.category_cid
             ORDER BY
-                pc.name, pi.name ASC
+                pi.weight ASC
         ');
 
         if(Database::num_rows() > 0)
@@ -92,7 +92,7 @@ class Portfolio_Model_Items {
 
     public static function get_by_category_cid($category_cid)
     {
-        Database::query('SELECT * FROM {portfolio_items} WHERE category_cid = %s', $category_cid);
+        Database::query('SELECT * FROM {portfolio_items} WHERE category_cid = %s ORDER BY weight ASC', $category_cid);
 
         if(Database::num_rows() > 0)
         {
@@ -115,14 +115,15 @@ class Portfolio_Model_Items {
         return array();
     }
 
-    public static function create($category_cid, $name, $desc)
+    public static function create($category_cid, $name, $desc, $weight)
     {
         $cid = Content::create(PORTFOLIO_TYPE_ITEM);
         $status = Database::insert('portfolio_items', array(
             'cid' => $cid,
             'category_cid' => $category_cid,
             'name' => $name,
-            'description' => $desc
+            'description' => $desc,
+				'weight' => $weight
         ));
 
         if($status)
@@ -130,13 +131,14 @@ class Portfolio_Model_Items {
         return false;
     }
 
-    public static function update($cid, $category_cid, $name, $desc)
+    public static function update($cid, $category_cid, $name, $desc, $weight)
     {
         return Database::update('portfolio_items',
             array(
                 'category_cid' => $category_cid,
                 'name' => $name,
-                'description' => $desc
+                'description' => $desc,
+					 'weight' => $weight
             ),
             array('cid' => $cid)
         );

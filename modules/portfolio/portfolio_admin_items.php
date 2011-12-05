@@ -18,7 +18,7 @@ class Portfolio_Admin_Items {
 
             if(Validate::passed())
             {
-                if($cid = Portfolio_Model_Items::create($_POST['category_cid'], $_POST['name'], $_POST['description']))
+                if($cid = Portfolio_Model_Items::create($_POST['category_cid'], $_POST['name'], $_POST['description'], $_POST['weight']))
                 {
                     // Add extra data fields
                     Portfolio_Model_Items::add_data($cid, 'client', $_POST['client']);
@@ -46,7 +46,7 @@ class Portfolio_Admin_Items {
 
             if(Validate::passed())
             {
-                if(Portfolio_Model_Items::update($cid, $_POST['category_cid'], $_POST['name'], $_POST['description']))
+                if(Portfolio_Model_Items::update($cid, $_POST['category_cid'], $_POST['name'], $_POST['description'], $_POST['weight']))
                 {
                     // Update extra fields
                     Portfolio_Model_Items::add_data($cid, 'client', $_POST['client']);

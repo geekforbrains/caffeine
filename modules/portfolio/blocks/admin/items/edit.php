@@ -42,6 +42,10 @@
                     <label>Date</label>
                     <input type="text" name="date" value="<?php echo date('M jS, Y', $item['date']); ?>" />
                 </li>
+	                <li class="text small">
+	                    <label>Weight</label>
+	                    <input type="text" name="weight" value="<?php echo $item['weight']; ?>" />
+	                </li>
 
                 <!-- end extra data fields -->
 

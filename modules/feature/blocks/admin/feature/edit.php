@@ -69,7 +69,20 @@
 					<tr>
 						<td>
 							<a href="<?php l('admin/feature/edit/%d/%d', $area['cid'], $feature['cid']); ?>">
-								<?php echo $feature['title']; ?>
+								<?php
+									if(isset($feature['title']))
+									{
+										echo $feature['title'];
+									}
+									elseif(isset($feature['link']))
+									{
+										echo $feature['link'];
+									}
+									else
+									{
+										echo 'whee';
+									}
+								?>
 							</a>
 						</td>
 						<td align="right">

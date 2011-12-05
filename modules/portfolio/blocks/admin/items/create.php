@@ -40,6 +40,10 @@
                 <label>Date</label>
                 <input type="text" name="date" />
             </li>
+            <li class="text small">
+                <label>Weight</label>
+                <input type="text" name="weight" />
+            </li>
 
             <!-- end extra data fields -->
 

@@ -94,7 +94,7 @@ class Router {
 	{
 		$args = func_get_args();
 		$url = call_user_func_array(array('self', 'url'), $args);
-		return 'https://' . self::$_host . $url;
+		return 'https://' . str_replace('www.', '', self::$_host) . $url;
 	}
 
 	public static function full_url()
