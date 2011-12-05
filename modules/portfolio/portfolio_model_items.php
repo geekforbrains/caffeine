@@ -161,7 +161,8 @@ class Portfolio_Model_Items {
             'category_cid' => $category_cid,
             'slug' => $slug,
             'name' => $name,
-            'description' => $desc
+            'description' => $desc,
+				'weight' => $weight
         );
 
         if($thumb_cid > 0)
