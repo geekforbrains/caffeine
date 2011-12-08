@@ -13,7 +13,7 @@ class Testes {
 	// method for displaying front-end testimonials page
 	public static function testimonials()
 	{
-      View::load('Testimonials', 'testes', array('testes' => Testes_Model::get()));
+      View::load('Testes', 'teste', array('teste' => Testes_Model::get_by_id(Router::segment(1))));
 	}
 
 }
