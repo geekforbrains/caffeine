@@ -19,13 +19,16 @@ final class Testes_Events {
             
            // Front
             'testimonials' => array(
-					'title' => 'Testimonials',
-               'callback' => array('Testes', 'testimonials')
+                'title' => 'Testimonials',
+                'callback' => array('Testes', 'testimonials'),
+                'auth' => true
             ),
          	'testimonials/%' => array(
-					'title' => 'Testimonial',
-            	'callback' => array('Testes', 'testimonials')
+                'title' => 'Testimonial',
+                'callback' => array('Testes', 'testimonials'),
+                'auth' => true
          	),
+
             // Admin
             'admin/testes' => array(
 					'title' => 'Testimonials',
