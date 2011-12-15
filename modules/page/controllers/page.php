@@ -2,6 +2,12 @@
 
 class Page_PageController extends Controller {
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     public static function view($slug)
     {
         $page = Page::page()->find($slug);
@@ -14,5 +20,6 @@ class Page_PageController extends Controller {
 
         return ERROR_NOTFOUND;
     }
+
 
 }

@@ -1,5 +1,6 @@
 <?php return array(
 
+
     'permissions' => array(
         'page.admin' => 'Administer pages',
         'page.manage' => 'Manage all pages',
@@ -11,11 +12,14 @@
         'page.delete_mine' => 'Delete my pages'
     ),
     
+
     'routes' => array(
         // Front
         'page/:slug' => array(
             'title' => function($slug) {
-                return 'Some Page';
+                if($page = Page::page()->find($slug))
+                    return $page->title;
+                return null;
             },
             'callback' => array('page', 'view')
         ),
@@ -28,44 +32,26 @@
         ),
         'admin/page/manage' => array(
             'title' => 'Manage',
-            'callback' => array('page_admin', 'manage'),
+            'callback' => array('admin_page', 'manage'),
             'permissions' => array('page.manage', 'page.manage_mine')
         ),
         'admin/page/create' => array(
             'title' => 'Create',
-            'callback' => array('page_admin', 'create'),
+            'callback' => array('admin_page', 'create'),
             'permissions' => array('page.create')
         ),
         'admin/page/edit/%d' => array(
-            'title' => function($id) {
-                return 'Edit Some Title';
-            },
-            //'title' => 'TEST EDIT',
-            'callback' => array('page_admin', 'edit'),
+            'callback' => array('admin_page', 'edit'),
             'permissions' => array('page.edit', 'page.edit_mine'),
         ),
         'admin/page/delete/%d' => array(
-            /*
-            'title' => function($id) {
-                return 'Delete Some Title';
-            },
-            */
-            'title' => 'TEST',
-            'callback' => array('page_admin', 'delete'),
+            'callback' => array('admin_page', 'delete'),
             'permissions' => array('page.delete', 'page.delete_mine')
         )
     ),
 
-    /**
-     * Calls event when accessing a page that required the "page.delete_mine" permission. This allows events
-     * to determine the functionality of a permission check.
-     */
-    'events' => array(
-        'user.permission[page.create_mine]' => function()
-        {
-            // TODO
-        },
 
+    'events' => array(
         'user.permission[page.edit_mine]' => function()
         {
             // TODO
@@ -76,5 +62,6 @@
             // TODO
         }
     )
+
 
 );

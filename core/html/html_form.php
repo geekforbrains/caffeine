@@ -228,7 +228,7 @@ class Html_Form {
         if(isset($data['selected']))
         {
             $selected = $data['selected'];
-            if((is_array($data) && in_array($key, $selected)) || $selected == $key)
+            if((is_array($data) && in_array($key, $data)) || $selected == $key)
                 return ' selected="selected"';
         }
 
