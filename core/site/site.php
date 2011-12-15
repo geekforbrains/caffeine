@@ -10,7 +10,12 @@ class Site extends Module {
     public static function getPath()
     {
         // TODO Actually determine the site dir
-        return ROOT . 'sites/default/';
+        return ROOT . self::getRelativePath();
+    }
+
+    public static function getRelativePath()
+    {
+        return 'sites/default/';
     }
 
 }

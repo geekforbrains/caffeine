@@ -11,6 +11,10 @@ class Html_Form {
         return sprintf('<form method="%s" action="%s"%s>', $method, $action, $enctype);
     }
 
+    public function openMultipart($action = null, $method = 'post') {
+        return $this->open($action, $method, true);
+    }
+
     public function close() {
         return '</form>';
     }
