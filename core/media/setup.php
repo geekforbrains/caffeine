@@ -33,6 +33,11 @@
 
         'media/download/:num' => array(
 
+        ),
+
+        // TESTING
+        'media/test' => array(
+            'callback' => array('image', 'test')
         )
     )
 

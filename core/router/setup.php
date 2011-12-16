@@ -1,7 +1,7 @@
 <?php return array(
 
     'configs' => array(
-        'router.default_route' => null
+        'router.default_route' => '[index]'
     )
 
 );

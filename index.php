@@ -1,4 +1,8 @@
 <?php
+/**
+ * TODO This whole file needs refactoring. Wrap into Caffeine class.
+ */
+
 session_start();
 
 define('ROOT', __DIR__ . '/');
@@ -85,7 +89,10 @@ if($data)
         View::error(ERROR_ACCESSDENIED);
 }
 else
-    View::error(ERROR_NOTFOUND);
+{
+    if($route != '[index]' || !View::directLoad('index'))
+        View::error(ERROR_NOTFOUND);
+}
 
 View::output();
 Event::trigger('caffeine.finished');

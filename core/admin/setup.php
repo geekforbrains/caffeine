@@ -60,20 +60,23 @@
          */
         'view.load' => function($module, $controller, $method)
         {
-            $paths = array(
-                sprintf('%s/%s', $controller, $method),
-                sprintf('%s_%s', $controller, $method)
-            );
-
-            foreach($paths as $path)
+            if(Admin::inAdmin())
             {
-                $viewFile = Load::getModulePath($module) . Config::get('view.dir') . $path . EXT;
-                Dev::debug('admin', 'Checking for custom view: ' . $viewFile);
+                $paths = array(
+                    sprintf('%s/%s', $controller, $method),
+                    sprintf('%s_%s', $controller, $method)
+                );
 
-                if(file_exists($viewFile))
+                foreach($paths as $path)
                 {
-                    Dev::debug('admin', 'Loading custom view: ' . $viewFile);
-                    return $viewFile;
+                    $viewFile = Load::getModulePath($module) . Config::get('view.dir') . $path . EXT;
+                    Dev::debug('admin', 'Checking for custom view: ' . $viewFile);
+
+                    if(file_exists($viewFile))
+                    {
+                        Dev::debug('admin', 'Loading custom view: ' . $viewFile);
+                        return $viewFile;
+                    }
                 }
             }
         }

@@ -12,4 +12,7 @@ class Media_ImageController extends Controller {
         die();
     }
 
+    // FOR TESTING WITH VIEWS, WILL BE REMOVED
+    public static function test() {}
+
 }

@@ -2,12 +2,44 @@
 
 class Db_Query extends Module {
 
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     public $tableName       = null;
+    
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     public $fieldNames      = array();
 
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     private $_table         = null;
+
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     private $_class         = null;
 
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     private $_select        = '';
     private $_distinct      = false;
     private $_from          = '';
@@ -17,26 +49,50 @@ class Db_Query extends Module {
     private $_limit         = '';
     private $_bindings      = array();
 
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     protected $_timestamps  = false;
     protected $_indexes     = array();
     protected $_fulltext    = array();
 
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     protected $_hasOne      = array();
     protected $_hasMany     = array();
     protected $_belongsTo   = array();
     protected $_hasAndBelongsToMany = array();
 
-    private static $_describes = array();
 
     /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
+    private static $_describes = array();
+
+
+    /**
+     * ---------------------------------------------------------------------------  
      * Allow access to private properties.
+     * ---------------------------------------------------------------------------  
      */
     public function __get($name) {
         return $this->{$name};
     }
     
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function __construct($table = null)
     {
@@ -62,15 +118,21 @@ class Db_Query extends Module {
         }
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Adds a new table index to the end of the index array.
+     * ---------------------------------------------------------------------------  
      */
     public function addIndex($key) {
         array_push($this->_indexes, $key);
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function select()
     {
@@ -86,8 +148,11 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function insert($data, $getInsertId = true)
     {
@@ -116,8 +181,11 @@ class Db_Query extends Module {
         return Db::query($sql, $values, $getInsertId);
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function update($data)
     {
@@ -139,8 +207,11 @@ class Db_Query extends Module {
         return Db::query($sql, $values);
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function delete($id = null)
     {
@@ -155,15 +226,23 @@ class Db_Query extends Module {
         return Db::query($sql, $this->_bindings);
     }
 
-    // Alias of delete that forces a truncate by removing ids and where clauses
+    
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     public function truncate()
     {
         $this->_where = '';
         return $this->delete();
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function describe() 
     {
@@ -181,15 +260,21 @@ class Db_Query extends Module {
         return self::$_describes[$this->_table];
     }
 
+
     /**
-     * Determines if the current able exists. Returns boolean.
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function exists() {
         return Db::query('SHOW TABLES LIKE \'' . $this->_table . '\'');
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function distinct()
     {
@@ -198,6 +283,7 @@ class Db_Query extends Module {
     }
 
     /**
+     * ---------------------------------------------------------------------------   
      * Regular SELECT query. If no other options are set, this will get all
      * records from the current table.
      *
@@ -208,6 +294,7 @@ class Db_Query extends Module {
      *
      * Db()->table('users')->get(); // Get all records and all fields
      * Db()->table('users')->get('first_name', 'age'); // Only two fields
+     * ---------------------------------------------------------------------------   
      */
     public function get()
     {
@@ -223,17 +310,25 @@ class Db_Query extends Module {
         return Db::query($sql, $this->_bindings, false, $this->_class);
     }
 
-    // Alias of get()
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * Alias of get()
+     * ---------------------------------------------------------------------------  
+     */
     public function all() {
         return $this->get();
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Returns the first result from a query. 
      *
      * Examples:
      *
      * Db()->table('users')->first();
+     * ---------------------------------------------------------------------------  
      */
     public function first()
     {
@@ -244,9 +339,12 @@ class Db_Query extends Module {
         return false;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Finds a single record based on an id or slug. If an int is passed its
      * assumed to be an id. Anything not an int is considered a slug.
+     * ---------------------------------------------------------------------------  
      */
     public function find($idOrSlug)
     {
@@ -254,21 +352,27 @@ class Db_Query extends Module {
         return $this->where($type, '=', $idOrSlug)->first();
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Counts the number of records returned from the query
      *
      * Examples:
      *
      * Db()->get('users')->count(); // Count all records
      * Db()->get('users')->where('age', '>', '23')->count()
+     * ---------------------------------------------------------------------------  
      */
     public function count()
     {
         // TODO
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function orderBy($column, $direction = 'ASC')
     {
@@ -281,8 +385,11 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function limit($limit, $offset = null)
     {
@@ -294,13 +401,16 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Starts a where clause. 
      *
      * Examples:
      *
      * Db::table('users')->where('name', 'LIKE', 'Bob')->get();
      * Db::table('users')->where('email', '=', 'bob@example.com')->first();
+     * ---------------------------------------------------------------------------  
      */
     public function where($column, $operator, $value, $modifier = null)
     {
@@ -313,8 +423,11 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function andWhere($column, $operator, $value)
     {
@@ -322,8 +435,11 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function orWhere($column, $operator, $value)
     {
@@ -331,13 +447,16 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Does an inner join on a table. The first param is the table to join, the
      * last 3 params are used to create the ON statement.
      *
      * Examples:
      *
      * DB::table('users')->join('photos', 'photos.user_id', '=', 'user.id')->get();
+     * ---------------------------------------------------------------------------  
      */
     public function join($table, $column1, $operator, $column2, $modifier = 'INNER')
     {
@@ -347,14 +466,23 @@ class Db_Query extends Module {
         return $this;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * TODO
+     * ---------------------------------------------------------------------------  
      */
     public function leftJoin($table, $column1, $operator, $column2)
     {
         return $this->join($table, $column1, $operator, $column2, 'LEFT');
     }
 
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     private function _getTableName()
     {
         $class = get_called_class();
@@ -366,5 +494,6 @@ class Db_Query extends Module {
 
         return String::plural($model);
     }
+
 
 }

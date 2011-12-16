@@ -199,6 +199,23 @@ class View extends Module {
     }
 
     /**
+     * Like View::insert but view is added to the views property and rendered during output.
+     * This allows views loaded this way to be cached.
+     */
+    public static function directLoad($view)
+    {
+        $filePath = self::getPath() . $view . EXT;
+
+        if(file_exists($filePath))
+        {
+            self::$_views[] = $filePath;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Used for loading a file from its path, providing variable data and 
 	 * returning the generated HTML.
      *

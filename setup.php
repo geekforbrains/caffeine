@@ -1,7 +1,7 @@
 <?php return array(
 
     'configs' => array(
-        'router.default_route' => 'page/welcome',
+        'router.default_route' => '[index]',
 
         'db.name' => 'dev',
         'db.user' => 'username',
