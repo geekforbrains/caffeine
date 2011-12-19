@@ -1,14 +1,16 @@
 <?php return array(
 
+
     'configs' => array(
         'media.allowed_file_formats' => array(), // Leave blank for anything
         'media.allowed_image_formats' => array('.gif', '.png', '.jpg', '.jpeg'),
         'media.allowed_video_formats' => array('.avi', '.mwv', '.mov'),
 
         'media.media_dir' => 'media/' . date('Y/m') . '/', // Must have trailing slash
-        'media.cache_dir' => 'cache/', // Must have trailing slash
+        'media.cache_dir' => 'media_cache/', // Must have trailing slash
         'media.files_dir' => 'files/' // Must have trailing slash
     ),
+
 
     'routes' => array(
         // id
@@ -31,14 +33,11 @@
             'callback' => array('image', 'render')
         ),
 
+        // download file through browser by id
         'media/download/:num' => array(
-
-        ),
-
-        // TESTING
-        'media/test' => array(
-            'callback' => array('image', 'test')
+            'callback' => array('file', 'download')
         )
     )
+
 
 );

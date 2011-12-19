@@ -2,8 +2,20 @@
 
 class Media_Uploader {
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static $_error = null;
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static $_mimeTypes = array(
 		'323' => 'text/h323',
 		'acx' => 'application/internet-property-stream',
@@ -195,14 +207,23 @@ class Media_Uploader {
 		'zip' => 'application/zip'
 	);
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     public static function getError() {
         return self::$_error;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Saves the given file and returns the id if successful otherwise boolean false
      *
      * Types are: file, image, video
+     * --------------------------------------------------------------------------- 
      */
     public static function save($name, $type, $allowed_formats = array())
     {
@@ -216,71 +237,60 @@ class Media_Uploader {
 		}
 
         $filesPath = Media::getFilesPath();
+        if(!$filesPath)
+        {
+            self::$_error = 'Files directory doesn\'t exist or isn\'t writable.';
+            return false;
+        }
+
         $mediaPath = Media::getMediaPath();
+        if(!$mediaPath)
+        {
+            self::$_error = 'Media directory doesn\'t exist or isn\'t writable.';
+            return false;
+        }
 
-		if($filesPath && $mediaPath)
-		{
-            $uploadPath = $filesPath . $mediaPath;
+        $uploadPath = $filesPath . $mediaPath;
+        $newFilename = self::_getAvailFilename($file['name'], $uploadPath);
+        $fullPath = ROOT . $uploadPath . $newFilename;
 
-            // Determine new file name by checking if a file with that same name already exists
-            // If a file exists, loop appending count to the end (Ex: myimage-1.jpg) until we find an avail name
-            $newFilename = $file['name'];
+        if(!strlen($file['type']))
+            $file['type'] = 'text/plain';
 
-            if(file_exists($uploadPath . $newFilename))
+        if(move_uploaded_file($file['tmp_name'], $fullPath))
+        {
+            $id = Media::m('file')->insert(array(
+                'name' => $newFilename,
+                'path' => Media::getMediaPath(), // Must be relative because the site directory could change
+                'size' => $file['size'],
+                'mime_type' => $file['type'],
+                'file_type' => $type
+            ));
+
+            if($id)
+                return $id;
+            else
             {
-                $count = 1;
-                $ext = pathinfo($newFilename, PATHINFO_EXTENSION);
+                self::$_error = 'Error saving uploaded file to database.';
 
-                while(true)
-                {
-                    $tmpName = str_replace('.' . $ext, sprintf('-%d.%s', $count, $ext), $newFilename);
+                // If the file was uploaded, but the db failed, remove the file
+                if(file_exists($fullPath))
+                    @unlink($fullPath);
 
-                    if(!file_exists($uploadPath . $tmpName))
-                    {
-                        $newFilename = $tmpName;
-                        break;
-                    }
-
-                    $count++;
-                }
+                return false;
             }
+        }
 
-            /*
-		    $fileHash = md5(uniqid($file['tmp_name'], true));
-            $fullPath = ROOT . $uploadPath . $fileHash;
-            */
-            $fullPath = ROOT . $uploadPath . $newFilename;
-
-			if(!strlen($file['type']))
-				$file['type'] = 'text/plain';
-
-			if(move_uploaded_file($file['tmp_name'], $fullPath))
-			{
-                $id = Media::m('file')->insert(array(
-                    //'hash' => $fileHash,
-                    //'name' => $file['name'],
-                    'name' => $newFilename,
-                    'path' => Media::getMediaPath(), // Must be relative because the site directory could change
-                    'size' => $file['size'],
-                    'mime_type' => $file['type'],
-                    'file_type' => $type
-                ));
-
-                if($id)
-                    return $id;
-                else
-                {
-                    self::$_error = 'Error saving uploaded file to database.';
-                    return false;
-                }
-			}
-		}
-
-        self::$_error = 'Media directory doesn\'t exist or isn\'t writable.';
+        self::$_error = 'Unkown media error occured.';
 	    return false;
     }
 
-    /*
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     public static function saveFromUrl($url)
     {
         $file_hash = md5($url);
@@ -295,7 +305,7 @@ class Media_Uploader {
                 'name' => $bits[count($bits) - 1],
                 'hash' => $file_hash,
                 'path' => $file_path,
-                'type' => self::_determine_mime_type($url),
+                'type' => self::_determineMimeType($url),
                 'size' => filesize($full_path),
                 'full_path' => $full_path
             );
@@ -306,8 +316,44 @@ class Media_Uploader {
         return false;
     }
 
-    // TODO Do we actually need this?
-    private static function _determine_mime_type($path)
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * Checks if the given file already exists in the given path. If it does, loop
+     * the name appending an incremented number to the end until an available filename
+     * is found.
+     *
+     * ex: myfile.jpg, myfile-1.jpg, myfile-2.jpg etc.
+     * --------------------------------------------------------------------------- 
+     */
+    private static function _getAvailFilename($filename, $uploadPath)
+    {
+        if(file_exists($uploadPath . $filename))
+        {
+            $count = 1;
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+            while(true)
+            {
+                $tmpName = str_replace('.' . $ext, sprintf('-%d.%s', $count, $ext), $filename);
+
+                if(!file_exists($uploadPath . $tmpName))
+                    return $tmpName;
+
+                $count++;
+            }
+        }
+
+        return $filename;
+    }
+
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
+    private static function _determineMimeType($path)
 	{
 		$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
@@ -316,8 +362,13 @@ class Media_Uploader {
 
 		return 'application/octet-stream';
 	}
-    */
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
 	private static function _determineError($errorCode)
 	{
 		switch($errorCode)
@@ -342,5 +393,6 @@ class Media_Uploader {
 				return 'Unkown upload error.';
 		}
 	}
+
 
 }

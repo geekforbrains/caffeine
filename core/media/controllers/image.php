@@ -2,6 +2,12 @@
 
 class Media_ImageController extends Controller {
 
+    
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     public static function render($id, $rotation = null, $widthOrPercent = null, $height = null)
     {
         $image = Media::m('file')->find($id);
@@ -12,7 +18,5 @@ class Media_ImageController extends Controller {
         die();
     }
 
-    // FOR TESTING WITH VIEWS, WILL BE REMOVED
-    public static function test() {}
 
 }

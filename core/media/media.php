@@ -1,35 +1,42 @@
 <?php
 
-// TODO Save an uploaded image/file and get its full path (resized images if need be, should be cached)
-// TODO Save a file or image from a url with same functionality as above
-// TODO Save a video from a supported url (youtube, vimeo), and get video details, output video html with sizes
 class Media extends Module {
 
+
     /**
-     * Helper method for getting new image instance.
+     * --------------------------------------------------------------------------- 
+     * Helper method for getting new Media_Image instance.
+     * --------------------------------------------------------------------------- 
      */
     public static function image() {
         return new Media_Image();
     }
 
+
     /**
-     * Helper method for getting new video instance.
+     * --------------------------------------------------------------------------- 
+     * Helper method for getting new Media_Video instance.
+     * --------------------------------------------------------------------------- 
      */
     public static function video() {
         return new Media_Video();
     }
 
+
     /**
-     * Helper method for getting new file instance.
+     * --------------------------------------------------------------------------- 
+     * Helper method for getting new Media_File instance.
+     * --------------------------------------------------------------------------- 
      */
     public static function file() {
         return new Media_File();
     }
 
-    public function getDetails($id) {}
 
     /**
+     * --------------------------------------------------------------------------- 
      * Returns the relative path from within the files directory to the media directory.
+     * --------------------------------------------------------------------------- 
      */
     public static function getMediaPath()
     {
@@ -45,8 +52,11 @@ class Media extends Module {
         return $mediaDir;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Returns the relative path from within the files directory to the cache directory.
+     * --------------------------------------------------------------------------- 
      */
     public static function getCachePath()
     {
@@ -62,11 +72,15 @@ class Media extends Module {
         return $cacheDir;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Returns the relative path from ROOT to the current sites files directory.
+     * --------------------------------------------------------------------------- 
      */
     public static function getFilesPath() {
         return Site::getRelativePath() . Config::get('media.files_dir');
     }
+
 
 }
