@@ -8,7 +8,10 @@
 
         'media.media_dir' => 'media/' . date('Y/m') . '/', // Must have trailing slash
         'media.cache_dir' => 'media_cache/', // Must have trailing slash
-        'media.files_dir' => 'files/' // Must have trailing slash
+        'media.files_dir' => 'files/', // Must have trailing slash
+
+        'media.youtube_api' => 'http://gdata.youtube.com/feeds/api/videos/%s',
+        'media.vimeo_api' => 'http://vimeo.com/api/clip/%s.xml'
     ),
 
 

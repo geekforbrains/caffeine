@@ -1,15 +1,21 @@
 <?php
 
-// TODO Auto add classes (first, active, last etc.)
-// TODO Add menus to database for quicker access, based on md5 hash of html string (create Cache modue?)
-
 class Menu {
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Stores sorted routes to be used for building Menu.
+     * --------------------------------------------------------------------------- 
      */
     private static $_sorted = array();
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     public static function build($depth = -1, $offset = null, $data = array())
     {
         $sorted = self::_getSorted();
@@ -26,6 +32,12 @@ class Menu {
         return null;
     }
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static function _offset($sorted, $offset)
     {
         if(strstr($offset, '%'))
@@ -49,6 +61,12 @@ class Menu {
         return $sorted;
     }
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static function _depth($sorted, $depth)
     {
         $depth--;
@@ -66,6 +84,12 @@ class Menu {
         return $tmp;
     }
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static function _getHtml($sorted, $data)
     {
         // Determine count of actual items about to be displayed, this is used to determine
@@ -134,6 +158,12 @@ class Menu {
         return $html;
     }
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static function _getSorted()
     {
         if(!self::$_sorted)
@@ -201,9 +231,8 @@ class Menu {
             }
         }
 
-        //die(print_r(self::$_sorted, true));
-
         return self::$_sorted;
     }
+
 
 }

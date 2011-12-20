@@ -1,54 +1,17 @@
 <?php
 
-class Media_Image {
+class Media_Image extends Media_File {
 
 
     /**
-     * ---------------------------------------------------------------------------   
-     * The current uploaded file id, if any.
-     * ---------------------------------------------------------------------------   
+     * --------------------------------------------------------------------------- 
+     * Set the allowed image formats to be uploaded. Based on config in setup.php
+     * --------------------------------------------------------------------------- 
      */
-    private $_id = 0;
-    
-
-    /**
-     * ---------------------------------------------------------------------------   
-     * The current upload error, if any.
-     * ---------------------------------------------------------------------------   
-     */
-    private $_error = null;
-
-
-    /**
-     * ---------------------------------------------------------------------------   
-     * Checks if the uploaded file has an error. Returns boolean.
-     * ---------------------------------------------------------------------------   
-     */
-    public function hasError()
+    public function __construct()
     {
-        if(!is_null($this->_error))
-            return true;
-        return false;
-    }
-
-
-    /**
-     * ---------------------------------------------------------------------------   
-     * Returns the error, if any, from the file uploaded.
-     * ---------------------------------------------------------------------------   
-     */
-    public function getError() {
-        return $this->_error;
-    }
-
-
-    /**
-     * ---------------------------------------------------------------------------   
-     * Returns the id of the uploaded file. Will be 0 if the upload failed.
-     * ---------------------------------------------------------------------------   
-     */
-    public function getId() {
-        return $this->_id;
+        $this->_type = 'image';
+        $this->_allowedExts = Config::get('media.allowed_image_formats');
     }
 
 

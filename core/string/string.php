@@ -2,6 +2,12 @@
 
 class String extends Module {
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static $_plural = array(
         '/(quiz)$/i'               => "$1zes",
         '/^(ox)$/i'                => "$1en",
@@ -24,6 +30,12 @@ class String extends Module {
         '/$/'                      => "s"
     );
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static $_singular = array(
         '/(quiz)zes$/i'             => "$1",
         '/(matr)ices$/i'            => "$1ix",
@@ -55,6 +67,12 @@ class String extends Module {
         '/s$/i'                     => ""
     );
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static $_irregular = array(
         'move'   => 'moves',
         'foot'   => 'feet',
@@ -66,6 +84,12 @@ class String extends Module {
         'person' => 'people'
     );
 
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * TODO
+     * --------------------------------------------------------------------------- 
+     */
     private static $_uncountable = array(
         'sheep',
         'fish',
@@ -78,12 +102,15 @@ class String extends Module {
         'equipment'
     );
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Converts a singular word to plural.
      *
      * @param string $string The singular word to convert to plural.
      *
      * @return string
+     * --------------------------------------------------------------------------- 
      */
     public static function plural($string)
     {
@@ -110,12 +137,15 @@ class String extends Module {
         return $string;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Converts a word from plural to singular.
      *
      * @param string $string The plural word to convert to singular.
      *
      * @return string 
+     * --------------------------------------------------------------------------- 
      */
     public static function singular($string)
     {
@@ -142,13 +172,16 @@ class String extends Module {
         return $string;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Determines if a given string starts with another string.
      *
      * @param string $string The string to check the beginning of.
      * @param string $start The string to check for at the beginning of $string.
      *
      * @return boolean
+     * --------------------------------------------------------------------------- 
      */
     public static function startsWith($string, $start)
     {
@@ -157,13 +190,16 @@ class String extends Module {
         return false;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Determines if a string ends with another string.
      *
      * @param string $string The string to check the end of.
      * @param string $end The string to check for at the end of $string.
      *
      * @return boolean
+     * --------------------------------------------------------------------------- 
      */
     public static function endsWith($string, $end)
     {
@@ -172,7 +208,9 @@ class String extends Module {
         return false;
     }
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Takes a string and returns it in "tag" format. A tag is all lower case
      * with only numbers and letters. Words are seperated by a "splitter".
      *
@@ -189,6 +227,7 @@ class String extends Module {
      *
      * @return
      *      Returns the value of $string as a tag.
+     * --------------------------------------------------------------------------- 
      */
     public static function tagify($string, $splitter = '-')
     {
@@ -200,23 +239,25 @@ class String extends Module {
         return $string;
     }
 
-    // Alias of tagify
+
+	/**
+     * --------------------------------------------------------------------------- 
+     * Alias of tagify.
+     * --------------------------------------------------------------------------- 
+	 */
     public static function slugify($string, $splitter = '-') {
         return self::tagify($string, $splitter);
     }
 
+
 	/**
+     * --------------------------------------------------------------------------- 
 	 * Takes a string with the tokens %, %s, %d and converts them to regex
 	 * patterns for anything, only words and only number respectively. 
+     * --------------------------------------------------------------------------- 
 	 */
 	public static function regify($string)
 	{
-        /*
-		return str_replace('%', '(.*?)',
-			str_replace('%d', '([0-9]+)', 
-			str_replace('%s', '([A-Za-z\-]+)', $string)));
-        */
-
         $replacements = array(
             '([A-Za-z0-9\-]+)' => array(':slug'),
             '([A-Za-z\-]+)' => array('%s', ':alpha'),
@@ -233,7 +274,9 @@ class String extends Module {
         return $string;
 	}
 
+
     /**
+     * --------------------------------------------------------------------------- 
      * Shortens a string based on the given length to the nearest word. This means
      * it wont cut off part of a word, it'll reduce the string until it finds the end of
      * a whole word. If the string is shorter than the length, the $append will not be added.
@@ -244,6 +287,7 @@ class String extends Module {
      * @param boolean $striptags Enables or disables the stripping of HTML tags from the string. Defaults to true.
      *
      * @return string
+     * --------------------------------------------------------------------------- 
      */
     public static function truncate($string, $length, $append = null, $striptags = true)
     {
@@ -266,9 +310,15 @@ class String extends Module {
         return $string;
     }
 
-    // Alias of String::truncate
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * Alias of truncate
+     * --------------------------------------------------------------------------- 
+     */
     public static function shorten($string, $length, $append = null, $striptags = true) {
         return self::truncate($string, $length, $append, $striptags);
     }
+
 
 }

@@ -290,7 +290,6 @@ class Media_Uploader {
      * --------------------------------------------------------------------------- 
      * TODO
      * --------------------------------------------------------------------------- 
-     */
     public static function saveFromUrl($url)
     {
         $file_hash = md5($url);
@@ -315,6 +314,7 @@ class Media_Uploader {
 
         return false;
     }
+    */
 
 
     /**
