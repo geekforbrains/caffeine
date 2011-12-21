@@ -147,8 +147,8 @@ class Html_Form {
         return $html;
     }
 
-    private static function _default_value($data) {
-        return isset($data['default_value']) ? $data['default_value'] : '';
+    private static function _default_value($name, $data) {
+        return isset($data['default_value']) ? $data['default_value'] : Input::post($name);
     }
 
     /**
@@ -161,7 +161,7 @@ class Html_Form {
      *      - attributes: An array of key value pairs for attributes (ex: array('class' => 'my_class'))
      */
     private static function _text($name, $data, $type = 'text') {
-        return sprintf('<input%s type="%s" name="%s" value="%s" />', self::_attributes($data), $type, $name, self::_default_value($data));
+        return sprintf('<input%s type="%s" name="%s" value="%s" />', self::_attributes($data), $type, $name, self::_default_value($name, $data));
     }
 
     // Alias of text input, but as a password type
@@ -179,7 +179,7 @@ class Html_Form {
      *      - attributes: An array of key value pairs for attributes (ex: array('class' => 'my_class'))
      */
     private static function _textarea($name, $data) {
-        return sprintf('<textarea%s name="%s">%s</textarea>', self::_attributes($data), $name, self::_default_value($data));
+        return sprintf('<textarea%s name="%s">%s</textarea>', self::_attributes($data), $name, self::_default_value($name, $data));
     }
 
     /**
@@ -209,26 +209,31 @@ class Html_Form {
                 $html .= sprintf('<optgroup label="%s">', $k);
 
                 foreach($v as $k2 => $v2)
-                    $html .= sprintf('<option value="%s"%s>%s</option>', $k2, self::_getSelected($data, $k2), $v2);
+                    $html .= sprintf('<option value="%s"%s>%s</option>', $k2, self::_getSelected($name, $data, $k2), $v2);
 
                 $html .= '</optgroup>';
             }
 
             // Otherwise create regular option
             else
-                $html .= sprintf('<option value="%s"%s>%s</option>', $k, self::_getSelected($data, $k), $v);
+                $html .= sprintf('<option value="%s"%s>%s</option>', $k, self::_getSelected($name, $data, $k), $v);
         }
 
         $html .= '</select>';
         return $html;
     }
 
-    private static function _getSelected($data, $key)
+    private static function _getSelected($name, $data, $key)
     {
         if(isset($data['selected']))
         {
             $selected = $data['selected'];
             if((is_array($data) && in_array($key, $data)) || $selected == $key)
+                return ' selected="selected"';
+        }
+        else
+        {
+            if(Input::post($name) == $key)
                 return ' selected="selected"';
         }
 

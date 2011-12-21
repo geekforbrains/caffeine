@@ -18,6 +18,8 @@ class Validate_Email {
 
 		if(!$status)
             Validate::setError($fieldName, 'Not a valid email address');
+
+        return $status;
     }
 
 }

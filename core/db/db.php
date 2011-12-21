@@ -14,27 +14,44 @@ class Db extends Module {
      */
     public static function query($sql, $bindings = array(), $getInsertId = true, $class = 'stdClass')
     {
-        if(is_null(self::$_conn))
-            self::_connect();
+        try
+        {
+            if(is_null(self::$_conn))
+                self::_connect();
 
-        $debugSql = $sql;
-        foreach($bindings as $value)
-            $debugSql = preg_replace('/\?/', "'".$value."'", $debugSql, 1);
-        Dev::debug('db', $debugSql);
+            $debugSql = $sql;
+            foreach($bindings as $value)
+                $debugSql = preg_replace('/\?/', "'".$value."'", $debugSql, 1);
+            Dev::debug('db', $debugSql);
 
-        $query = self::$_conn->prepare($sql);
-        $result = $query->execute($bindings);
+            $query = self::$_conn->prepare($sql);
+            $result = $query->execute($bindings);
 
-        if(stripos($sql, 'SELECT') === 0 || stripos($sql, 'DESCRIBE') === 0)
-            return $query->fetchAll(PDO::FETCH_CLASS, $class);
+            if(!$result)
+            {
+                $info = $query->errorInfo();
+                Dev::debug('db', 'ERROR: ' . $info[2]);
+            }
+            else
+            {
+                if(stripos($sql, 'SELECT') === 0 || stripos($sql, 'DESCRIBE') === 0)
+                    return $query->fetchAll(PDO::FETCH_CLASS, $class);
 
-        elseif(stripos($sql, 'UPDATE') === 0 || stripos($sql, 'DELETE') === 0 || stripos($sql, 'SHOW TABLES') === 0)
-            return $query->rowCount();
+                elseif(stripos($sql, 'UPDATE') === 0 || stripos($sql, 'DELETE') === 0 || stripos($sql, 'SHOW TABLES') === 0)
+                    return $query->rowCount();
 
-        elseif($result && $getInsertId)
-            return self::$_conn->lastInsertId();
+                elseif($result && $getInsertId)
+                    return self::$_conn->lastInsertId();
 
-        return $result;
+                return $result;
+            }
+
+            return false;
+        } 
+        catch(Exception $e)
+        {
+            die('error');
+        }
     }
 
     /** 

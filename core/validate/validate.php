@@ -42,7 +42,8 @@ class Validate extends Module {
 
             $params = array_merge(array($fieldName, $fieldValue), $bits);
 
-            call_user_func_array(array(sprintf('Validate_%s', ucfirst($class)), 'check'), $params);
+            if(!call_user_func_array(array(sprintf('Validate_%s', ucfirst($class)), 'check'), $params))
+                break;
         }
     }
 
