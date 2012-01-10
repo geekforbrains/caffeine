@@ -21,6 +21,73 @@ class Media {
 		return self::$_error;
 	}
 
+    // Get the relative url to a given file name
+    public static function fileUrl($file)
+    {
+		$user = User::current();
+		$cache_path = $user['files_path'] . MEDIA_CACHE_DIR;
+        $relative = str_replace(CAFFEINE_ROOT, '', $cache_path);
+
+        return Router::url($relative . $file);
+    }
+
+    /**
+     * Returns the full url to an image file. If the image with the given dimensions/rotation
+     * doesn't exist, it is created first. Every time after that the file is returned directly.
+     */
+	public static function image($cid, $rotate = 0, $wp = null, $h = null)
+    {
+		$file = Media_Model::get_file($cid);
+		$thumb_hash = md5($cid . $rotate . $wp . $h);
+
+        // Append extension based on type
+        switch($file['type'])
+        {
+            case 'image/gif':
+                $thumb_hash .= '.gif';
+                break;
+
+            case 'image/png':
+                $thumb_hash .= '.png';
+                break;
+
+            default:
+                $thumb_hash .= '.jpg';
+                break;
+        }
+
+		$thumb_path = Media_Display::path($thumb_hash);
+
+		if(!file_exists($thumb_path))
+		{
+		    $file_path = Upload::path($file['path'], $file['hash']);
+
+			Imager::open($file_path);
+
+			// Check for resize by percent
+			if($wp > 0 && is_null($h))
+				Imager::percent($wp); // Not actually width, used as percent in this case
+
+			// If width and height are set, do adapative resize
+			elseif($wp > 0 && $h > 0)
+				Imager::resize($wp, $h, true);
+
+			// Regular resize, based on highest value
+			elseif($wp > 0 || $h > 0)
+				Imager::resize($wp, $h, false);
+
+			// Check for rotate
+			if($rotate > 0)
+				Imager::rotate($rotate);
+	
+			// Save thumb for caching and display
+			if(MEDIA_ENABLE_CACHE)
+				Imager::save($thumb_path);
+		}
+
+        return self::fileUrl($thumb_hash);
+    }
+
 	/**
 	 * -------------------------------------------------------------------------
 	 * Used for uploading types of media. Files are stored as images, videos

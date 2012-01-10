@@ -3,7 +3,8 @@
     <form method="post" action="<?php echo Router::current_url(); ?>">
         <ul>
             <li>
-                <img src="<?php l('media/image/%d/0/125/125', $photo['media_cid']); ?>" />
+                <!--<img src="<?php l('media/image/%d/0/125/125', $photo['media_cid']); ?>" />-->
+                <img src="<?php echo Media::image($photo['media_cid'], 0, 125, 125); ?>" />
             </li>
             <li class="text small">
                 <label>Title</label>
