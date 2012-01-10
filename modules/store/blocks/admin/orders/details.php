@@ -6,10 +6,15 @@
                 <th width="125">Name</th>
                 <td>
                     <?php echo $customer['first_name']; ?>
-                    <?php echo $customer['last_name']; ?><br />
-					<?php echo $customer['email']; ?>
+                    <?php echo $customer['last_name']; ?>
                 </td>
             </tr>
+			<tr>
+				<th>Email</th>
+				<td>
+					<?php echo $customer['email']; ?>				
+				</td>
+			</tr>
             <tr>
                 <th>Address</th>
                 <td><?php echo $customer['address1']; ?></td>
