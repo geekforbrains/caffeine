@@ -8,6 +8,7 @@ class Db_Installer {
         'float' => 'FLOAT',
         'double' => 'DOUBLE',
         'datetime' => 'DATETIME',
+        'date' => 'DATE',
         'auto increment' => array(
             'tiny' => 'TINYINT',
             'small' => 'SMALLINT',

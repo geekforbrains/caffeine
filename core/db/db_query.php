@@ -55,6 +55,14 @@ class Db_Query extends Module {
      * TODO
      * ---------------------------------------------------------------------------  
      */
+    protected $_fields      = array();
+
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     protected $_timestamps  = false;
     protected $_indexes     = array();
     protected $_fulltext    = array();
@@ -110,11 +118,14 @@ class Db_Query extends Module {
 
         // Setup blank properties for this class based on table description
         $fields = $this->describe();
-        foreach($fields as $field)
+        if($fields && is_array($fields))
         {
-            $this->fieldNames[] = $field->Field;
-            if(!isset($this->{$field->Field}))
-                $this->{$field->Field} = null;
+            foreach($fields as $field)
+            {
+                $this->fieldNames[] = $field->Field;
+                if(!isset($this->{$field->Field}))
+                    $this->{$field->Field} = null;
+            }
         }
     }
 
@@ -249,7 +260,6 @@ class Db_Query extends Module {
         if(!isset(self::$_describes[$this->_table]))
         {
             $data = Db::query('DESCRIBE ' . $this->_table);
-
             // Only store a describe if it returns data, otherwise the table probably wasn't created yet
             if($data)
                 self::$_describes[$this->_table] = $data;

@@ -4,9 +4,10 @@
                     <p>
                         System time: <?php echo date('M jS - g:i:s A'); ?> (<?php echo Config::get('system.timezone'); ?>)<br />
                         Powered by 
-                        <a href="http://github.com/geekforbrains/caffeine" title="Caffeine on GitHub" target="_blank">
-                            Caffeine <?php echo VERSION; ?>
-                        </a>
+                        <?php Html::a('Caffeine ' . VERSION, 'http://github.com/geekforbrains/caffeine', array(
+                            'title' => 'Caffeine on GitHub',
+                            'target' => '_blank'
+                        )); ?>
                     </p>
 				</div>
 			</div>

@@ -31,6 +31,7 @@ class Site extends Module {
         if(is_null(self::$_sitePath))
         {
             $path = sprintf('sites/%s/', $_SERVER['HTTP_HOST']);
+            //$path = 'sites/default/';
 
             if(file_exists(ROOT . $path))
                 self::$_sitePath = $path;

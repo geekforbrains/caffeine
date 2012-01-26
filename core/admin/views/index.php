@@ -12,15 +12,24 @@
     <?php endif; ?>
 
     <div class="grid_<?php echo ($subNav) ? '9' : '12'; ?>">
-        <?php if($adminContent): ?>
-            <?php foreach($adminContent as $content): ?>
+        <?php if(is_array($adminContent) && $adminContent): ?>
+            <?php if(isset($adminContent[0])): ?>
+                <?php foreach($adminContent as $content): ?>
+                    <div class="box">
+                        <h2><?php echo $content['title']; ?></h2>
+                        <div class="block">
+                            <?php echo $content['content']; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
                 <div class="box">
-                    <h2><?php echo $content['title']; ?></h2>
+                    <h2><?php echo $adminContent['title']; ?></h2>
                     <div class="block">
-                        <?php echo $content['content']; ?>
+                        <?php echo $adminContent['content']; ?>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php endif; ?>
         <?php else: ?>
             <p><em>Nothing to display</em></p>
         <?php endif; ?>

@@ -261,7 +261,7 @@ class Media_Uploader {
         {
             $id = Media::m('file')->insert(array(
                 'name' => $newFilename,
-                'path' => Media::getMediaPath(), // Must be relative because the site directory could change
+                'path' => $mediaPath,
                 'size' => $file['size'],
                 'mime_type' => $file['type'],
                 'file_type' => $type
@@ -283,6 +283,31 @@ class Media_Uploader {
 
         self::$_error = 'Unkown media error occured.';
 	    return false;
+    }
+
+
+    public static function saveBinary($filename, $binary, $mimeType, $fileType)
+    {
+        $filesPath = Media::getFilesPath();
+        $mediaPath = Media::getMediaPath();
+        $uploadPath = $filesPath . $mediaPath;
+
+        $newFilename = self::_getAvailFilename($filename, $uploadPath);
+        $fullPath = ROOT . $uploadPath . $newFilename;
+
+        $fp = fopen($fullPath, 'w');
+        fwrite($fp, $binary);
+        fclose($fp); 
+
+        $id = Media::m('file')->insert(array(
+            'name' => $newFilename,
+            'path' => Media::getMediaPath(), // Must be relative because the site directory could change
+            'size' => filesize($fullPath),
+            'mime_type' => $mimeType,
+            'file_type' => $fileType
+        ));
+
+        return $id;
     }
 
 

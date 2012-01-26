@@ -17,7 +17,7 @@
 		<div class="container_12">
 			<div class="grid_12">
 				<h1 id="branding">
-					<a href="#"><?php echo Config::get('admin.title'); ?></a>
+                    <?php Html::a(Config::get('admin.title'), 'admin'); ?>
 				</h1>
 			</div>
 			<div class="clear"></div>

@@ -170,7 +170,6 @@ class Page_Admin_PageController extends Controller {
 
         $page = Page::page()->find($id);
 
-
         // Either get all pages or only current users pages based on permission
         if(!User::current()->hasPermission('page.manage'))
             $pages = Page::page()

@@ -39,7 +39,7 @@ class Url extends Module {
     public static function host()
     {
         if(is_null(self::$_host))
-            self::$_host - $_SERVER['HTTP_HOST'];
+            self::$_host = $_SERVER['HTTP_HOST'];
 
         return self::$_host;
     }
@@ -52,7 +52,8 @@ class Url extends Module {
         if(is_null(self::$_base))
         {
             $bits = explode('index.php', $_SERVER['SCRIPT_NAME']);
-            self::$_base = (isset($bits[0])) ? rtrim($bits[0], '/') : '';
+            self::$_base = (isset($bits[0])) ? $bits[0] : '/';
+            Dev::debug('url', 'Setting base URL: ' . self::$_base);
         }
 
         return self::$_base;
@@ -70,7 +71,7 @@ class Url extends Module {
                 self::$_current = rtrim($_GET['r'], '/');
         }
 
-        return self::base() . '/' . self::$_current;
+        return self::base() . trim(self::$_current, '/');
     }
 
     /**
@@ -87,14 +88,37 @@ class Url extends Module {
     }
 
     /**
-     * Returns the relative url to the given path. Mostly used in creating "a" tags.
+     * Returns the relative url to the given path. Mostly used in creating "a" tags. If a full url is
+     * given it returns the full url un-touched.
      *
      * @param string $path The path to get a relative url for. Should not have leading or trailing slashes 
      *
      * @return string Relative url to the given path
      */
-    public static function to($path) {
-        return self::base() . '/' . $path;
+    public static function to($path, $fullUrl = false)
+    {
+        if(substr($path, 0, 4) == 'http') // Ignore full urls
+            return $path;
+
+        $path = self::base() . trim($path, '/');
+
+        if($fullUrl)
+            $path = 'http://' . self::host() . $path;
+
+        return $path;
     }
+
+    /**
+     * Echo's class="active" if the relative path sent in matches the current URL.
+     *
+     * @param string $path The path to get a relative url for. Should not have leading or trailing slashes 
+     */
+	public static function ia($path)
+    {
+		$current = self::current();
+		$path = self::base() . trim($path, '/');
+		if($current == $path)
+			echo 'class="active"';
+	}
 
 }

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * When loading views, the system should follow this functionality.
- *
- * 1. Check for main view files (within the views directory)
- * 2. Check for main blocks that can be injected into the view just loaded
- */
 class View extends Module {
 
     /**
@@ -98,7 +92,7 @@ class View extends Module {
     public static function getBaseHref()
     {
         $bits = explode(ROOT, self::getPath());
-        return Url::to($bits[1]);
+        return Url::to($bits[1]) . '/'; // requires trailing slash
     }
 
     /**
@@ -150,8 +144,9 @@ class View extends Module {
      *
      * The views are searched for and loaded in the following order.
      *
-     * 1. views/module/controller_method.php
-     * 2. views/module/controller.php
+     * 0. views/<current_url_path>.php
+     * 1. views/module_controller_method.php
+     * 2. views/module_controller.php
      * 3. views/module.php
      * 4. views/index.php
      *
@@ -162,6 +157,7 @@ class View extends Module {
     public static function load($module, $controller, $method)
     {
         $module = strtolower($module);
+        $method = strtolower($method);
 
         // Clean controller name
         $conBits = explode('_', strtolower($controller), 2); // Only explode module off, leave other underscores
@@ -178,11 +174,17 @@ class View extends Module {
         }
 
         $checks = array(
-            sprintf('%s/%s_%s' . EXT, $module, $controller, $method),
-            sprintf('%s/%s' . EXT, $module, $controller),
+            sprintf('%s_%s_%s' . EXT, $module, $controller, $method),
+            sprintf('%s_%s' . EXT, $module, $controller),
             sprintf('%s' . EXT, $module),
             Config::get('view.index')
         );
+
+        $urlCheck = str_replace('-', '_', strtolower(implode('_', Router::getSegments())) . EXT);
+
+        // Only allow url based view if the view file doesn't match any of the default view checks
+        if(!in_array($urlCheck, $checks))
+            array_unshift($checks, $urlCheck);
 
         foreach($checks as $file)
         {
@@ -261,6 +263,104 @@ class View extends Module {
         }
         else
             require_once(self::$_error);
+    }
+
+    
+    /**
+     * TODO
+     *
+     * @param string $location The location for the javascript being loaded, used for caching
+     * @param string $file,... Multiple files to be loaded
+     */
+    public static function js()
+    {
+        $args = func_get_args();
+        $location = array_shift($args);
+
+        if(Config::get('view.cache_js'))
+        {
+            $cacheKey = md5('view.js.' . $location) . '.js';
+
+            if(!Cache::get($cacheKey))
+            {
+                $jsContent = '';
+
+                foreach($args as $jsFile)
+                {
+                    if(!strstr($jsFile, 'http'))
+                    {
+                        $jsFilePath = self::getPath() . $jsFile;
+
+                        if(file_exists($jsFilePath))
+                            $jsContent .= file_get_contents($jsFilePath);
+                    }
+                    else
+                        $jsContent .= file_get_contents($jsFile); // Getting from full url
+
+                    $jsContent .= "\r\n";
+                }
+
+                Cache::store($cacheKey, $jsContent);
+            }
+
+            return '<script type="text/javascript" src="' . Url::to('view/js/' . $cacheKey) . '"></script>';
+        }
+        else
+        {
+            $output = '';
+
+            foreach($args as $jsFile)
+                $output .= '<script type="text/javascript" src="' . $jsFile . '"></script>';
+
+            return $output;
+        }
+    }
+    
+
+    public static function css()
+    {
+        $args = func_get_args();
+        $media = array_shift($args);
+
+        if(Config::get('view.cache_css'))
+        {
+            $cacheKey = md5('view.css.' . $media) . '.css';
+
+            if(!Cache::get($cacheKey))
+            {
+                $cssContent = '';
+
+                foreach($args as $cssFile)
+                {
+                    $cssFilePath = self::getPath() . $cssFile;
+                    
+                    if(file_exists($cssFilePath))
+                    {
+                        $cssContent .= file_get_contents($cssFilePath);
+                        $cssContent .= "\r\n";
+                    }
+                }
+
+                // Rewrite css urls to use full relative path to view directory
+                // This is required due to us changing the css location
+                $cssContent = str_replace('../', '', $cssContent);
+                $cssContent = str_replace('url(\'', 'url(\'' . self::getBaseHref(), $cssContent);
+                $cssContent = str_replace('url("', 'url("' . self::getBaseHref(), $cssContent);
+
+                Cache::store($cacheKey, $cssContent);
+            }
+
+            return '<link rel="stylesheet" type="text/css" media="' . $media . '" href="' . Url::to('view/css/' . $cacheKey) . '" />';
+        }
+        else
+        {
+            $output = '';
+
+            foreach($args as $cssFile)
+                $output .= '<link rel="stylesheet" type="text/css" media="' . $media . '" href="' . $cssFile . '" />';
+
+            return $output;
+        }
     }
 
 }

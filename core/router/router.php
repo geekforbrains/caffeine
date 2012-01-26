@@ -32,6 +32,14 @@ class Router extends Module {
      * TODO
      * ---------------------------------------------------------------------------  
      */
+    private static $_segments = null;
+
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * TODO
+     * ---------------------------------------------------------------------------  
+     */
     public static function getCurrentRoute() {
         return self::$_currentRoute;
     }
@@ -67,6 +75,19 @@ class Router extends Module {
         if(isset(self::$_params[$num]))
             return self::$_params[$num];
         return false;
+    }
+
+    /**
+     * --------------------------------------------------------------------------- 
+     * Returns the current URL segment, after the application base, as an array
+     * --------------------------------------------------------------------------- 
+     */
+    public static function getSegments()
+    {
+        if(is_null(self::$_segments))
+            self::$_segments = isset($_GET['r']) ? explode('/', $_GET['r']) : array();
+
+        return self::$_segments;
     }
 
 

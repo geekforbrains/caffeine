@@ -2,7 +2,9 @@
 
 class Validate extends Module {
 
+
     private static $_errors = array();
+
 
     /**
      * Gets an error for a given field. If no error is set, null is returned.
@@ -14,9 +16,14 @@ class Validate extends Module {
         return null;
     }
 
+
+    /**
+     * Used by child validation classes to set an error message for the checked field.
+     */
     public static function setError($field, $message) {
         self::$_errors[$field] = $message;
     }
+
 
     public static function passed()
     {
@@ -27,13 +34,15 @@ class Validate extends Module {
         return false;
     }
 
+
     /**
      * Calls a corresponding class based on the validation option for the given posted
      * field.
      */
-    public static function check($fieldName, $validation)
+    public static function check($fieldName, $validation, $return = false)
     {
-        $fieldValue = isset($_POST[$fieldName]) ? $_POST[$fieldName] : null;
+        $cleanName = str_replace('[]', '', $fieldName);
+        $fieldValue = isset($_POST[$cleanName]) ? $_POST[$cleanName] : null;
 
         foreach($validation as $v)
         {
@@ -42,9 +51,27 @@ class Validate extends Module {
 
             $params = array_merge(array($fieldName, $fieldValue), $bits);
 
+            if(!$response = call_user_func_array(array(sprintf('Validate_%s', ucfirst($class)), 'check'), $params))
+            {
+                if($return)
+                    return self::$_errors[$cleanName];
+                break;
+            }
+            
+            /*
             if(!call_user_func_array(array(sprintf('Validate_%s', ucfirst($class)), 'check'), $params))
                 break;
+            */
         }
+
+        if($return)
+            return null;
     }
+
+
+    public static function returnCheck($fieldName, $validation) {
+        return self::check($fieldName, $validation, true);
+    }
+
 
 }

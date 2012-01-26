@@ -8,6 +8,10 @@ class Cron_CronController extends Controller {
             Event::trigger('cron.run');
         else
             Dev::debug('cron', 'Cant run cron job, invalid passphrase');
+
+        Dev::outputDebug();
+
+        exit();
     }
 
 }

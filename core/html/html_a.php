@@ -6,15 +6,17 @@ class Html_A {
     {
         $attr = '';
 
+        /*
         if(!isset($attributes['title']))
             $attributes['title'] = $title;
+        */
 
         if($attributes)
         {
             foreach($attributes as $k => $v)
                 $attr .= sprintf(' %s="%s"', $k, $v);
 
-            $attr = trim($attr);
+            //$attr = trim($attr);
         }
 
         return sprintf('<a href="%s"%s>%s</a>', Url::to($url), $attr, $title);

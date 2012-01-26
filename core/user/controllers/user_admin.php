@@ -7,7 +7,16 @@ class User_User_AdminController extends Controller {
      */
     public static function manage()
     {
-        $users = User::user()->orderBy('email')->all();
+        if($_POST && $_POST['role_id'] > 0)
+        {
+            $users = User::user()
+                ->select('user_users.*')
+                ->leftJoin('roles_users', 'roles_users.user_id', '=', 'user_users.id')
+                ->where('roles_users.role_id', '=', $_POST['role_id'])
+                ->all();
+        }
+        else
+            $users = User::user()->orderBy('email')->all();
 
         $rows = array();
         $headers = array(
@@ -47,7 +56,32 @@ class User_User_AdminController extends Controller {
             );
         }
 
+        $roles = User::role()->orderBy('name')->all();
+        $sortedRoles = array('All');
+
+        if($roles)
+            foreach($roles as $role)
+                $sortedRoles[$role->id] = $role->name;
+
+        $formData[] = array(
+            'fields' => array(
+                'role_id' => array(
+                    'title' => 'Role',
+                    'type' => 'select',
+                    'options' => $sortedRoles
+                ),
+                'submit' => array(
+                    'type' => 'submit',
+                    'value' => 'Filter'
+                )
+            )
+        );
+
         return array(
+            array(
+                'title' => 'Filter by Role',
+                'content' => Html::form()->build($formData)
+            ),
             array(
                 'title' => 'Manage Users',
                 'content' => Html::table()->build($headers, $rows)

@@ -2,14 +2,20 @@
 
 class User_Current extends Module {
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Stores the current user singleton instance.
+     * ---------------------------------------------------------------------------  
      */
     private static $_instance = null;
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Stores the current users details. Defaults to an anonymous user if no one is
      * logged in.
+     * ---------------------------------------------------------------------------  
      */
     private static $_user = array(
         'id' => 0,
@@ -18,17 +24,23 @@ class User_Current extends Module {
         'is_admin' => false
     );
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Force class as singleton
+     * ---------------------------------------------------------------------------  
      */
     private function __construct() {}
     public function __clone() {}
     public function __wakeup() {}
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Getter method is used for getting current user properties within self::$_user.
      *
      * Ex: User::current()->id;
+     * ---------------------------------------------------------------------------  
      */
     public function __get($name)
     {
@@ -37,11 +49,73 @@ class User_Current extends Module {
         return null;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
+     * Gets the value of the given data name for the current user. Returns null if the data
+     * doesn't exist.
+     * ---------------------------------------------------------------------------  
+     */
+    public function getData($name)
+    {
+        $data = User::data()->where('user_id', '=', self::$_user['id'])
+            ->andWhere('name', '=', $name)
+            ->first();
+
+        if($data)
+            return $data->value;
+        return null;
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * Returns all additional data set for the current user.
+     * ---------------------------------------------------------------------------  
+     */
+    public function getAllData() {
+        return User::data()->where('user_id', '=', self::$_user['id'])->all();
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------  
+     * Set additional data for the user account. This is used for storing additional content
+     * that isn't supported by the default user table.
+     * ---------------------------------------------------------------------------  
+     */
+    public function setData($name, $value)
+    {
+        if(self::$_user['id'] == 0) // Cant set data for anonymous user
+            return false;
+
+        if(User::data()->where('user_id', '=', self::$_user['id'])->andWhere('name', '=', $name)->first())
+        {
+            User::data()->where('user_id', '=', self::$_user['id'])
+                ->andWhere('name', '=', $name)
+                ->update(array(
+                    'value' => $value
+                ));
+        }
+        else
+        {
+            User::data()->insert(array(
+                'user_id' => self::$_user['id'],
+                'name' => $name,
+                'value' => $value
+            ));
+        }
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------  
      * Returns the singleton instance of this class.
+     * ---------------------------------------------------------------------------  
      */
     public static function singleton()
     {
+        //if((isset($_SESSION[Config::get('user.session_key')]) && $_SESSION[Config::get('user.session_key')] != self::$_user['id']) || is_null(self::$_instance))
         if(is_null(self::$_instance))
         {
             $className = __CLASS__;
@@ -71,14 +145,19 @@ class User_Current extends Module {
                     }
                 }
             }
+
+            Dev::debug('user', 'Current user ID: ' . self::$_user['id']);
         }
 
         return self::$_instance;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Determines if a user is logged in (anonymous) or not. A user with an ID of 0 is always
      * anonymous and not logged in.
+     * ---------------------------------------------------------------------------  
      */
     public static function isAnonymous()
     {
@@ -87,10 +166,13 @@ class User_Current extends Module {
         return true;
     }
 
+
     /**
+     * ---------------------------------------------------------------------------  
      * Checks of the current user has the given permission.
      *
      * Ex: User::current()->hasPermission('user.manage');
+     * ---------------------------------------------------------------------------  
      */
     public function hasPermission($permission)
     {
@@ -111,5 +193,6 @@ class User_Current extends Module {
 
         return false;
     }
+
 
 }

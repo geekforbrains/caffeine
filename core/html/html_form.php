@@ -100,6 +100,10 @@ class Html_Form {
                 if(isset($fieldData['title']))
                     $html .= '<label>' . $fieldData['title'] . '</label>';
                 $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
+
+                if(isset($fieldData['content']))
+                    $html .= $fieldData['content'];
+
                 $html .= Validate::error($fieldName);
                 $html .= '</p>';
             }
@@ -242,7 +246,8 @@ class Html_Form {
 
     private static function _checkbox($name, $data)
     {
-
+        $isChecked = (isset($data['checked']) && $data['checked']) ? 'checked="checked"' : '';
+        return sprintf('<input type="checkbox" name="%s"%s />', $name, $isChecked);
     }
 
     private static function _radio($name, $data)
@@ -252,7 +257,7 @@ class Html_Form {
 
     private static function _file($name, $data)
     {
-    
+        return sprintf('<input type="file" name="%s" />', $name);    
     }
 
     /**

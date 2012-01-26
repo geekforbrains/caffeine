@@ -233,8 +233,9 @@ class String extends Module {
     {
         $string = trim(strtolower($string));
         $string = str_replace('&', 'and', $string);
-        $string = preg_replace('/[^A-Za-z0-9\s]+/', '', $string); // Clear out anything that isn't a letter, number or space
+        $string = preg_replace('/[^A-Za-z0-9\s\-]+/', '', $string); // Clear out anything that isn't a letter, number or space
         $string = preg_replace('/[\s]+/', '-', $string);
+        $string = preg_replace('/[\-]{2,}/', '-', $string); // Replace duplicate dashes
 
         return $string;
     }

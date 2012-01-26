@@ -50,7 +50,7 @@ class Db extends Module {
         } 
         catch(Exception $e)
         {
-            die('error');
+            die($e->getMessage());
         }
     }
 

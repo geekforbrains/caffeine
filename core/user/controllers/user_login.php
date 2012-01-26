@@ -22,7 +22,7 @@ class User_User_LoginController extends Controller {
 
     public static function logout()
     {
-        unset($_SESSION['user_id']);
+        unset($_SESSION[Config::get('user.session_key')]);
         Url::redirect(Config::get('user.logout_redirect'));
     }
 

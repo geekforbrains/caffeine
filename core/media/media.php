@@ -65,7 +65,7 @@ class Media extends Module {
 
         if(!file_exists($cacheFullPath))
         {
-            if(!is_writable($cacheFullPath) || !mkdir($cacheFullPath, 0777, true))
+            if(!is_writable(ROOT . self::getFilesPath()) || !mkdir($cacheFullPath, 0777, true))
                 return false;
         }
 

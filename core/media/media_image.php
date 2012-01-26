@@ -38,6 +38,16 @@ class Media_Image extends Media_File {
 
     /**
      * ---------------------------------------------------------------------------   
+     * Returns the URL for a placeholder image (see image controller)
+     * ---------------------------------------------------------------------------   
+     */
+    public function placeholder($width, $height) {
+        return Url::to('media/placeholder/' . $width . '/' . $height);
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------   
      * Gets an image by id sized and rotated based on the passed params. If the file
      * doesn't exist, it is created using the imager class and stored in cache dir. Every 
      * call after that will load the file directly.
@@ -60,31 +70,35 @@ class Media_Image extends Media_File {
      */
     public function render($id, $rotation = null, $widthOrPercent = null, $height = null)
     {
-        if($image = Media::m('file')->find($id))
-        {
-            $ext = pathinfo($image->name, PATHINFO_EXTENSION);
-
-            $cachedFilename = str_replace('.' . $ext, sprintf('_%d.%s', ($id . $rotation .$widthOrPercent . $height), $ext), $image->name);
-            $cachedFullPath = ROOT . Media::getFilesPath() . Media::getCachePath() . $cachedFilename;
-
-            if(!file_exists($cachedFullPath))
+        try {
+            if($image = Media::m('file')->find($id))
             {
-                $origFullPath = ROOT . Media::getFilesPath() . $image->path . $image->name;
-                Media_Imager::open($origFullPath);
+                $ext = pathinfo($image->name, PATHINFO_EXTENSION);
 
-                if(!is_null($widthOrPercent) && is_null($height))
-                    Media_Imager::percent($widthOrPercent);
+                $cachedFilename = str_replace('.' . $ext, sprintf('_%d.%s', ($id . $rotation .$widthOrPercent . $height), $ext), $image->name);
+                $cachedFullPath = ROOT . Media::getFilesPath() . Media::getCachePath() . $cachedFilename;
 
-                elseif(!is_null($widthOrPercent) && !is_null($height))
-                    Media_Imager::resize($widthOrPercent, $height, ($widthOrPercent == $height) ? true : false);
+                if(!file_exists($cachedFullPath))
+                {
+                    $origFullPath = ROOT . Media::getFilesPath() . $image->path . $image->name;
+                    Media_Imager::open($origFullPath);
 
-                if(!is_null($rotation) && $rotation > 0)
-                    Media_Imager::rotate($rotation);
+                    if(!is_null($widthOrPercent) && is_null($height))
+                        Media_Imager::percent($widthOrPercent);
 
-                Media_Imager::save($cachedFullPath);
+                    elseif(!is_null($widthOrPercent) && !is_null($height))
+                        Media_Imager::resize($widthOrPercent, $height, ($widthOrPercent == $height) ? true : false);
+
+                    if(!is_null($rotation) && $rotation > 0)
+                        Media_Imager::rotate($rotation);
+
+                    Media_Imager::save($cachedFullPath);
+                }
+
+                return Media::getFilesPath() . Media::getCachePath() . $cachedFilename;
             }
-
-            return Media::getFilesPath() . Media::getCachePath() . $cachedFilename;
+        } catch(Exception $e) {
+            Dev::debug('media', 'ERROR: ' . $e->getMessage());
         }
 
         return false;
@@ -104,6 +118,19 @@ class Media_Image extends Media_File {
     public function save($name) {
         $response = Media_Uploader::save($name, 'image', Config::get('media.allowed_image_formats'));
         
+        if(!$response)
+            $this->_error = Media_Uploader::getError();
+        else
+            $this->_id = $response;
+
+        return $this;
+    }
+
+
+    public function saveBinary($filename, $binary, $mimeType)
+    {
+        $response = Media_Uploader::saveBinary($filename, $binary, $mimeType, 'image');
+
         if(!$response)
             $this->_error = Media_Uploader::getError();
         else

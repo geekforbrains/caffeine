@@ -1,18 +1,15 @@
 <?php
 
-class User_DataModel extends Model {
-
-
-    public $_belongsTo = array('user.user');
+class Variable_DataModel extends Model {
 
 
     public $_fields = array(
-        'name' => array(
+        'data_key' => array(
             'type' => 'varchar',
-            'length' => 50,
+            'length' => 255,
             'not null' => true
         ),
-        'value' => array(
+        'data_value' => array(
             'type' => 'varchar',
             'length' => 255,
             'not null' => true
@@ -20,7 +17,7 @@ class User_DataModel extends Model {
     );
 
 
-    public $_indexes = array('name', 'value');
+    public $_indexes = array('data_key');
 
 
 }

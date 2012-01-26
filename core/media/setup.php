@@ -16,6 +16,11 @@
 
 
     'routes' => array(
+        // placeholder
+        'media/placeholder/:num/:num' => array(
+            'callback' => array('image', 'placeholder')
+        ),
+
         // id
         'media/image/:num' => array(
             'callback' => array('image', 'render')
