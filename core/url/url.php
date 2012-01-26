@@ -75,8 +75,30 @@ class Url extends Module {
     }
 
     /**
+     * Determines if the given path is the same as the current url.
+     *
+     * @param string $path The path to compare to current url
+     * @return boolean True if the given path matches the current url, false othwerise
+     */
+    public static function isCurrent($path)
+    {
+        if(self::to($path) == self::current())
+            return true;
+        return false;
+    }
+
+    /**
+     * Shorthand method for Url::isCurrent('/')
+     */
+    public static function isIndex() {
+        return self::isCurrent('/');
+    }
+
+    /**
      * Redirects to the given path. If the path is relative (doesnt contain http://) its assumed
      * to be within the applications base url. Otherwise it'll redirect to the full url given.
+     *
+     * @param string $path The relative or full url to redirect to.
      */
     public static function redirect($path)
     {
@@ -92,8 +114,8 @@ class Url extends Module {
      * given it returns the full url un-touched.
      *
      * @param string $path The path to get a relative url for. Should not have leading or trailing slashes 
-     *
-     * @return string Relative url to the given path
+     * @param boolean $fullUrl If set to true, converts relative paths to the full application URL
+     * @return string URL to the given path
      */
     public static function to($path, $fullUrl = false)
     {
@@ -107,18 +129,5 @@ class Url extends Module {
 
         return $path;
     }
-
-    /**
-     * Echo's class="active" if the relative path sent in matches the current URL.
-     *
-     * @param string $path The path to get a relative url for. Should not have leading or trailing slashes 
-     */
-	public static function ia($path)
-    {
-		$current = self::current();
-		$path = self::base() . trim($path, '/');
-		if($current == $path)
-			echo 'class="active"';
-	}
 
 }

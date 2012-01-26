@@ -87,7 +87,10 @@ class Media_Image extends Media_File {
                         Media_Imager::percent($widthOrPercent);
 
                     elseif(!is_null($widthOrPercent) && !is_null($height))
-                        Media_Imager::resize($widthOrPercent, $height, ($widthOrPercent == $height) ? true : false);
+                    {
+                        $adaptive = ($widthOrPercent == 0 || $height == 0) ? false : true;
+                        Media_Imager::resize($widthOrPercent, $height, $adaptive);
+                    }
 
                     if(!is_null($rotation) && $rotation > 0)
                         Media_Imager::rotate($rotation);

@@ -2,12 +2,27 @@
 
 class Event extends Module {
 
+    /**
+     * Stores events loaded from other modules setup.php files.
+     */
     public static $_events = array();
 
+    /**
+     * Gets all events loaded from other modules setup.php files.
+     *
+     * @return array Array of events
+     */
     public static function getEvents() {
         return self::$_events;
     }
 
+    /**
+     * Loads events set in other modules setup.php files. This method
+     * is typically called via the Load module and should not be called
+     * directly.
+     *
+     * @param array $events An array of events to load
+     */
     public static function load($events)
     {
         foreach($events as $event => $callback)
@@ -19,9 +34,30 @@ class Event extends Module {
         }
     }
 
-    public static function trigger($event, $data = array(), $triggerCallback = null)
+    /**
+     * Calls (triggers) an event by calling all callbacks associated with it. Data can optionally
+     * be sent to each callback method in the form of an array. An optional trigger callback method can
+     * be defined with will be called after each successful event callback.
+     *
+     * Basic Example:
+     * Trigger::event('somemodule.myevent');
+     *
+     * Data Example:
+     * Trigger::event('somemodule.myevent', array('color' => 'blue', 'length' => 255));
+     *
+     * Trigger Callback Example:
+     * Trigger::event('somemodule.myevent', null, array('MyClass', 'myStaticMethod'));
+     *
+     * @param string $event The event name to trigger callbacks for
+     * @param array $data An optional array of data to be sent to each callback
+     * @param string $triggerCallback an optional method to call after each callback, is passed any data returned by each callback
+     */
+    public static function trigger($event, $data = null, $triggerCallback = null)
     {
         Dev::debug('event', 'Triggering: ' . $event);
+
+        if(is_null($data))
+            $data = array(); // To be compatible with call_user_func_array
 
         if(isset(self::$_events[$event]))
         {

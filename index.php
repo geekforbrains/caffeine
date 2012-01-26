@@ -21,7 +21,7 @@ foreach($core as $module)
     require_once(ROOT . 'core/' . $module . '/' . $module . EXT);
 
 spl_autoload_register('Load::auto');
-Load::setupFiles();
+Load::loadSetupFiles();
 Db::install();
 
 Event::trigger('caffeine.started');

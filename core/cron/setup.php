@@ -1,7 +1,7 @@
 <?php return array(
 
     'configs' => array(
-        'cron.passphrase' => 'dreyfus' // ALWAYS make a custom passphrase or anybody can run your cron jobs!!!
+        'cron.passphrase' => 'changeme!' // ALWAYS make a custom passphrase or anybody can run your cron jobs!!!
     ),
 
     'routes' => array(

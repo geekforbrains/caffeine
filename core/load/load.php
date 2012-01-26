@@ -2,7 +2,14 @@
 
 class Load extends Module {
     
+    /**
+     * Stores the name of all modules available to the application.
+     */
     private static $_modules = array();
+
+    /**
+     * Stores the relative path from ROOT to all available modules.
+     */
     private static $_modulePaths = array();
 
     /**
@@ -16,7 +23,12 @@ class Load extends Module {
     );
 
     /**
-     * TODO
+     * Handles autoloading PHP classes. This is the default way for all classes to be
+     * loaded in Caffeine.
+     *
+     * This method is called due to spl_autoload_register() being set to this method.
+     *
+     * @param string $class The class name to find and attempt to load.
      */
     public static function auto($class)
     {
@@ -60,7 +72,7 @@ class Load extends Module {
     /**
      * Finds and loads all module setup files.
      */
-    public static function setupFiles()
+    public static function loadSetupFiles()
     {
         if(file_exists($siteSetup = Site::getPath() . 'setup' . EXT))
             self::_loadSetupFile($siteSetup);

@@ -2,63 +2,46 @@
 
 class Dev extends Module {
     
+    /**
+     * Stores debug information loaded throughout the application.
+     */
     private static $_debug = array();
 
-    public static function debug($module, $message)
-    {
-        /*
-        if(Config::get('dev.debug_enabled'))
-        {
-            Config::set('dev.debug_enabled', false);
-            Dev::message()->insert(array(
-                'module' => $module,
-                'message' => $message
-            ));
-            Config::set('dev.debug_enabled', true);
-        }
-        */
-
+    /**
+     * Stores a debug message for output later.
+     *
+     * @param string $module The module name setting the message (this is to determine where the message came from)
+     * @param string $message The debug message to output
+     */
+    public static function debug($module, $message) {
         self::$_debug[] = array(time(), strtolower(trim($module)), $message);
     }
 
+    /**
+     * Outputs all debug messages to the browser. This method is called via the
+     * "caffeine.finished" event. There's no need to call it directly.
+     */
     public static function outputDebug()
     {
         if(Config::get('dev.debug_enabled'))
         {
-            $html = '<table width="100%" border="1" cellpadding="5">';
-            $html .= '<tr><th colspan="3">Debug Output</th></tr>';
-            $html .= '<tr><th>Timestamp</th><th>Module</th><th>Message</th></tr>';
-            
-            /*
-            Config::set('dev.debug_enabled', false);
-            $messages = Dev::message()->orderBy('created_at')->all();
-            Config::set('dev.debug_enabled', true);
-            */
+            $tableAttr = array('width' => '100%', 'border' => 1, 'cellpadding' => 5);
+            $headers = array('Timestamp', 'Module', 'Message');
+            $rows = self::$_debug;
 
-            foreach(self::$_debug as $d)
-            //foreach($messages as $m)
+            if(!$rows)
             {
-                $html .= '<tr>';
-                $html .= '<td>' . $d[0] . '</td>';
-                $html .= '<td>' . $d[1] . '</td>';
-                $html .= '<td>' . $d[2] . '</td>';
-                /*
-                $html .= '<td>' . $m->created_at . '</td>';
-                $html .= '<td>' . $m->module . '</td>';
-                $html .= '<td>' . $m->message . '</td>';
-                */
-                $html .= '</tr>';
+                $rows[] = array(
+                    array(
+                        '<em>No debug messages.</em>',
+                        'attributes' => array(
+                            'colspan' => 3
+                        )
+                    )
+                );
             }
 
-            $html .= '</table>';
-
-            echo $html;
-
-            /*
-            Config::set('dev.debug_enabled', false);
-            Dev::message()->truncate();
-            Config::set('dev.debug_enabled', true);
-            */
+            echo Html::table()->build($headers, $rows, $tableAttr);
         }
     }
 

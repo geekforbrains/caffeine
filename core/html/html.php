@@ -14,6 +14,10 @@ class Html extends Module {
      *
      * Example of method chaining:
      * Html::form()->open('some/path');
+     *
+     * @param string $name The name of the HTML helper class to call
+     * @param mixed $args Optional params to be passed to the called method directly, used for short-hand calls
+     * @return mixed If using short hand, nothing is returned but the HTML is echoed. Otherwise the helper object is returned.
      */
     public static function __callStatic($name, $args)
     {

@@ -8,6 +8,8 @@
         'db.driver' => 'mysql',
         'db.install' => false,
 
+        'dev.debug_enabled' => true,
+
         'system.dev_mode' => true,
         'system.timezone' => 'UTC'
     )
