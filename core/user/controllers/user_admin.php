@@ -7,8 +7,10 @@ class User_User_AdminController extends Controller {
      */
     public static function manage()
     {
-        if($_POST && $_POST['role_id'] > 0)
+        if($_POST)
         {
+            // TODO Check if using keywords
+            // TODO Check if filtering role
             $users = User::user()
                 ->select('user_users.*')
                 ->leftJoin('roles_users', 'roles_users.user_id', '=', 'user_users.id')
@@ -63,24 +65,32 @@ class User_User_AdminController extends Controller {
             foreach($roles as $role)
                 $sortedRoles[$role->id] = $role->name;
 
-        $formData[] = array(
+        $searchForm[] = array(
             'fields' => array(
-                'role_id' => array(
-                    'title' => 'Role',
-                    'type' => 'select',
-                    'options' => $sortedRoles
+                'keywords' => array(
+                    'title' => 'Name or Email',
+                    'type' => 'text',
+                    'validate' => array('required')
                 ),
-                'submit' => array(
+                'role_id[]' => array(
+                    'title' => 'Roles',
+                    'type' => 'select',
+                    'options' => $sortedRoles,
+                    'attributes' => array(
+                        'multiple' => 'multiple'
+                    )
+                ),
+                'search' => array(
                     'type' => 'submit',
-                    'value' => 'Filter'
+                    'value' => 'Search'
                 )
             )
         );
 
         return array(
             array(
-                'title' => 'Filter by Role',
-                'content' => Html::form()->build($formData)
+                'title' => 'Search Users',
+                'content' => Html::form()->build($searchForm)
             ),
             array(
                 'title' => 'Manage Users',

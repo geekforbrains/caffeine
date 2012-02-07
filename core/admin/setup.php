@@ -2,13 +2,22 @@
 
     'configs' => array(
         'admin.title' => 'Control Panel', // The main title displayed on admin pages
-        'admin.default_route' => 'admin/user' // The default route to redirect to when accessing "/admin"
+        'admin.default_route' => 'admin/dashboard' // The default route to redirect to when accessing "/admin"
+    ),
+
+    'permissions' => array(
+        'admin.access' => 'Access to admin'
     ),
 
     'routes' => array(
         'admin' => array(
             'title' => 'Admin',
             'callback' => array('admin', 'redirect'),
+        ),
+        'admin/dashboard' => array(
+            'title' => 'Dashboard',
+            'callback' => array('admin', 'dashboard'),
+            'permissions' => array('admin.access') // User must at least have access to admin to view dashboard
         ),
         'admin/install' => array(
             'title' => 'Install',
@@ -33,8 +42,20 @@
                         Url::redirect('admin/install');
                 }
 
-                elseif(!String::startsWith($currentRoute, 'admin/login') && User::current()->isAnonymous())
-                    Url::redirect('admin/login');
+                elseif(!String::startsWith($currentRoute, 'admin/login'))
+                {
+                    $noAccess = !User::current()->hasPermission('admin.access');
+                    $isAnon = User::current()->isAnonymous();
+
+                    if(!$isAnon && $noAccess)
+                    {
+                        Message::error('You do not have admin access permissions.');
+                        unset($_SESSION[Config::get('user.session_key')]);
+                    }
+
+                    if($isAnon || $noAccess)
+                        Url::redirect('admin/login');
+                }
 
                 Admin::setInAdmin(true);
                 View::setPath(ROOT . 'core/admin/');

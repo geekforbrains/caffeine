@@ -2,9 +2,11 @@
 
 
     'configs' => array(
+        /*
         'user.access_denied_redirect' => '',
         'user.login_redirect' => 'admin/user',
         'user.logout_redirect' => 'admin/login',
+        */
         'user.session_key' => 'user_id'
     ),
 

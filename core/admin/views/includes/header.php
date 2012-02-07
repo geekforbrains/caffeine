@@ -22,8 +22,14 @@
 			</div>
 			<div class="clear"></div>
 
-			<div class="grid_12">
+			<div class="grid_12 graybg">
                 <?php echo Menu::build(1, 'admin', array('attributes' => array('class' => 'nav main'))); ?>
+
+                <?php if(!User::current()->isAnonymous()): ?>
+                    <ul class="nav main right">
+                        <li><?php Html::a('Logout', 'admin/logout'); ?></li>
+                    </ul>
+                <?php endif; ?>
 			</div>
 			<div class="clear"></div>
 

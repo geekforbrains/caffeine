@@ -13,7 +13,7 @@ class User_User_LoginController extends Controller {
             if($user)
             {
                 $_SESSION[Config::get('user.session_key')] = $user->id;
-                Url::redirect(Config::get('user.login_redirect'));
+                Url::redirect('admin');
             }
             else
                 Message::error('Invalid login details.');
@@ -23,7 +23,7 @@ class User_User_LoginController extends Controller {
     public static function logout()
     {
         unset($_SESSION[Config::get('user.session_key')]);
-        Url::redirect(Config::get('user.logout_redirect'));
+        Url::redirect('admin/logout');
     }
 
 }

@@ -1,6 +1,18 @@
 /**
  * This file contains custom styles for the 960 grid that are specific to the admin theme
  */
+.graybg {
+    background-color: #666;
+}
+
+ul.main {
+    float: left;
+}
+
+ul.right {
+    float: right;
+}
+
 .messages p {
     padding: 10px;
     margin: 0;
@@ -43,4 +55,15 @@ td.right {
 
 ul.main li.active a {
     background: #555;
+}
+
+ul.pagination {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+ul.pagination li a.active {background: #444;}
+
+ul.pagination, ul.pagination li {
+    text-align: center;
 }
