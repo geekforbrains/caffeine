@@ -72,33 +72,44 @@
     </div>
 
     <div class="area">
-        <div class="area left">
-            <h2>Manage Photos</h2>
-            <table class="stripe" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <th colspan="2">Photo</th>
-                </tr>
-                
-                <?php if($photos): ?>
-                    <?php foreach($photos as $p): ?>
-                        <tr valign="top">
-                            <td>
-                                <a href="<?php l('media/image/%d', $p['cid']); ?>" target="_blank">
-                                    <img src="<?php l('media/image/%d/0/75/75', $p['cid']); ?>" />
-                                </a>
-                            </td>
-                            <td align="right">
-                                <a href="<?php l('admin/portfolio/items/edit/%d/delete-photo/%d', $item['cid'], $p['cid']); ?>">
-                                    Delete
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="2"><em>No photos.</em></td></tr>
-                <?php endif; ?>
-            </table>
-        </div>
+    <div class="area left">
+        <h2>Manage Photos</h2>
+		<form method="post" action="<?php echo Router::current_url(); ?>">
+        <table class="stripe" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>Photo</th>
+				<th></th>
+				<th>Weight</th>
+            </tr>
+            
+            <?php if($photos): ?>
+                <?php foreach($photos as $p): ?>
+                    <tr valign="top">
+                        <td>
+                            <a href="<?php l('media/image/%d', $p['cid']); ?>" target="_blank">
+                                <img src="<?php l('media/image/%d/0/75/75', $p['cid']); ?>" />
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?php l('admin/portfolio/items/edit/%d/delete-photo/%d', $item['cid'], $p['cid']); ?>">
+                                Delete
+                            </a>
+                        </td>
+						<td align="right">
+							<input type="text" name="weights[]" size="1" value="<?php echo $p['weight']; ?>" />							
+						</td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="2"><em>No photos.</em></td></tr>
+            <?php endif; ?>
+        </table>
+
+		<div class="buttons">
+			<input type="submit" name="update_order" value="Update Order" />
+		</div>
+		</form>
+    </div>
 
         <div class="area right">
             <h2>Upload Photo</h2>

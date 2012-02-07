@@ -39,6 +39,15 @@ class Gallery_Model_Albums {
         );
     }
 
+    public static function update_weight($cid, $weight)
+    {
+        Content::update($cid);
+        return Database::update('gallery_albums', 
+            array('weight' => $weight),
+            array('cid' => $cid)
+        );
+    }
+
     public static function delete($cid)
     {
         // First delete photos associated with album

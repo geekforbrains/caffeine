@@ -101,8 +101,8 @@ class Blog {
      */
     public static function archive()
     {
-        View::load('Blog', 'archive',
-            array('posts' => Blog_Model_Posts::get_all(1, 100)));
+        View::load('Blog', 'archive', 
+            array('posts' => Blog_Model_Posts::get_all(1, 1000)));
     }
 
 	public static function category_title($slug)

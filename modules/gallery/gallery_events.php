@@ -70,9 +70,13 @@ class Gallery_Events {
                         'type' => 'varchar',
                         'length' => 255,
                         'not null' => true
-                    )
+                    ),
+                	'weight' => array(
+                    	'type' => 'int',
+                        'size' => 'small',
+                    	'not null' => true
+                	)
                 ),
-
                 'primary key' => array('cid')
             ),
 

@@ -51,8 +51,7 @@
                 <tr valign="top">
                     <td width="75">
                         <a href="<?php l('admin/gallery/edit/%d/edit-photo/%d', $album['cid'], $p['cid']); ?>">
-                            <!--<img src="<?php l('media/image/%d/0/75/75', $p['media_cid']); ?>" />-->
-                            <img src="<?php echo Media::image($p['media_cid'], 0, 75, 75); ?>" />
+                            <img src="<?php l('media/image/%d/0/75/75', $p['media_cid']); ?>" />
                         </a>
                     </td>
                     <td>

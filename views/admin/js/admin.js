@@ -71,10 +71,10 @@ tinyMCE.init({
 
     theme : 'advanced',
     skin : 'o2k7',
-	skin_variant : 'silver',
+	 skin_variant : 'silver',
     //plugins : "inlinepopups,media",
-	plugins : 'inlinepopups',
-	dialog_type : 'modal',
+	 plugins : 'inlinepopups',
+	 dialog_type : 'modal',
 
     //theme_advanced_buttons1 : "formatselect,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,anchor,|,image,media,|,code,",
     theme_advanced_buttons1 : 'formatselect,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,link,unlink,|,image,|,code,',
