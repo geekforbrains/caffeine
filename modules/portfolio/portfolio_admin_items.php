@@ -94,6 +94,13 @@ class Portfolio_Admin_Items {
                 Message::set(MSG_ERR, Media::error());
         }
 
+		// Updating photo order
+		if(isset($_POST['update_order']))
+		{
+			Portfolio_Model_Items::update_photos_order($cid, $_POST['weights']);
+			Message::set(MSG_OK, 'Photos updated successfully.');
+		}
+
         if(isset($_POST['add_video']))
         {
             Validate::check('url', 'Video URL', array('required'));

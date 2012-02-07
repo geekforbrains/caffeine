@@ -247,6 +247,20 @@ class Portfolio_Model_Items {
         ));
     }
 
+	public static function update_photos_order($cid, $weights)
+	{
+		$photos = self::get_photos_by_cid($cid);
+
+		foreach($photos as $photo)
+		{
+			$weight = array_shift($weights);
+			Database::update('portfolio_item_photos', 
+				array('weight' => $weight),
+				array('media_cid' => $photo['media_cid'])
+			);
+		}
+	}
+
     public static function delete_photo($item_cid, $media_cid)
     {
         Media::delete($media_cid);
