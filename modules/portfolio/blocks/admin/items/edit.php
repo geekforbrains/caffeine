@@ -79,7 +79,7 @@
             <tr>
                 <th>Photo</th>
 				<th></th>
-				<th>Weight</th>
+				<th align="right">Weight</th>
             </tr>
             
             <?php if($photos): ?>

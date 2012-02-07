@@ -227,11 +227,13 @@ class Portfolio_Model_Items {
     {
         Database::query('
             SELECT
-                mf.*
+                *
             FROM {portfolio_item_photos} pip
                 LEFT JOIN {media_files} mf ON mf.cid = pip.media_cid
             WHERE
                 pip.item_cid = %s
+			ORDER BY
+				weight
             ',
             $cid
         );
