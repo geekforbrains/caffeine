@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+date_default_timezone_set('UTC');
+
 define('ROOT', __DIR__ . '/');
 define('EXT', '.php');
 define('VERSION', '1.0');

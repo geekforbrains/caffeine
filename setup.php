@@ -1,7 +1,7 @@
 <?php return array(
 
     'configs' => array(
-        'db.name' => 'dev',
+        'db.name' => 'caffeine',
         'db.user' => 'username',
         'db.pass' => 'password',
         'db.host' => 'localhost',
@@ -10,7 +10,6 @@
 
         'dev.debug_enabled' => true,
 
-        'system.dev_mode' => true,
         'system.timezone' => 'UTC'
     )
 
