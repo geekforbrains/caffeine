@@ -84,10 +84,9 @@ Below is a list of software and frameworks that have inpsired me along the way. 
 them has been implemented into Caffeine, with my own twist.
 
 * [CodeIgniter]('http://codeigniter.com')
-* [Drupal]('http://drupal.org');
-* [Ruby on Rails]('http://rubyonrails.org');
-* [Laravel]('http://laravel.com');
-
+* [Drupal]('http://drupal.org')
+* [Ruby on Rails]('http://rubyonrails.org')
+* [Laravel]('http://laravel.com')
 
 Gavin Vickery  
 <gavin@geekforbrains.com>  
