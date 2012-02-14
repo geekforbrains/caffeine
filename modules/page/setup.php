@@ -52,14 +52,20 @@
 
 
     'events' => array(
-        'user.permission[page.edit_mine]' => function()
-        {
-            // TODO
+        'multilanguage.register_modules' => function() {
+            return 'page';
         },
 
-        'user.permission[page.delete_mine]' => function() 
+        'multilanguage.module_content[page]' => function()
         {
-            // TODO
+            $content = array();
+            $pages = Page::page()->all(); 
+
+            if($pages)
+                foreach($pages as $page)
+                    $content[$page->id] = $page->title;
+
+            return $content;
         }
     )
 

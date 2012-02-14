@@ -2,28 +2,24 @@
 
 class Page_Admin_PageController extends Controller {
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * Displays a table of pages, either for all users or the currently logged in users pages only 
+     * based on permissions.
+     *
+     * Route: admin/pages/manage
      */
     public static function manage()
     {
-        $rows = array();
-        $headers = array(
-            'Title',
-            array(
-                'User',
-                'attributes' => array('colspan' => 2)
-            )
-        );
-
         // Check if user only has access to their pages
         if(!User::current()->hasPermission('page.manage'))
             $pages = Page::page()->where('user_id', '=', User::current()->id)->orderBy('title')->all();
         else
             $pages = Page::page()->orderBy('title')->all();
+
+        $table = Html::table();
+        $header = $table->addHeader();
+        $header->addCol('Title');
+        $header->addCol('User', array('colspan' => 2));
 
         if($pages)
         {
@@ -35,42 +31,31 @@ class Page_Admin_PageController extends Controller {
             {
                 $user = User::user()->find($page->user_id);
 
-                $rows[] = array(
-                    Html::a()->get($page->indent . $page->title, 'admin/page/edit/' . $page->id),
-                    $user->email,
+                $row = $table->addRow();
+                $row->addCol(Html::a()->get($page->indent . $page->title, 'admin/page/edit/' . $page->id));
+                $row->addCol($user->email);
+                $row->addCol(
+                    Html::a()->get('Delete', 'admin/page/delete/' . $page->id),
                     array(
-                        Html::a()->get('Delete', 'admin/page/delete/' . $page->id),
-                        'attributes' => array(
-                            'class' => 'right',
-                            'onclick' => 'return confirm(\'All child pages will be deleted. Do you want to continue?\');'
-                        )
+                        'class' => 'right',
+                        'onclick' => 'return confirm(\'All child pages will be deleted. Do you want to continue?\');'
                     )
                 );
             }
         }
         else
-        {
-            $rows[] = array(
-                array(
-                    '<em>No pages.</em>',
-                    'attributes' => array('colspan' => 2)
-                )
-            );
-        }
+            $table->addRow()->addCol('<em>No pages</em>', array('colspan' => 2));
 
         return array(
-            array(
-                'title' => 'Manage Page',
-                'content' => Html::table()->build($headers, $rows)
-            )
+            'title' => 'Manage Page',
+            'content' => $table->render()
         );
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * Displays a create page form.
+     *
+     * Route: admin/pages/create
      */
     public static function create()
     {
@@ -144,9 +129,11 @@ class Page_Admin_PageController extends Controller {
 
 
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * Displays an edit page form.
+     *
+     * Route: admin/pages/edit/:num
+     *
+     * @param int $id The id of the page to edit
      */
     public static function edit($id)
     {
@@ -227,11 +214,10 @@ class Page_Admin_PageController extends Controller {
         );
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * Deletes a page based on its and and redirect to admin/pages/manage.
+     *
+     * @param int $id The id of the page to delete.
      */
     public static function delete($id)
     {
@@ -242,9 +228,9 @@ class Page_Admin_PageController extends Controller {
 
 
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * Deletes any pages related to (are children of) the given page $id.
+     *
+     * @param int $id The id of the page to delete any child pages for.
      */
     private static function _deleteRelated($id)
     {

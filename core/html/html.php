@@ -22,7 +22,7 @@ class Html extends Module {
     public static function __callStatic($name, $args)
     {
         $class = 'Html_' . ucfirst($name);
-        $obj = new $class();
+        $obj = new $class($args);
 
         if($args)
             echo call_user_func_array(array($obj, 'get'), $args);

@@ -11,6 +11,12 @@
         // Creates model tables and keeps them up to date based on model fields.
         // Should be disabled on production server
         'db.install' => false 
+    ),
+
+    'routes' => array(
+        'db/install' => array(
+            'callback' => array('db', 'install')
+        )
     )
 
 );

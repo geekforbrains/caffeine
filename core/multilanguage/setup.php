@@ -28,6 +28,11 @@
             'callback' => array('admin_module', 'manage'),
             'permissions' => array('multilanguage.manage_modules')
         ),
+        'admin/multilanguage/modules/manage/:slug' => array(
+            'title' => 'Manage Module',
+            'callback' => array('admin_module', 'manageModule'),
+            'permissions' => array('multilanguage.manage_modules')
+        ),
 
         // Languages
         'admin/multilanguage/languages' => array(

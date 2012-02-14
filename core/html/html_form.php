@@ -1,5 +1,22 @@
 <?php
 
+/**
+$form = Html::form();
+
+$legend = $form->addLegend('My Legend');
+$legend->addField('field_name', array());
+ 
+$form->addField('name', array(
+    'title' => 'Name',
+    'default_value' => 'Yay',
+    'options' => array(),
+    'validate' => array('required')
+));
+
+$form->addButton('submit', 'Create Page');
+
+$form->render();
+**/
 class Html_Form {
 
     public function open($action = null, $method = 'post', $enctype = false)

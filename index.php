@@ -24,7 +24,7 @@ foreach($core as $module)
 
 spl_autoload_register('Load::auto');
 Load::loadSetupFiles();
-Db::install();
+//Db::install();
 
 Event::trigger('caffeine.started');
 
