@@ -72,7 +72,10 @@ class Page_Admin_PageController extends Controller {
                 ));
 
                 if($pageId)
+                {
                     Message::ok('Page created successfully.');
+                    $_POST = array(); // Clear form
+                }
                 else
                     Message::error('Error creating page. Please try again.');
             }

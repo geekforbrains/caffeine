@@ -20,8 +20,8 @@ class Multilanguage_Admin_ModuleController extends Controller {
         {
             foreach($modules as $module)
             {
-                $row = $table->addRow(); // possibly attributes in this call?
-                $row->addCol(Html::a()->get($module, 'multilanguage/modules/edit/' . strtolower($module)));
+                $row = $table->addRow();
+                $row->addCol(Html::a()->get($module, 'admin/multilanguage/modules/manage/' . strtolower($module)));
             }
         }
         else
@@ -45,9 +45,153 @@ class Multilanguage_Admin_ModuleController extends Controller {
      */
     public static function manageModule($module)
     {
+        $output = array();
         $content = Multilanguage::getModuleContent($module);
 
-        $table = Html::table();
+        if($content)
+        {
+            foreach($content as $type => $typeContent)
+            {
+                $table = Html::table();
+                $header = $table->addHeader();
+                $header->addCol('Content');
+
+                if($typeContent)
+                {
+                    foreach($typeContent as $id => $data)
+                    {
+                        $data = String::truncate($data, 200, '...');
+                        $row = $table->addRow();
+                        $row->addCol(Html::a()->get($data, 'admin/multilanguage/modules/manage/' . $module . '/' . $type . '/' . $id));
+                    }
+                }
+                else
+                    $table->addRow()->addCol('<em>No content.</em>');
+
+                $output[] = array(
+                    'title' => ucfirst($type) . ' Content',
+                    'content' => $table->render()
+                );
+            }
+        }
+        else
+        {
+            $output = array(
+                'title' => 'No Content',
+                'content' => '<p>This module has not specified any content to manage.</p>'
+            );
+        }
+
+        return $output;
+    }
+
+    /**
+     * Displays a form for creating a new version of the current content type in the available languages.
+     *
+     * Route: admin/multilanguage/modules/manage/:slug/:slug/:num
+     *
+     * @param string $module The module the content belongs to
+     * @param string $type The type of content within the module we are editing
+     * @param int $typeId The id of $type to create a new language version for
+     */
+    public static function manageContent($module, $type, $typeId)
+    {
+        $typeInfo = Multilanguage::getContentType($module, $type);
+
+        if($_POST && Html::form()->validate())
+        {
+            $contentId = Multilanguage::content()->insert(array(
+                'language_id' => $_POST['language_id'],
+                'type_id' => $typeId,
+                'module' => $module,
+                'type' => $type
+            ));
+
+            if($contentId)
+            {
+                $status = true;
+                $data = $_POST;
+                unset($data['language_id']);
+                unset($data['submit']);
+
+                foreach($data as $k => $v)
+                {
+                    switch($v)
+                    {
+                        case 'text':
+                            $model = Multilanguage::text();
+                            break;
+
+                        case 'textarea':
+                            $model = Multilanguage::textarea();
+                            break;
+                            
+                        case 'file':
+                            $model = Multilanguage::file();
+                            break;
+
+                        default:
+                            Dev::debug('multilanguage', 'ERROR: Attempting to create content of unkown type "' . $k . '"');
+                            Message::error('Error creating content, unkown content type encountered.');
+                    }
+
+                    $tmpId = $model->insert(array(
+                        'content_id' => $contentId,
+                        'name' => $k,
+                        'content' => $_POST[$k]
+                    ));
+
+                    if(!$tmpId)
+                    {
+                        Message::error('Error creating content for the "' . $k . '" type, please try again.');
+                        Multilanguage::content()->delete($contentId);
+                        $status = false;
+                        break;
+                    }
+                }
+
+                if($status)
+                    Message::ok('Content created successfully.');
+            }
+            else
+                Message::error('Unkown error creating content, please try again.');
+        }
+
+        $langs = Multilanguage::language()->orderBy('name')->all();
+        $sortedLangs = array('' => 'Choose One');
+
+        foreach($langs as $lang)
+            $sortedLangs[$lang->id] = $lang->name;
+
+        $form[] = array(
+            'fields' => array(
+                'language_id' => array(
+                    'title' => 'Language',
+                    'type' => 'select',
+                    'options' => $sortedLangs,
+                    'validate' => array('required')
+                )
+            )
+        );
+
+        foreach($typeInfo as $name => $type)
+        {
+            $form[0]['fields'][$name] = array(
+                'title' => ucfirst($name),
+                'type' => $type,
+                'validate' => array('required')
+            );
+        }
+
+        $form[0]['fields']['submit'] = array(
+            'type' => 'submit',
+            'value' => 'Create Content'
+        );
+
+        return array(
+            'title' => 'Create Content',
+            'content' => Html::form()->build($form)
+        );
     }
 
 }

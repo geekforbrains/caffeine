@@ -52,20 +52,28 @@
 
 
     'events' => array(
-        'multilanguage.register_modules' => function() {
+        'multilanguage.modules' => function() {
             return 'page';
         },
 
-        'multilanguage.module_content[page]' => function()
+        'multilanguage.content[page]' => function()
         {
-            $content = array();
+            $content = array('page' => array());
             $pages = Page::page()->all(); 
 
             if($pages)
                 foreach($pages as $page)
-                    $content[$page->id] = $page->title;
+                    $content['page'][$page->id] = $page->title;
 
             return $content;
+        },
+
+        'multilanguage.content_type[page][page]' => function()
+        {
+            return array(
+                'title' => 'text',
+                'body' => 'textarea'
+            );
         }
     )
 

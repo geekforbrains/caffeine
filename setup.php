@@ -2,8 +2,8 @@
 
     'configs' => array(
         'db.name' => 'caffeine',
-        'db.user' => 'root',
-        'db.pass' => 'root',
+        'db.user' => 'username',
+        'db.pass' => 'password',
         'db.host' => 'localhost',
         'db.driver' => 'mysql',
         'db.install' => true,

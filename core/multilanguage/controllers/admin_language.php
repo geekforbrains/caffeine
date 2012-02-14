@@ -4,11 +4,13 @@ class Multilanguage_Admin_LanguageController extends Controller {
 
     /**
      * Displays a table of languages to be supported.
+     *
+     * Route: admin/multilanguage/languages/manage
      */
     public static function manage()
     {
         $table = Html::table();
-        $table->addHeader()->addCol('Languages');
+        $table->addHeader()->addCol('Languages', array('colspan' => 2));
 
         $langs = Multilanguage::language()->orderBy('name')->all();
 
@@ -31,6 +33,134 @@ class Multilanguage_Admin_LanguageController extends Controller {
             'title' => 'Manage Languages',
             'content' => $table->render()
         );
+    }
+
+    /**
+     * Displays a form for creating new languages.
+     *
+     * Route: admin/multilanguage/languages/create
+     */
+    public static function create()
+    {
+        if($_POST && Html::form()->validate())
+        {
+            if(!Multilanguage::language()->where('code', 'LIKE', $_POST['code'])->first())
+            {
+                $id = Multilanguage::language()->insert(array(
+                    'name' => $_POST['name'],
+                    'code' => strtolower($_POST['code'])
+                ));
+
+                if($id)
+                {
+                    Message::ok('Language created successfully.');
+                    $_POST = array(); // Clear form
+                }
+                else
+                    Message::error('Error creating language, please try again.');
+            }
+            else
+                Message::error('A language with that code already exists.');
+        }
+
+        $form[] = array(
+            'fields' => array(
+                'name' => array(
+                    'title' => 'Language Name <em>(Ex: Spanish)</em>',
+                    'type' => 'text',
+                    'validate' => array('required')
+                ),
+                'code' => array(
+                    'title' => '3 Letter Language Code <em>(Ex: spa)<em>',
+                    'type' => 'text',
+                    'validate' => array('required', 'min:3', 'max:3'),
+                    'attributes' => array(
+                        'maxlength' => 3
+                    )
+                ),
+                'submit' => array(
+                    'type' => 'submit',
+                    'value' => 'Create Language'
+                )
+            )
+        );
+
+        return array(
+            'title' => 'Create Language',
+            'content' => Html::form()->build($form)
+        );
+    }
+
+    /**
+     * Displays a form for editing a current language.
+     *
+     * Route: admin/multilanguage/languages/edit/:num
+     *
+     * @param int $id The id of the language to edit.
+     */
+    public static function edit($id)
+    {
+        if(!$lang = Multilanguage::language()->find($id))
+            return ERROR_NOTFOUND;
+
+        if($_POST && Html::form()->validate())
+        {
+            $status = Multilanguage::language()->where('id', '=', $id)->update(array(
+                'name' => $_POST['name'],
+                'code' => $_POST['code']
+            ));
+
+            if($status)
+                Message::ok('Language updated successfully.');
+            else
+                Message::error('Error updating language, please try again.');
+        }
+
+        $form[] = array(
+            'fields' => array(
+                'name' => array(
+                    'title' => 'Language Name <em>(Ex: Spanish)</em>',
+                    'type' => 'text',
+                    'validate' => array('required'),
+                    'default_value' => $lang->name
+                ),
+                'code' => array(
+                    'title' => '3 Letter Language Code <em>(Ex: spa)<em>',
+                    'type' => 'text',
+                    'validate' => array('required', 'min:3', 'max:3'),
+                    'attributes' => array(
+                        'maxlength' => 3
+                    ),
+                    'default_value' => $lang->code
+                ),
+                'submit' => array(
+                    'type' => 'submit',
+                    'value' => 'Update Language'
+                )
+            )
+        );
+
+        return array(
+            'title' => 'Edit Language',
+            'content' => Html::form()->build($form)
+        );
+    }
+
+    /**
+     * Deletes a language and redirect to admin/multilanguage/languages/manage
+     *
+     * Route: admin/multilanguage/languages/delete/:num
+     *
+     * @param int $id The id of the language to delete.
+     */
+    public static function delete($id)
+    {
+        if(Multilanguage::language()->delete($id))
+            Message::ok('Language deleted successfully.');
+        else
+            Message::error('Error deleting language, please try again.');
+
+        Url::redirect('admin/multilanguage/languages/manage');
     }
 
 }
