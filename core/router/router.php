@@ -2,73 +2,49 @@
 
 class Router extends Module {
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     private static $_currentRoute = null;
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     private static $_routes = array();
-    
 
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     private static $_params = array();
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     private static $_segments = null;
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     public static function getCurrentRoute() {
         return self::$_currentRoute;
     }
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     public static function getRoutes() {
         return self::$_routes;
     }
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     public static function getParams() {
         return self::$_params;
     }
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * TODO
-     * ---------------------------------------------------------------------------  
      */
     public static function getParam($num)
     {
@@ -78,9 +54,7 @@ class Router extends Module {
     }
 
     /**
-     * --------------------------------------------------------------------------- 
      * Returns the current URL segment, after the application base, as an array
-     * --------------------------------------------------------------------------- 
      */
     public static function getSegments()
     {
@@ -90,12 +64,9 @@ class Router extends Module {
         return self::$_segments;
     }
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * Loads a modules routes. If a modules callback only contains two items,
      * the current module name is prepended to the callback.
-     * ---------------------------------------------------------------------------  
      */
     public static function load($routes, $module)
     {
@@ -108,9 +79,7 @@ class Router extends Module {
         self::$_routes = array_merge($routes, self::$_routes);
     }
 
-
     /**
-     * ---------------------------------------------------------------------------  
      * Returns the route data associated with the current route. 
      *
      * The route data is set in a modules setup.php file. If no data is
@@ -119,17 +88,27 @@ class Router extends Module {
      * @return mixed Array of data if route exists, boolean false otherwise
      *
      * TODO Check for invalid characters in URL
-     * ---------------------------------------------------------------------------  
      */
     public static function getRouteData()
     {
         $data = false;
-        $currentRoute = Config::get('router.default_route');
+        $defaultRoute = Config::get('router.default_route');
+        $currentRoute = $defaultRoute;
 
         if(isset($_GET['r']) && strlen($_GET['r']))
             $currentRoute = $_GET['r'];
 
         $currentRoute = rtrim($currentRoute, '/');
+
+        // Look for language code, and modify route if need be
+        if(Multilanguage::routeHasLangCode($currentRoute))
+        {
+            $currentRoute = ltrim(substr($currentRoute, 3), '/');
+
+            // If current route is empty now (due to being at base url with language code (ex: /<code>), set to default
+            if(!strlen($currentRoute))
+                $currentRoute = $defaultRoute;
+        }
 
         while(true)
         {
@@ -184,6 +163,5 @@ class Router extends Module {
 
         return array($currentRoute, $data);
     }
-
 
 }

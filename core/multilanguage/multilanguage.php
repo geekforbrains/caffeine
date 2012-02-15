@@ -5,6 +5,98 @@ class Multilanguage extends Module {
     private static $_registeredModules = null;
     private static $_moduleContent = null;
     private static $_contentType = null;
+    private static $_currentLang = null; // If no language is set, default is null
+
+    /**
+     * Gets the current language. If non is set, this will return null. If there is a language
+     * set, the language object will be returned which contains the language id, code and human readable name
+     *
+     * @return Language object if one is set, null otherwise
+     */
+    public static function getCurrentLang() {
+        return self::$_currentLang;
+    }
+
+    /**
+     * Used to convert an object to its translated version if a langauge is set and the object is supported.
+     * If no langauge is set, the $data is not an object or the object isn't supported (not implemented by the module that created it)
+     * it'll be returned without modification.
+     */
+    public static function getTranslation($data)
+    {
+        if(is_array($data))
+        {
+            foreach($data as $k => $v)
+                $data[$k] = self::getTranslation($v);
+        }
+        elseif(self::$_currentLang && is_object($data) && isset($data->id)) // Objects (models) with id's are required
+        {
+            $bits = explode('_', strtolower(get_class($data))); // Get module and content type from model name (ex: Module_TypeModel)
+            $module = $bits[0];
+            $type = str_replace('model', '', $bits[1]);
+
+            Dev::debug('multilanguage', sprintf('Translating view data %s:%s', $module, $type));
+
+            $content = Multilanguage::content()
+                ->where('module', '=', $module)
+                ->andWhere('type', '=', $type)
+                ->andWhere('type_id', '=', $data->id)
+                ->andWhere('language_id', '=', self::$_currentLang->id)
+                ->first();
+
+            // If a conversion for the current content type has been found for the current language
+            if($content)
+            {
+                // Get text items, if any
+                if($textItems = Multilanguage::text()->where('content_id', '=', $content->id)->all());
+                    foreach($textItems as $i)
+                        $data->{$i->name} = $i->content; // Set property to new translated version
+
+                // Get textarea items, if any
+                if($textareaItems = Multilanguage::textarea()->where('content_id', '=', $content->id)->all());
+                    foreach($textareaItems as $i)
+                        $data->{$i->name} = $i->content; // Set property to new translated version
+
+                // Get files, if any
+                // TODO
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Checks if an available language code is set in the current route.
+     *
+     * @param string $currentRoute The current route to check for a language code
+     */
+    public static function routeHasLangCode($currentRoute)
+    {
+        $code = null;
+
+        if(strstr($currentRoute, '/'))
+        {
+            $bits = explode('/', $currentRoute);
+            if($bits && strlen($bits[0]) == 3)
+                $code = $bits[0];
+        }
+        elseif(strlen($currentRoute) == 3)
+            $code = $currentRoute;
+
+        if(!is_null($code))
+        {
+            $lang = Multilanguage::language()->where('code', 'LIKE', $code)->first();
+            
+            if($lang)
+            {
+                Dev::debug('multilanguage', 'Setting language to: ' . $lang->name);
+                self::$_currentLang = $lang;
+                return true;
+            }
+        }
+         
+        return false;
+    }
 
     /**
      * Triggers the multilanguage.modules event, if it hasn't been triggered already and returns

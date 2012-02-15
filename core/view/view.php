@@ -119,9 +119,13 @@ class View extends Module {
     public static function data($key, $value = null)
     {
         if(is_array($key))
-            self::$_data = array_merge(self::$_data, $key);
+        {
+            //self::$_data = array_merge(self::$_data, $key);
+            foreach($key as $k => $v)
+                self::data($k, $v);
+        }
         else
-            self::$_data[$key] = $value;
+            self::$_data[$key] = Multilanguage::getTranslation($value);
     }
 
     /**

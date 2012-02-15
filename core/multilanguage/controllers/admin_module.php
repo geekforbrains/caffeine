@@ -113,33 +113,42 @@ class Multilanguage_Admin_ModuleController extends Controller {
                 $data = $_POST;
                 unset($data['language_id']);
                 unset($data['submit']);
+                unset($data['form_id']);
 
                 foreach($data as $k => $v)
                 {
-                    switch($v)
+                    $tmpId = null;
+
+                    switch($typeInfo[$k])
                     {
                         case 'text':
-                            $model = Multilanguage::text();
+                            $tmpId = Multilanguage::text()->insert(array(
+                                'content_id' => $contentId,
+                                'name' => $k,
+                                'content' => $v
+                            ));
                             break;
 
                         case 'textarea':
-                            $model = Multilanguage::textarea();
+                            $tmpId = Multilanguage::textarea()->insert(array(
+                                'content_id' => $contentId,
+                                'name' => $k,
+                                'content' => $v
+                            ));
                             break;
                             
                         case 'file':
-                            $model = Multilanguage::file();
+                            $tmpId = Multilanguage::file()->insert(array(
+                                'content_id' => $contentId,
+                                'name' => $k,
+                                'file_id' => $v
+                            ));
                             break;
 
                         default:
                             Dev::debug('multilanguage', 'ERROR: Attempting to create content of unkown type "' . $k . '"');
                             Message::error('Error creating content, unkown content type encountered.');
                     }
-
-                    $tmpId = $model->insert(array(
-                        'content_id' => $contentId,
-                        'name' => $k,
-                        'content' => $_POST[$k]
-                    ));
 
                     if(!$tmpId)
                     {
@@ -188,9 +197,24 @@ class Multilanguage_Admin_ModuleController extends Controller {
             'value' => 'Create Content'
         );
 
+        // TODO Make table of language conversion
+        $table = Html::table();
+        $header = $table->addHeader();
+        $header->addCol('Language', array('colspan' => 2));
+
+        // TODO Add rows of languages for this content
+        $row = $table->addRow();
+        $row->addCol('<em>No languages for this content.</em>', array('colspan' => 2));
+
         return array(
-            'title' => 'Create Content',
-            'content' => Html::form()->build($form)
+            array(
+                'title' => 'Create Content',
+                'content' => Html::form()->build($form)
+            ),
+            array(
+                'title' => 'Conversions',
+                'content' => $table->render()
+            )
         );
     }
 

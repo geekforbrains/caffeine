@@ -1,6 +1,5 @@
 <?php return array(
 
-
     'permissions' => array(
         'page.admin' => 'Administer pages',
         'page.manage' => 'Manage all pages',
@@ -11,7 +10,6 @@
         'page.delete' => 'Delete all pages',
         'page.delete_mine' => 'Delete my pages'
     ),
-    
 
     'routes' => array(
         // Front
@@ -50,12 +48,18 @@
         )
     ),
 
-
     'events' => array(
+
+        /**
+         * Registers the "page" module as a support multilanguage module
+         */
         'multilanguage.modules' => function() {
             return 'page';
         },
 
+        /**
+         * Returns an array of content that the page module provides.
+         */
         'multilanguage.content[page]' => function()
         {
             $content = array('page' => array());
@@ -68,6 +72,9 @@
             return $content;
         },
 
+        /**
+         * Returns an array of content details for a page
+         */
         'multilanguage.content_type[page][page]' => function()
         {
             return array(
@@ -76,6 +83,5 @@
             );
         }
     )
-
 
 );

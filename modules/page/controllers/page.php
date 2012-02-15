@@ -2,11 +2,12 @@
 
 class Page_PageController extends Controller {
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * Loads a page object into the current view, if the page exists. Otherwise 404 error is returned.
+     *
+     * Route: page/:slug
+     *
+     * @param string $slug The slug of the page to get.
      */
     public static function view($slug)
     {
@@ -20,6 +21,5 @@ class Page_PageController extends Controller {
 
         return ERROR_NOTFOUND;
     }
-
 
 }

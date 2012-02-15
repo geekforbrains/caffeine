@@ -73,7 +73,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
                 'code' => array(
                     'title' => '3 Letter Language Code <em>(Ex: spa)<em>',
                     'type' => 'text',
-                    'validate' => array('required', 'min:3', 'max:3'),
+                    'validate' => array('required', 'min:3'),
                     'attributes' => array(
                         'maxlength' => 3
                     )
@@ -127,7 +127,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
                 'code' => array(
                     'title' => '3 Letter Language Code <em>(Ex: spa)<em>',
                     'type' => 'text',
-                    'validate' => array('required', 'min:3', 'max:3'),
+                    'validate' => array('required', 'min:3'),
                     'attributes' => array(
                         'maxlength' => 3
                     ),

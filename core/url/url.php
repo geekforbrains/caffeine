@@ -53,6 +53,11 @@ class Url extends Module {
         {
             $bits = explode('index.php', $_SERVER['SCRIPT_NAME']);
             self::$_base = (isset($bits[0])) ? $bits[0] : '/';
+
+            // If language code is set, force all urls to use it
+            if($lang = Multilanguage::getCurrentLang())
+                self::$_base .= $lang->code . '/';
+
             Dev::debug('url', 'Setting base URL: ' . self::$_base);
         }
 
