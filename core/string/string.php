@@ -261,9 +261,8 @@ class String extends Module {
 	{
         $replacements = array(
             '([A-Za-z0-9\-]+)' => array(':slug'),
-            '([A-Za-z\-]+)' => array('%s', ':alpha'),
-            '([0-9]+)' => array('%d', ':num'),
-            '([0-9]+)' => array('%d', ':id'),
+            '([A-Za-z\-]+)' => array('%s', ':alpha', ':abc'),
+            '([0-9]+)' => array('%d', ':num', ':id'),
             '(.*?)' => array('%', ':any')
         );
 
