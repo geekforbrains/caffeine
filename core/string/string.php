@@ -263,6 +263,7 @@ class String extends Module {
             '([A-Za-z0-9\-]+)' => array(':slug'),
             '([A-Za-z\-]+)' => array('%s', ':alpha'),
             '([0-9]+)' => array('%d', ':num'),
+            '([0-9]+)' => array('%d', ':id'),
             '(.*?)' => array('%', ':any')
         );
 

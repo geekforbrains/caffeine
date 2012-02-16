@@ -20,7 +20,7 @@ class Router extends Module {
     /**
      * TODO
      */
-    private static $_segments = null;
+    //private static $_segments = null;
 
     /**
      * TODO
@@ -54,14 +54,19 @@ class Router extends Module {
     }
 
     /**
+     * !!! THIS HAS BEEN MOVED TO THE URL MODULE, AND IS NOW DEPRECATED !!!
+     *
      * Returns the current URL segment, after the application base, as an array
      */
     public static function getSegments()
     {
+        /*
         if(is_null(self::$_segments))
-            self::$_segments = isset($_GET['r']) ? explode('/', $_GET['r']) : array();
+            self::$_segments = explode('/', Url::current());
 
         return self::$_segments;
+        */
+        return Url::segments();
     }
 
     /**
@@ -92,6 +97,8 @@ class Router extends Module {
     public static function getRouteData()
     {
         $data = false;
+        
+        /*
         $defaultRoute = Config::get('router.default_route');
         $currentRoute = $defaultRoute;
 
@@ -109,6 +116,14 @@ class Router extends Module {
             if(!strlen($currentRoute))
                 $currentRoute = $defaultRoute;
         }
+        */
+
+        $currentRoute = Url::current();
+
+        if($currentRoute == '/')
+            $currentRoute = Config::get('router.default_route');
+        else
+            $currentRoute = ltrim($currentRoute, '/'); // We dont want leading slash of the current url for routes
 
         while(true)
         {
@@ -119,12 +134,6 @@ class Router extends Module {
             // If no exact match, check matches with regex
             foreach(self::$_routes as $route => $routeData)
             {
-                /*
-                $regexRoute = str_replace(':num', '([0-9]+)', $route);
-                $regexRoute = str_replace(':slug', '([A-Za-z0-9\-]+)', $regexRoute);
-                $regexRoute = str_replace(':any', '(.*?)', $regexRoute);
-                */
-
                 $regexRoute = String::regify($route);
 
                 if(preg_match('@^' . $regexRoute . '$@', $currentRoute, $matches))

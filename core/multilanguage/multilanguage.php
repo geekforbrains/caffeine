@@ -70,7 +70,7 @@ class Multilanguage extends Module {
      *
      * @param string $currentRoute The current route to check for a language code
      */
-    public static function routeHasLangCode($currentRoute)
+    public static function urlHasLangCode($currentRoute)
     {
         $code = null;
 

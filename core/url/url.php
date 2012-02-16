@@ -23,6 +23,16 @@ class Url extends Module {
     private static $_current = null;
 
     /**
+     * Stores the segments of the current url (does not include base)
+     */
+    private static $_segments = null;
+
+    /**
+     * Stores the current language code, if any.
+     */
+    private static $_lang = null;
+
+    /**
      * Returns the current scheme.
      */
     public static function scheme()
@@ -45,38 +55,73 @@ class Url extends Module {
     }
 
     /**
-     * Returns the full url to the base of the application, including any sub-directories.
+     * Returns the relative url to the base of the application, including any sub-directories.
+     * If a base url exists, it will start with a slash "/", otherwise the base will be an empty string.
      */
-    public static function base()
+    public static function base($includeLang = true)
     {
         if(is_null(self::$_base))
         {
             $bits = explode('index.php', $_SERVER['SCRIPT_NAME']);
-            self::$_base = (isset($bits[0])) ? $bits[0] : '/';
+            self::$_base = (isset($bits[0])) ? rtrim($bits[0], '/') : '';
 
-            // If language code is set, force all urls to use it
             if($lang = Multilanguage::getCurrentLang())
-                self::$_base .= $lang->code . '/';
-
-            Dev::debug('url', 'Setting base URL: ' . self::$_base);
+                self::$_lang = $lang->code;
         }
 
+        if($includeLang && !is_null(self::$_lang))
+            return self::$_base . '/' . self::$_lang;
         return self::$_base;
     }
 
     /**
-     * Returns the current relative url without trailing slashes.
+     * Returns the current relative url without trailing slashes. Does NOT include base url.
+     * The current url will always start with a slash "/".
      */
     public static function current()
     {
         if(is_null(self::$_current))
         {
-            self::$_current = '/';
             if(isset($_GET['r']) && strlen($_GET['r']))
-                self::$_current = rtrim($_GET['r'], '/');
+                self::$_current = $_GET['r'];
+
+            if(Multilanguage::urlHasLangCode(self::$_current))
+                self::$_current = substr(self::$_current, 3);
+
+            if(!strlen(self::$_current))
+                self::$_current = '/';
+            else
+                self::$_current = '/' . trim(self::$_current, '/');
         }
 
-        return self::base() . trim(self::$_current, '/');
+        return self::$_current;
+    }
+
+    /**
+     * Returns all segments of the current URL in an array.
+     */
+    public static function segments()
+    {
+        if(is_null(self::$_segments))
+        {
+            $current = ltrim(self::current(), '/');
+            self::$_segments = (strlen($current)) ? explode('/', $current) : array();
+        }
+
+        return self::$_segments;
+    }
+
+    /**
+     * Gets a single segment, if it exists. Otherwise null returned. Segments are array based,
+     * so they start at 0.
+     */
+    public static function segment($num)
+    {
+        $segments = self::segments();
+
+        if(isset($segments[$num]))
+            return $segments[$num];
+        return null;
     }
 
     /**
@@ -87,7 +132,7 @@ class Url extends Module {
      */
     public static function isCurrent($path)
     {
-        if(self::to($path) == self::current())
+        if(trim($path, '/') == trim(self::current(), '/'))
             return true;
         return false;
     }
@@ -122,17 +167,38 @@ class Url extends Module {
      * @param boolean $fullUrl If set to true, converts relative paths to the full application URL
      * @return string URL to the given path
      */
-    public static function to($path, $fullUrl = false)
+    public static function to($path, $fullUrl = false, $includeLang = true)
     {
         if(substr($path, 0, 4) == 'http') // Ignore full urls
             return $path;
 
-        $path = self::base() . trim($path, '/');
+        $path = rtrim(self::base($includeLang) . '/' . ltrim($path, '/'), '/');
+
+        if(!strlen($path))
+            $path = '/';
 
         if($fullUrl)
             $path = 'http://' . self::host() . $path;
 
         return $path;
+    }
+
+    /**
+     * Get url to given language. If language is set to null, the current langauge code, if any, will be removed.
+     * If no path is specified, the current url path will be used.
+     *
+     * @param string $lang The 3 letter language code to convert the url to, if null, removes lang code.
+     * @param string $path The url path to prepend $lang code to. If ommited, current url is used.
+     * @return string The $path with the given $lang prepended.
+     */
+    public static function toLang($lang, $path = null)
+    {
+        if(is_null($path))
+            $path = self::current();
+        else
+            $path = '/' . $path;
+
+        return self::to($lang . $path, false, false);
     }
 
 }
