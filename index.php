@@ -1,38 +1,110 @@
 <?php
-session_start();
 
-date_default_timezone_set('UTC');
+/**
+ * Caffeine
+ *
+ * Caffeine is a simple PHP layer that combines modules through the use of events
+ * to form an application.
+ *
+ * @version 1.0
+ * @author Gavin Vickery <gavin@geekforbrains.com>
+ * @license http://www.opensource.org/licenses/mit-license.php
+ */
+class Caffeine {
 
-define('ROOT', __DIR__ . '/');
-define('EXT', '.php');
-define('VERSION', '1.0');
+    /**
+     * Allows Caffeine to only be initialized once.
+     */
+    private static $_inited = false;
 
-define('ERROR_NOTFOUND', 404);
-define('ERROR_ACCESSDENIED', 401);
-define('ERROR_MAINTENANCE', 'maintenance');
+    /**
+     * Required core modules to load in order for autoloading magic to work.
+     */
+    private static $_requiredCore = array(
+        'module',
+        'config',
+        'load',
+        'site'
+    );
 
-$core = array(
-    'module', // Module must be loaded first; everything extends it
-    'config',
-    'load',
-    'site'
-);
+    /**
+     * Starting point for every page request. Loads required core modules, gets data from url and calls
+     * necessary modules to make things happen.
+     */
+    public static function init()
+    {
+        if(!self::$_inited)
+        {
+            self::$_inited = true;
 
+            foreach(self::$_requiredCore as $module)
+                require_once(ROOT . 'core/' . $module . '/' . $module . EXT);
 
-foreach($core as $module)
-    require_once(ROOT . 'core/' . $module . '/' . $module . EXT);
+            // Set the Load::auto method to handle all class loading from now on
+            spl_autoload_register('Load::auto');
 
-spl_autoload_register('Load::auto');
-Load::loadSetupFiles();
-//Db::install();
+            Load::loadSetupFiles();
+            Event::trigger('caffeine.started');
 
-Event::trigger('caffeine.started');
+            // If maintenance mode was enabled in the admin, load maintenace view and stop everything
+            if(Variable::get('system.maintenance_mode', false))
+                View::error(ERROR_MAINTENANCE);
+            else
+            {
+                list($route, $data) = Router::getRouteData();
 
-if(!Variable::get('system.maintenance_mode', false))
-{
-    list($route, $data) = Router::getRouteData();
+                if($data)
+                {
+                    if(self::_hasPermission($route, $data))
+                    {
+                        list($module, $controller, $method) = $data['callback'];
+                        $params = Router::getParams();
 
-    if($data)
+                        // Make sure controller words are upper-case
+                        $conBits = explode('_', $controller);
+                        foreach($conBits as &$bit)
+                            $bit = ucfirst($bit);
+                        $controller = implode('_', $conBits);
+
+                        $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
+
+                        // Call the routes controller and method
+                        $response = call_user_func_array(array($controller, $method), $params);
+
+                        // If the response is an int, assume its a pre-defined error code
+                        if(!is_int($response))
+                        {
+                            Event::trigger('module.response', array($response));
+                            View::load($module, $controller, $method);
+                        }
+
+                        // All other method responses are assumed to be errors. Load their views.
+                        else
+                            View::error($response);
+                    }
+                    else
+                        View::error(ERROR_ACCESSDENIED);
+                }
+                else
+                {
+                    if($route !== '[index]' || !View::directLoad('index'))
+                        View::error(ERROR_NOTFOUND);
+                }
+            }
+
+            View::output();
+            Event::trigger('caffeine.finished');
+        }
+        else
+            die('Why are you trying to re-initialize Caffeine?');
+    }
+
+    /**
+     * Checks if the current user has access to the current route.
+     *
+     * @return boolean
+     */
+    private static function _hasPermission($route, $data)
     {
         $hasPermission = false;
 
@@ -41,7 +113,7 @@ if(!Variable::get('system.maintenance_mode', false))
             $hasPermission = true;
             Dev::debug('user', 'User has permission');
 
-            // Only do callbacks if user is admin, otherwise always allow
+            // Only do user permission callbacks if not admin, otherwise its pointless
             if(User::current()->is_admin <= 0)
             {
                 foreach($data['permissions'] as $k)
@@ -61,44 +133,38 @@ if(!Variable::get('system.maintenance_mode', false))
             }
         }
         else
-            Dev::debug('user', 'User does NOT have permissions');
+            Dev::debug('user', 'User does NOT have permission');
 
-        if($hasPermission)
-        {
-            list($module, $controller, $method) = $data['callback'];
-            $params = Router::getParams();
-
-            // Make sure controller words are upper
-            $conBits = explode('_', $controller);
-            foreach($conBits as &$bit)
-                $bit = ucfirst($bit);
-            $controller = implode('_', $conBits);
-
-            $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
-            $response = call_user_func_array(array($controller, $method), $params);
-
-            // If the response is an int, assume its a pre-defined error code
-            if(!is_int($response))
-            {
-                Event::trigger('module.response', array($response));
-                View::load($module, $controller, $method);
-            }
-
-            // All other method responses are assumed to be errors. Load their views.
-            else
-                View::error($response);
-        }
-        else
-            View::error(ERROR_ACCESSDENIED);
+        return $hasPermission;
     }
-    else
-    {
-        if($route != '[index]' || !View::directLoad('index'))
-            View::error(ERROR_NOTFOUND);
-    }
+
 }
-else  // In maintenance mode!!!
-    View::error(ERROR_MAINTENANCE);
 
-View::output();
-Event::trigger('caffeine.finished');
+/**
+ * These constants allow Caffeine to determine where files are and how to load them.
+ * Dont mess with these unless you know what you're doing.
+ */
+define('ROOT', __DIR__ . '/');
+define('EXT', '.php');
+define('VERSION', '1.0');
+
+/**
+ * These constants are used to load specific error view pages such as 404, 
+ * access denied and maintenance.
+ */
+define('ERROR_NOTFOUND', 404);
+define('ERROR_ACCESSDENIED', 401);
+define('ERROR_MAINTENANCE', 'maintenance');
+
+/**
+ * Sometimes PHP complains if a timezone isn't set, so set UTC initially but we'll set it again
+ * using the Config module once its loaded.
+ *
+ * DONT CHANGE LANGUAGE HERE, DO IT IN CONFIG WITH "system.timezone".
+ */
+date_default_timezone_set('UTC');
+
+// Vroom, vroom!
+session_start();
+session_regenerate_id();
+Caffeine::init();
