@@ -9,7 +9,8 @@
         'db.install' => true,
 
         'dev.debug_enabled' => true,
-        'multilanguage.enabled' => true,
+
+        'multilanguage.enabled' => false,
 
         'system.timezone' => 'UTC'
     )
