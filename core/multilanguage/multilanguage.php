@@ -21,9 +21,14 @@ class Multilanguage extends Module {
      * Used to convert an object to its translated version if a langauge is set and the object is supported.
      * If no langauge is set, the $data is not an object or the object isn't supported (not implemented by the module that created it)
      * it'll be returned without modification.
+     *
+     * If multilanguage is not enabled, the data is returned without modification.
      */
     public static function getTranslation($data)
     {
+        if(!Config::get('multilanguage.enabled'))
+            return $data;
+
         if(is_array($data))
         {
             foreach($data as $k => $v)
@@ -61,17 +66,43 @@ class Multilanguage extends Module {
                 // TODO
             }
         }
+        elseif(self::$_currentLang && is_string($data))
+        {
+            $hash = md5($data); // Use hash as lookup so we can index the database column
+
+            if($string = Multilanguage::stringcontent()->where('hash', '=', $hash)->first())
+            {
+                $translation = Multilanguage::string()
+                    ->where('stringcontent_id', '=', $string->id)
+                    ->andWhere('language_id', '=', self::$_currentLang->id)
+                    ->first();
+
+                if($translation)
+                    $data = $translation->content;
+            }
+            else
+            {
+                Multilanguage::stringcontent()->insert(array(
+                    'hash' => $hash,
+                    'content' => $data
+                ));
+            }
+        }
 
         return $data;
     }
 
     /**
-     * Checks if an available language code is set in the current route.
+     * Checks if an available language code is set in the current route. Multilanguage must be enabled
+     * in config in order for this to work.
      *
      * @param string $currentRoute The current route to check for a language code
      */
     public static function urlHasLangCode($currentRoute)
     {
+        if(!Config::get('multilanguage.enabled'))
+            return false;
+
         $code = null;
 
         if(strstr($currentRoute, '/'))
@@ -188,4 +219,11 @@ class Multilanguage extends Module {
         self::$_contentType = $data;
     }
 
+}
+
+/**
+ * Shorthand method for calling Multilanguage::getTranslation, should be used in views.
+ */
+function t($data) {
+    return Multilanguage::getTranslation($data);
 }

@@ -1,10 +1,21 @@
 <?php return array(
 
+    'configs' => array(
+        /**
+         * When enabled, will perform checks on the url to determine if a new language is to be used
+         * but also inserts new strings being translated via the t() function.
+         */
+        'multilanguage.enabled' => false
+    ),
+
     'permissions' => array(
         'multilanguage.admin' => 'Administer multilanguage',
 
         'multilanguage.admin_modules' => 'Administer modules',
         'multilanguage.manage_modules' => 'Manage modules',
+
+        'multilangauge.admin_strings' => 'Administer strings',
+        'multilanguage.manage_strings' => 'Manage strings',
 
         'multilanguage.admin_languages' => 'Administer languages',
         'multilanguage.manage_languages' => 'Manage languages',
@@ -40,6 +51,23 @@
             'title' => 'Manage Content',
             'callback' => array('admin_module', 'manageContent'),
             'permissions' => array('multilanguage.manage_modules')
+        ),
+
+        // Strings
+        'admin/multilanguage/strings' => array(
+            'title' => 'Strings',
+            'redirect' => 'admin/multilanguage/strings/manage',
+            'permissions' => array('multilanguage.admin_strings')
+        ),
+        'admin/multilanguage/strings/manage' => array(
+            'title' => 'Manage',
+            'callback' => array('admin_string', 'manage'),
+            'permissions' => array('multilanguage.manage_strings')
+        ),
+        'admin/multilanguage/strings/manage/:id' => array(
+            'title' => 'Manage Content',
+            'callback' => array('admin_string', 'manageContent'),
+            'permissions' => array('multilanguage.manage_strings')
         ),
 
         // Languages

@@ -22,7 +22,7 @@ class Html_Form {
     public function open($action = null, $method = 'post', $enctype = false)
     {
         if(is_null($action))
-            $action = Url::current();
+            $action = Url::toCurrent();
 
         $enctype = ($enctype) ? ' enctype="multipart/form-data"' : '';
         return sprintf('<form method="%s" action="%s"%s>', $method, $action, $enctype);

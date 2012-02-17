@@ -212,7 +212,7 @@ class Multilanguage_Admin_ModuleController extends Controller {
                 'content' => Html::form()->build($form)
             ),
             array(
-                'title' => 'Conversions',
+                'title' => 'Translations',
                 'content' => $table->render()
             )
         );

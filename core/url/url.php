@@ -184,6 +184,13 @@ class Url extends Module {
     }
 
     /**
+     * Short hand method for getting a relative url, including base, to the current url.
+     */
+    public static function toCurrent() {
+        return self::to(self::current());
+    }
+
+    /**
      * Get url to given language. If language is set to null, the current langauge code, if any, will be removed.
      * If no path is specified, the current url path will be used.
      *
