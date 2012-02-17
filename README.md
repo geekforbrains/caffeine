@@ -63,11 +63,31 @@ There are number of route hooks that can be used when defining parameters. They 
 
 ### Modules
 
-TODO
+Modules are a collection of controllers, models and configurations that provide functionality to Caffeine. Modules can provide content such
+as a Blog, or provide functionality such as Twitter OAuth.
+
+There are 3 different locations for modules to reside. The first is the `core/` directory. This is where all required Caffeine modules are located and are always made available to all areas of your app. The second is the `modules/` directory. This is where custom modules you've written or downloaded are placed. They are also made available to all areas of your app. The last location is `sites/<site>/modules/`. This directory is used for "one-off" modules that need to be written for a specific site. Modules in this directory or only made available to that site and are not available anywhere else.
+
+You can read more about sites below.
 
 ### Models
 
-TODO
+Models are PHP classes that represent a table in the database. They provide simple ways of storing and quering data. When installing Caffeine, the fields and indexes in a model are used to build the tables automatically.
+
+Example of using a model to get all blog posts:
+
+    $posts = Blog::post()->all();
+
+Example of using a model to get a blog post by id:
+
+    $post = Blog::post()->find($id);
+
+Example of inserting a new blog post:
+
+    $id = Blog::post()->insert(array(
+        'title' => 'Hello World',
+        'body' => 'My first blog post!'
+    ));
 
 ### Controllers
 
@@ -75,7 +95,15 @@ TODO
 
 ### Views
 
-TODO
+Views are simply PHP files with HTML in them. Views are located in the `sites/<site>/views/` directory.
+
+### Sites
+
+A site directory stores your "front end" HTML and assets such as images, CSS and JavaScript. The HTML files loaded are called "Views".
+
+Caffeine allows you to run multiple sites on a single code base. It does this by matching the current domain to a directory within `sites/`. If a a match is found, that directory will be loaded, otherwise the `sites/default/` site will be used.
+
+For example, if we had a site `sites/foo.com` and a user visited the url `foo.com` that site directory would be loaded. However, if the same server also ran `bar.com` and a user visited that url, the `sites/default/` directory would be used instead (since `sites/bar.com` doesnt exist).
 
 Credits
 -------
