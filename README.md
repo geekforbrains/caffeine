@@ -1,5 +1,5 @@
-Caffeine
-========
+Caffeine v1.0
+=============
 
 A simple PHP framework that combines modules through the use of routes and events to form an application.
 
