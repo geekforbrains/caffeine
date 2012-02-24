@@ -8,7 +8,7 @@
         'db.driver' => 'mysql',
         'db.install' => true,
 
-        'dev.debug_enabled' => true,
+        'dev.debug_enabled' => false,
 
         'multilanguage.enabled' => false,
 

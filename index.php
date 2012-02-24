@@ -44,10 +44,11 @@ class Caffeine {
             spl_autoload_register('Load::auto');
 
             Load::loadSetupFiles();
+            date_default_timezone_set(Config::get('system.timezone'));
+
             Event::trigger('caffeine.started');
 
-            // If maintenance mode was enabled in the admin, load maintenace view and stop everything
-            //if(Variable::get('system.maintenance_mode', false))
+            // If maintenance mode has been set in the config, stop everything and load mainteance view
             if(Config::get('system.maintenance_mode'))
                 View::error(ERROR_MAINTENANCE);
             else
@@ -72,14 +73,14 @@ class Caffeine {
                         // Call the routes controller and method
                         $response = call_user_func_array(array($controller, $method), $params);
 
-                        // If the response is an int, assume its a pre-defined error code
+                        // Ignore method return values unless they are int, which are assumed to be error codes
                         if(!is_int($response))
                         {
                             Event::trigger('module.response', array($response));
                             View::load($module, $controller, $method);
                         }
 
-                        // All other method responses are assumed to be errors. Load their views.
+                        // Return value was int, load error view
                         else
                             View::error($response);
                     }
