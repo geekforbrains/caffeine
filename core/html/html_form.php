@@ -87,11 +87,11 @@ class Html_Form {
     public function build($fieldsets, $action = null, $method = 'post', $enctype = false)
     {
         $formId = md5(uniqid()); // Used to determine form being posted when validating feilds
-        $shortFormId = substr($formId, 0, 6); // Used to set the id/name on the form tag
+        $formName = preg_replace('/[0-9]+/', '', $formId); // Used to set the id/name of the form tag
         $formData = array();
 
         $html = Html::form()->open($action, $method, $enctype, 
-            array('id' => $shortFormId, 'name' => $shortFormId));
+            array('id' => $formName, 'name' => $formName));
 
         // Insert form id as hidden field
         $html .= '<input type="hidden" name="form_id" value="' . $formId . '" />';
@@ -118,7 +118,7 @@ class Html_Form {
                     $formData[$fieldName] = $fieldData;
 
                 // Add form id for buttons
-                $fieldData['form_id'] = $shortFormId;
+                $fieldData['form_name'] = $formName;
 
                 /*
                 $html .= '<p';
@@ -152,7 +152,7 @@ class Html_Form {
                 }
                 $html .= '>';
 
-                if(isset($fieldData['title']))
+                if(isset($fieldData['title']) && !is_null($fieldData['title']))
                     $html .= '<label>' . $fieldData['title'] . '</label>';
 
                 $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
@@ -326,8 +326,15 @@ class Html_Form {
      *      - default_value: The default value to give the field
      *      - attributes: An array of key value pairs for attributes (ex: array('class' => 'my_class'))
      */
-    private static function _submit($name, $data) {
-        return sprintf('<input%s type="submit" name="%s" value="%s" />', self::_attributes($data), $name, $data['value']);
+    private static function _submit($name, $data)
+    {
+        //return sprintf('<input%s type="submit" name="%s" value="%s" />', self::_attributes($data), $name, $data['value']);
+
+        $html = sprintf('<input type="hidden" name="%s" value="true" />', $name); // So we can track which button was clicked
+        $html .= sprintf('<a class="btn blue" href="javascript:document.%s.submit(); return false;">%s</a>', 
+            $data['form_name'], $data['value']);
+
+        return $html;
     }
 
     // TODO

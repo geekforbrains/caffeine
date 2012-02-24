@@ -17,6 +17,13 @@
                 <?php foreach($adminContent as $content): ?>
                     <div class="grid_12 spacer">
                         <h1><?php echo $content['title']; ?></h1>
+
+                        <?php if(isset($content['topright'])): ?>
+                            <div class="topright">
+                                <?php echo $content['topright']; ?>
+                            </div>
+                        <?php endif; ?>
+
                         <?php echo $content['content']; ?>
                     </div>
                 <?php endforeach; ?>
@@ -25,6 +32,13 @@
                     
                 <div class="grid_12 spacer">
                     <h2><?php echo $adminContent['title']; ?></h2>
+
+                    <?php if(isset($adminContent['topright'])): ?>
+                        <div class="topright">
+                            <?php echo $adminContent['topright']; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <?php echo $adminContent['content']; ?>
                 </div>
 

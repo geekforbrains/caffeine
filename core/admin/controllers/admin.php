@@ -16,7 +16,7 @@ class Admin_AdminController extends Controller {
     {
         return array(
             'title' => 'Dashboard',
-            'content' => '<em>TODO</em>'
+            'content' => '<p>Dashboard is under development.</p>'
         );
     }
 

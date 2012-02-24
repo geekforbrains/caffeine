@@ -64,6 +64,7 @@ class Html_Table {
     {
         $this->_pointer =& $this->_headerHtml;
         $this->_tag = 'th';
+
         $this->_tr($attributes);
         return $this;
     }
@@ -78,12 +79,22 @@ class Html_Table {
 
     public function addCol($content, $attributes = array())
     {
-        $this->_pointer .= sprintf('<%s', $this->_tag);
+        // Allow different tags to be set in header (ex: td)
+        $tag = $this->_tag;
+        if(isset($attributes['tag']))
+        {
+            $tag = $attributes['tag'];
+            unset($attributes['tag']);
+        }
+
+        $this->_pointer .= sprintf('<%s', $tag);
         
         if($attributes)
             $this->_addAttr($attributes);
 
-        $this->_pointer .= sprintf('>%s</%s>', $content, $this->_tag);
+        $this->_pointer .= sprintf('>%s</%s>', $content, $tag);
+
+        return $this;
     }
 
     public function render()

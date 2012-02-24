@@ -101,6 +101,28 @@ a:hover {
     display: none;
 }
 
+.messages {
+    margin-top: 18px;
+}
+
+.messages p {
+    font-size: 14px;
+    padding: 10px;
+    margin-top: 2px;
+}
+
+.messages p.ok {
+    background-color: #E7FFCC;
+    color: #294D00;
+    border: 1px solid #C6ECC6;
+}
+
+.messages p.error {
+    background-color: #FFE5E5;
+    border: 1px solid #FFCCCC;
+    color: #660000;
+}
+
 .content h1,
 .content h2 {
     font-weight: bold;
@@ -112,6 +134,12 @@ a:hover {
 .content h2 {
     color: #565656;
     border-bottom: 4px solid #565656;
+}
+
+.content p {
+    margin-top: 15px;
+    font-size: 14px;
+    line-height: 20px;
 }
 
 .spacer {
@@ -160,10 +188,11 @@ table {
 }
 
 table tr th {
-    background-color: #DBDBDB;
+    background-color: #E8E8E8;
     font-weight: bold;
 }
 
+table tr th,
 table tr td {
     border-bottom: 1px solid #CECECE;
 }
@@ -193,7 +222,7 @@ form label {
 }
 
 form ul {
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 form ul li {
@@ -203,19 +232,12 @@ form ul li {
 
 .text input, 
 .select select, 
-.textarea textarea,
-.topright input,
-.topright select {
+.textarea textarea {
     font-size: 12px;
     font-family: arial, sans-serif;
     padding: 5px;
     margin: 0;
     border: 1px solid #b3b3b3;
-}
-
-.topright input,
-.topright select {
-    width: 150px;
 }
 
 form .text input,
@@ -250,6 +272,52 @@ form .buttons {
     padding-top: 10px;
 }
 
+form div.error {
+    padding: 7px 0 5px 0;
+}
+
+form .textarea div.error {
+    padding-top: 4px;
+}
+
+form div.error span {
+    padding: 5px;
+    background-color: #FFE5E5;
+    border: 1px solid #FFCCCC;
+    color: #660000;
+}
+
+.topright ul,
+.topright ul li {
+    margin: 0;
+    padding: 0;
+}
+
+.topright ul li {
+    margin-right: 5px;
+}
+
+.topright ul li,
+.topright ul li label {
+    float: left;
+}
+
+.topright ul li label {
+    padding-top: 6px;
+    margin-right: 5px;
+}
+
+.topright .text input,
+.topright .select select {
+    width: 150px;
+}
+
+.topright .submit,
+.topright .buttons {
+    margin: 0;
+    padding-top: 6px;
+}
+
 .btn,
 .btn:link,
 .btn:visited {
@@ -258,7 +326,8 @@ form .buttons {
     color: #ffffff;
 }
 
-.btn.mini {
+.btn.mini,
+.topright .btn {
     padding: 6px 8px;
     font-weight: normal;
 }
