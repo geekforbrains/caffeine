@@ -47,7 +47,8 @@ class Caffeine {
             Event::trigger('caffeine.started');
 
             // If maintenance mode was enabled in the admin, load maintenace view and stop everything
-            if(Variable::get('system.maintenance_mode', false))
+            //if(Variable::get('system.maintenance_mode', false))
+            if(Config::get('system.maintenance_mode'))
                 View::error(ERROR_MAINTENANCE);
             else
             {

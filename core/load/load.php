@@ -28,34 +28,47 @@ class Load extends Module {
      *
      * This method is called due to spl_autoload_register() being set to this method.
      *
+     * Module Format:
+     *      MyModule = mymodule/mymodule.php
+     *
+     * Module Sub-Class Format:
+     *      MyModule_Foo = mymodule/mymodule_foo.php
+     *      MyModule_FooBar = mymodule/mymodule_foo_bar.php
+     *
+     * Controller Format:
+     *      MyModule_HelloController = mymodule/controllers/hello.php
+     *      MyModule_HelloWorldController = mymodule/controllers/hello_world.php
+     *      MyModule_Hello_World_Controller = mymodule/controllers/hello_world.php
+     *
+     * Model Format:
+     *      Same as controller format, except replace "Controller" with "Model" in class names.
+     *
      * @param string $class The class name to find and attempt to load.
      */
     public static function auto($class)
     {
-        $class = strtolower($class);
-        $dir = $class;
-        $file = $class;
+        $dir = strtolower($class);
+        $file = $dir;
         
         // Class contains underscore, determine if its a sub class, controller or model
         if(strstr($class, '_'))
         {
             $bits = explode('_', $class, 2); // Only explode first underscore, ignore rest
-            $dir = $bits[0];
+            $dir = strtolower($bits[0]);
 
-            // Module_MyController => module/controllers/my.php
-            // Module_Admin_MyController => /module/controllers/admin_my.php
-            if(String::endsWith($bits[1], 'controller'))
-                $file = sprintf('controllers/%s', str_replace('controller', '', $bits[1]));
+            // Check for controller
+            if(String::endsWith($bits[1], 'Controller'))
+                $file = self::_formatController($bits[1]);
+                //$file = sprintf('controllers/%s', str_replace('controller', '', $bits[1]));
 
-            // Module_MyModel => module/models/my.php
-            elseif(String::endsWith($bits[1], 'model'))
-                $file = sprintf('models/%s', str_replace('model', '', $bits[1]));
+            // Check for model
+            elseif(String::endsWith($bits[1], 'Model'))
+                $file = self::_formatModel($bits[1]);
+                //$file = sprintf('models/%s', str_replace('model', '', $bits[1]));
 
-            // Module_Subclass => module/subclass.php
-            /*
+            // Subclass, always include module name infront of subclass files
             else
-                $file = $bits[1];
-            */
+                $file = $dir . '_' . self::_formatSubClass($bits[1]);
         }
 
         foreach(self::$_modulePaths as $path)
@@ -169,6 +182,22 @@ class Load extends Module {
             if(isset($setup[$option]))
                 call_user_func_array(array($class, 'load'), array($setup[$option], $module));
         }
+    }
+
+    private static function _formatFilename($string) {
+        return strtolower(String::splitCamelCase($string));
+    }
+
+    private static function _formatController($controller) {
+        return 'controllers/' . self::_formatFilename(substr($controller, 0, -10));
+    }
+
+    private static function _formatModel($model) {
+        return 'models/' . self::_formatFilename(substr($model, 0, -5));
+    }
+
+    private static function _formatSubClass($subclass) {
+        return self::_formatFilename($subclass);
     }
 
 }

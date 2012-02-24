@@ -149,10 +149,12 @@ class View extends Module {
      * The views are searched for and loaded in the following order.
      *
      * 0. views/<current_url_path>.php
-     * 1. views/module_controller_method.php
-     * 2. views/module_controller.php
-     * 3. views/module.php
-     * 4. views/index.php
+     * 1. views/module/controller_method.php
+     * 2. views/module/controller.php
+     * 3. views/module_controller_method.php
+     * 4. views/module_controller.php
+     * 5. views/module.php
+     * 6. views/index.php
      *
      * @param string $module The module name
      * @param string $controller The module controller name
@@ -178,6 +180,8 @@ class View extends Module {
         }
 
         $checks = array(
+            sprintf('%s/%s_%s' . EXT, $module, $controller, $method),
+            sprintf('%s/%s' . EXT, $module, $controller),
             sprintf('%s_%s_%s' . EXT, $module, $controller, $method),
             sprintf('%s_%s' . EXT, $module, $controller),
             sprintf('%s' . EXT, $module),

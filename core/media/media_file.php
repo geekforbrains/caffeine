@@ -83,9 +83,16 @@ class Media_File {
      * Returns the relative URL to the file.
      * ---------------------------------------------------------------------------   
      */
-    public function getUrl($id) {
+    public function getUrl($id, $includeBase = true)
+    {
         if($path = $this->getPath($id))
-            return Url::to($path);
+        {
+            if($includeBase)
+                return Url::to($path);
+            else
+                return $path;
+        }
+
         return false;
     }
 
@@ -105,6 +112,13 @@ class Media_File {
         }
 
         return false;
+    }
+
+    /**
+     * Checks if a file was uploaded. Returns boolean.
+     */
+    public function wasUploaded($filename) {
+        return is_uploaded_file($_FILES[$filename]['tmp_name']);
     }
 
 

@@ -1,49 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-        <base href="<?php echo View::getBaseHref(); ?>" />
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Control Panel</title>
-		<link rel="stylesheet" type="text/css" href="css/reset.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="css/text.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="css/grid.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="css/layout.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="css/nav.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="css/custom.css" media="screen" />
-		<!--[if IE 6]><link rel="stylesheet" type="text/css" href="css/ie6.css" media="screen" /><![endif]-->
-		<!--[if IE 7]><link rel="stylesheet" type="text/css" href="css/ie.css" media="screen" /><![endif]-->
-	</head>
-	<body>
-		<div class="container_12">
-			<div class="grid_12">
-				<h1 id="branding">
-                    <?php Html::a(Config::get('admin.title'), 'admin'); ?>
-				</h1>
-			</div>
-			<div class="clear"></div>
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="<?php echo View::getBaseHref(); ?>" />
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-			<div class="grid_12 graybg">
-                <?php echo Menu::build(1, 'admin', array('attributes' => array('class' => 'nav main'))); ?>
+    <title>Control Panel</title>
 
-                <?php if(!User::current()->isAnonymous()): ?>
-                    <ul class="nav main right">
-                        <li><?php Html::a('Logout', 'admin/logout'); ?></li>
-                    </ul>
-                <?php endif; ?>
-			</div>
-			<div class="clear"></div>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/grid.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="plugins/chosen/chosen.css" />
+	<link rel="stylesheet" type="text/css" href="plugins/smoothness/jquery-ui-1.8.17.custom.css" />
 
-            <?php if($messages = Message::get()): ?>
-                <div class="grid_12 messages">
-                    <div class="block">
-                        <?php foreach($messages as $type => $typeMessages): ?>
-                            <?php foreach($typeMessages as $message): ?>
-                                <p class="<?php echo $type; ?>"><?php echo $message; ?></p>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="plugins/tiny_mce/jquery.tinymce.js"></script>
+    <script type="text/javascript" src="plugins/chosen/chosen.jquery.js"></script>
 
-            <!-- spacer -->
-            <div class="grid_12">&nbsp;</div>
+    <script type="text/javascript">
+        var baseHref = '<?php echo View::getBaseHref(); ?>'; // Used by plugins to get relative paths to scripts
+    </script>
+
+    <script type="text/javascript" src="js/admin.js"></script>
+</head>
+<body>
+
+
+<!-- jquey modal -->
+<div id="modal" title="Hello World">
+   <p>This is a modal</p> 
+</div>
+
+
+<!-- start header -->
+<div class="header">
+    <div class="container_12">
+        <h1 class="grid_12">Control Panel</h1>
+
+        <?php if(!User::current()->isAnonymous()): ?>
+            <div class="user_box">
+                Logged in as
+                <?php Html::a(User::current()->email, 'admin/user/edit/' . User::current()->id); ?>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <?php Html::a('Logout', 'admin/logout'); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="clear">&nbsp;</div>
+
+    <div class="tab_bar">
+        <div class="container_12">
+            <div class="grid_12">
+                <?php echo Menu::build(0, 'admin', array('attributes' => array('class' => 'tabs'))); ?>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </div>
+    </div>
+
+    <div class="crumbs">
+        <div class="container_12">
+            <div class="grid_12">
+                <!--
+                <a href="#">Cookie</a><span class="splitter">&rarr;</span>
+                <a href="#">Crumb</a><span class="splitter">&rarr;</span>
+                Trail
+                -->
+            </div>
+            <div class="clear">&nbsp;</div>
+        </div>
+    </div>
+</div>
+<!-- end header -->
+
+
+<!-- start messages -->
+<?php if($messages = Message::get()): ?>
+    <div class="container_12">
+        <div class="grid_12 messages">
+            <?php foreach($messages as $type => $typeMessages): ?>
+                <?php foreach($typeMessages as $message): ?>
+                    <p class="<?php echo $type; ?>"><?php echo $message; ?></p>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
+<!-- end messages -->

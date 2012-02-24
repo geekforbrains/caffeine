@@ -19,13 +19,20 @@ $form->render();
 **/
 class Html_Form {
 
-    public function open($action = null, $method = 'post', $enctype = false)
+    public function open($action = null, $method = 'post', $enctype = false, $attributes = array())
     {
         if(is_null($action))
             $action = Url::toCurrent();
+        else
+            $action = Url::to($action);
+
+        $attr = '';
+        if($attributes)
+            foreach($attributes as $k => $v) 
+                $attr .= sprintf(' %s="%s"', $k, $v);
 
         $enctype = ($enctype) ? ' enctype="multipart/form-data"' : '';
-        return sprintf('<form method="%s" action="%s"%s>', $method, $action, $enctype);
+        return sprintf('<form method="%s" action="%s"%s%s>', $method, $action, $enctype, $attr);
     }
 
     public function openMultipart($action = null, $method = 'post') {
@@ -80,9 +87,11 @@ class Html_Form {
     public function build($fieldsets, $action = null, $method = 'post', $enctype = false)
     {
         $formId = md5(uniqid()); // Used to determine form being posted when validating feilds
+        $shortFormId = substr($formId, 0, 6); // Used to set the id/name on the form tag
         $formData = array();
 
-        $html = Html::form()->open($action, $method, $enctype);
+        $html = Html::form()->open($action, $method, $enctype, 
+            array('id' => $shortFormId, 'name' => $shortFormId));
 
         // Insert form id as hidden field
         $html .= '<input type="hidden" name="form_id" value="' . $formId . '" />';
@@ -93,10 +102,14 @@ class Html_Form {
 
         foreach($fieldsets as $fieldsetData)
         {
+            /*
             $html .= '<fieldset>';
 
             if(isset($fieldsetData['legend']))
                 $html .= '<legend>' . $fieldsetData['legend'] . '</legend>';
+            */
+
+            $html .= '<ul>';
 
             foreach($fieldsetData['fields'] as $fieldName => $fieldData)
             {
@@ -104,6 +117,10 @@ class Html_Form {
                 if(isset($fieldData['validate']))
                     $formData[$fieldName] = $fieldData;
 
+                // Add form id for buttons
+                $fieldData['form_id'] = $shortFormId;
+
+                /*
                 $html .= '<p';
                 if(isset($fieldData['class']))
                     $html .= sprintf(' class="%s"', $fieldData['class']);
@@ -123,9 +140,32 @@ class Html_Form {
 
                 $html .= Validate::error($fieldName);
                 $html .= '</p>';
+                */
+
+                $html .= '<li';
+                if(isset($fieldData['class']))
+                    $html .= sprintf(' class="%s"', $fieldData['class']);
+                else
+                {
+                    $type = $fieldData['type'] == 'password' ? 'text' : $fieldData['type'];
+                    $html .= sprintf(' class="%s"', $type);
+                }
+                $html .= '>';
+
+                if(isset($fieldData['title']))
+                    $html .= '<label>' . $fieldData['title'] . '</label>';
+
+                $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
+
+                if(isset($fieldData['content']))
+                    $html .= $fieldData['content'];
+
+                $html .= Validate::error($fieldName);
+                $html .= '</li>';
             }
 
-            $html .= '</fieldset>';
+            //$html .= '</fieldset>';
+            $html .= '</li>';
         }
 
         $html .= Html::form()->close();
@@ -290,6 +330,7 @@ class Html_Form {
         return sprintf('<input%s type="submit" name="%s" value="%s" />', self::_attributes($data), $name, $data['value']);
     }
 
+    // TODO
     private static function _button($name, $data)
     {
 

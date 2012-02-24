@@ -12,7 +12,8 @@
 
         'multilanguage.enabled' => false,
 
-        'system.timezone' => 'UTC'
+        'system.timezone' => 'UTC',
+        'system.maintenance_mode' => false
     )
 
 );

@@ -111,9 +111,7 @@ class Page_Admin_PageController extends Controller {
                 'body' => array(
                     'title' => 'Body',
                     'type' => 'textarea',
-                    'attributes' => array(
-                        'class' => 'tinymce'
-                    )
+                    'attributes' => array('class' => 'tinymce')
                 ),
                 'submit' => array(
                     'value' => 'Create Page',

@@ -1,0 +1,302 @@
+/************************************************************
+    GLOBAL
+************************************************************/
+
+html, body {
+    font-family: arial, sans-serif;
+    font-size: 12px;
+    color: #2d2d29;
+}
+
+a, a:link, a:visited {
+    color: #4298b5;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.noborder {
+    border: none !important;
+}
+
+/************************************************************
+    HEADER
+************************************************************/
+
+.header {
+    background-color: #21211e;
+    position: relative;
+}
+
+.header h1 {
+    color: #ffffff;
+    font-size: 24px;
+    margin: 20px 10px;
+}
+
+.header .user_box {
+    position: absolute;
+    top: 30px;
+    right: 4%;
+    color: #999999;
+}
+
+.header .user_box a,
+.header .user_box a:link,
+.header .user_box a:visited {
+    color: #ffffff;
+}
+
+.tab_bar {
+    background: none;
+}
+
+.tabs li {
+    float: left;
+    margin-right: 2px;
+    font-size: 14px;
+}
+
+.tabs li a,
+.tabs li a:link,
+.tabs li a:visited  {
+    display: block;
+    padding: 10px 14px;
+    color: #ffffff;
+    background-color: #32322f;
+}
+
+.tabs li a:hover {
+    text-decoration: none;
+    background-color: #3e3e3b;
+}
+
+.tabs li.active a {
+    background-color: #4298b5;
+}
+
+.crumbs {
+    background-color: #4298b5;
+    padding: 8px 0 8px 14px;
+    color: #0e3440;
+}
+
+.crumbs .splitter {
+    padding: 0 8px;
+}
+
+.crumbs a,
+.crumbs a:link,
+.crumbs a:visited {
+    color: #ffffff;
+}
+
+/************************************************************
+    GENERAL CONTENT
+************************************************************/
+
+#modal {
+    display: none;
+}
+
+.content h1,
+.content h2 {
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 8px;
+    border-bottom: 4px solid #000000;
+}
+
+.content h2 {
+    color: #565656;
+    border-bottom: 4px solid #565656;
+}
+
+.spacer {
+    margin-top: 30px;    
+}
+
+.topright {
+    position: absolute;
+    top: -2px;
+    right: 0px;
+}
+
+.buttons,
+.buttons.left {
+    margin-top: 20px;
+    float: left; 
+}
+
+.buttons.right {
+    float: right;
+}
+
+ul.menu a {
+    display: block;
+    padding: 8px 0 8px 6px;
+    border-bottom: 1px solid #cecece;
+}
+
+ul.menu a:hover,
+ul.menu a.active {
+    background-color: #F6F6F6;
+}
+
+ul.menu ul {margin-left: 20px;}
+
+.sortable .sort_item {
+    cursor: move;
+}
+
+/************************************************************
+    TABLES
+************************************************************/
+
+table {
+    width: 100%;
+}
+
+table tr th {
+    background-color: #DBDBDB;
+    font-weight: bold;
+}
+
+table tr td {
+    border-bottom: 1px solid #CECECE;
+}
+
+table tr th,
+table tr td {
+    padding: 6px 8px;
+}
+
+table .left {text-align: left}
+table .right {text-align: right}
+
+table tr.alt td {background-color: #F6F6F6;}
+table tr.hover td {background-color: #E5F1F6;}
+
+/************************************************************
+    FORMS
+************************************************************/
+
+form fieldset {margin: 0; padding: 0; border: none}
+
+form label {
+    display: block;
+    color: #666666;
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+form ul {
+    margin-top: 10px;
+}
+
+form ul li {
+    margin: 0 0 20px 0; 
+    padding: 0
+}
+
+.text input, 
+.select select, 
+.textarea textarea,
+.topright input,
+.topright select {
+    font-size: 12px;
+    font-family: arial, sans-serif;
+    padding: 5px;
+    margin: 0;
+    border: 1px solid #b3b3b3;
+}
+
+.topright input,
+.topright select {
+    width: 150px;
+}
+
+form .text input,
+form .text.small input {width: 40%}
+form .text.mini input {width: 60px}
+form .text.medium input {width: 55%}
+form .text.large input {width: 70%}
+form .text.full input {width: 100%}
+form .text.full {padding-right: 12px}
+
+form .select select, 
+form .select.small select {width: 41.3%}
+form .select.mini select {width: 72px}
+form .select.medium select {width: 56.3%}
+form .select.large select {width: 71.3%}
+form .select.full select {width: 100%}
+
+form .textarea textarea, 
+form .textarea.medium textarea {width: 55%; height: 125px}
+form .textarea.small textarea {width: 40%; height: 100px}
+form .textarea.large textarea {width: 70%; height: 150px}
+form .textarea.full textarea {width: 100%; height: 100px}
+form .textarea.full {padding-right: 12px}
+
+form .checkbox .row,
+form .radio .row {
+    margin-bottom: 5px;
+}
+
+form .buttons {
+    margin-top: 0;
+    padding-top: 10px;
+}
+
+.btn,
+.btn:link,
+.btn:visited {
+    padding: 8px 12px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.btn.mini {
+    padding: 6px 8px;
+    font-weight: normal;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.btn.blue {
+    background-color: #4298b5;
+}
+
+.btn.blue:hover {
+    background-color: #cecece;
+}
+
+.btn.gray {
+    background-color: #999999;
+}
+
+.btn.gray:hover {
+    background-color: #cecece;
+}
+
+/************************************************************
+    FOOTER
+************************************************************/
+
+.footer, 
+.footer a,
+.footer a:link,
+.footer a:visited {
+    color: #999999;
+    font-size: 11px;
+}
+
+.footer .grid_12 {
+    margin-top: 30px;
+    padding: 10px 0 40px 0;
+    border-top: 4px solid #4298b5;
+}

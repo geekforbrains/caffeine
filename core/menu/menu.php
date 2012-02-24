@@ -136,7 +136,11 @@ class Menu {
                 $html .= ' class="' . implode(' ', $classes) . '"';
             $html .= '>';
 
-            $html .= '<a href="' . Url::to($route) . '">';
+            $html .= '<a';
+            if($classes)
+                $html .= ' class="' . implode(' ', $classes) . '"';
+            $html .= ' href="' . Url::to($route) . '">';
+            //$html .= '<a href="' . Url::to($route) . '">';
 
             if(is_callable($routeData['title']))
                 $html .= call_user_func($routeData['title']); // TODO Parameters

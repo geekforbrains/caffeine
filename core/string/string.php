@@ -284,4 +284,22 @@ class String extends Module {
         return self::truncate($string, $length, $append, $striptags);
     }
 
+    /**
+     * Splits a camel case string by $splitter.
+     *
+     * Example:
+     *      FooBar = Foo_Bar
+     *
+     * @param string $string The camel case string to split.
+     * @param string $splitter The string to split the camel case with.
+     * @return Formatted string
+     */
+    public static function splitCamelCase($string, $splitter = '_')
+    {
+        $string = str_replace($splitter, '', $string); // Remove previous splitter in string to avoid duplicates
+        $string[0] = strtolower($string[0]);
+        $func = create_function('$c', sprintf('return "%s" . strtolower($c[1]);', $splitter));
+        return preg_replace_callback('/([A-Z])/', $func, $string);
+    }
+
 }
