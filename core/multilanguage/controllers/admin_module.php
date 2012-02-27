@@ -357,6 +357,10 @@ class Multilanguage_Admin_ModuleController extends Controller {
                 'validate' => array('required'),
                 'default_value' => isset($data[$colName]) ? $data[$colName] : ''
             );
+
+            // Add tinymce to textareas
+            if($colType == 'textarea')
+                $form[0]['fields'][$colName]['attributes'] = array('class' => 'tinymce'); 
         }
 
         // Determine if we are creating or editing
