@@ -42,7 +42,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
      */
     public static function create()
     {
-        if($_POST && Html::form()->validate())
+        if(isset($_POST['create_language']) && Html::form()->validate())
         {
             if(!Multilanguage::language()->where('code', 'LIKE', $_POST['code'])->first())
             {
@@ -78,7 +78,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
                         'maxlength' => 3
                     )
                 ),
-                'submit' => array(
+                'create_language' => array(
                     'type' => 'submit',
                     'value' => 'Create Language'
                 )
@@ -103,7 +103,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
         if(!$lang = Multilanguage::language()->find($id))
             return ERROR_NOTFOUND;
 
-        if($_POST && Html::form()->validate())
+        if(isset($_POST['update_language']) && Html::form()->validate())
         {
             $status = Multilanguage::language()->where('id', '=', $id)->update(array(
                 'name' => $_POST['name'],
@@ -133,7 +133,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
                     ),
                     'default_value' => $lang->code
                 ),
-                'submit' => array(
+                'update_language' => array(
                     'type' => 'submit',
                     'value' => 'Update Language'
                 )

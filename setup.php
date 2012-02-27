@@ -8,9 +8,9 @@
         'db.driver' => 'mysql',
         'db.install' => true,
 
-        'dev.debug_enabled' => false,
+        'dev.debug_enabled' => true,
 
-        'multilanguage.enabled' => false,
+        'multilanguage.enabled' => true,
 
         'system.timezone' => 'UTC',
         'system.maintenance_mode' => false

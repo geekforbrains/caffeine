@@ -53,15 +53,15 @@ class Multilanguage_Admin_StringController extends Controller {
         if(!$string = Multilanguage::stringcontent()->find($id))
             return ERROR_NOTFOUND;
 
-        if($_POST && Html::form()->validate())
+        if(isset($_POST['create_translation']) && Html::form()->validate())
         {
-            $id = Multilanguage::string()->insert(array(
+            $tmpId = Multilanguage::string()->insert(array(
                 'stringcontent_id' => $string->id,
                 'language_id' => $_POST['language_id'],
                 'content' => $_POST['content']
             ));
 
-            if($id)
+            if($tmpId)
             {
                 Message::ok('Translation created successfully.');
                 unset($_POST['language_id']); // Clear selected language
@@ -90,7 +90,7 @@ class Multilanguage_Admin_StringController extends Controller {
                     'validate' => array('required'),
                     'default_value' => $string->content
                 ),
-                'submit' => array(
+                'create_translation' => array(
                     'type' => 'submit',
                     'value' => 'Create Translation'
                 )
@@ -99,7 +99,8 @@ class Multilanguage_Admin_StringController extends Controller {
 
         $table = Html::table();
         $header = $table->addHeader();
-        $header->addCol('Language', array('colspan' => 3));
+        $header->addCol('String');
+        $header->addCol('Language', array('colspan' => 2));
 
         $translations = Multilanguage::string()
             ->select('multilanguage_strings.*, multilanguage_languages.name AS language')
@@ -113,9 +114,15 @@ class Multilanguage_Admin_StringController extends Controller {
             foreach($translations as $t)
             {
                 $row = $table->addRow();
-                $row->addCol(String::truncate($t->content, 100, '...'));
+                $row->addCol(Html::a()->get(
+                    String::truncate($t->content, 100, '...'),
+                    'admin/multilanguage/strings/edit/' . $id . '/' . $t->id
+                ));
                 $row->addCol($t->language);
-                $row->addCol('Delete', array('class' => 'right'));
+                $row->addCol(
+                    Html::a()->get('Delete', 'admin/multilanguage/strings/delete/' . $id . '/' . $t->id),
+                    array('class' => 'right')
+                );
             }
         }
         else
@@ -131,6 +138,92 @@ class Multilanguage_Admin_StringController extends Controller {
                 'content' => $table->render()
             )
         );
+    }
+
+    /**
+     * Display a form for editing a strings translation.
+     */
+    public static function editContent($stringId, $contentId)
+    {
+        if(!$translation = Multilanguage::string()->find($contentId))
+            return ERROR_NOTFOUND;
+
+        if(isset($_POST['update_translation']) && Html::form()->validate())
+        {
+            $status = Multilanguage::string()->where('id', '=', $contentId)->update(array(
+                'content' => $_POST['content']
+            ));
+
+            if($status)
+            {
+                Message::ok('Translation updated successfully.');
+                $translation = Multilanguage::string()->find($contentId);
+            }
+            else
+                Message::error('Error updating translation, please try again.');
+        }
+
+        $langs = Multilanguage::language()->orderBy('name')->all();
+        $sortedLangs = array('' => 'Choose One');
+
+        foreach($langs as $l)
+            $sortedLangs[$l->id] = $l->name;
+
+        $form[] = array(
+            'fields' => array(
+                'language_id' => array(
+                    'title' => 'Language',
+                    'type' => 'select',
+                    'options' => $sortedLangs,
+                    'validate' => array('required'),
+                    'selected' => $translation->language_id
+                ),
+                'content' => array(
+                    'title' => 'Translated String',
+                    'type' => (strlen($translation->content) > 25) ? 'textarea' : 'text',
+                    'validate' => array('required'),
+                    'default_value' => $translation->content
+                ),
+                'update_translation' => array(
+                    'type' => 'submit',
+                    'value' => 'Update Translation'
+                )
+            )
+        );
+
+        return array(
+            'title' => 'Edit Translation',
+            'content' => Html::form()->build($form)
+        );
+    }
+
+    /**
+     * Deletes a strings translation and redirects back to the string manage page.
+     */
+    public static function deleteContent($stringId, $contentId)
+    {
+        if(Multilanguage::string()->delete($contentId))
+            Message::ok('Translation deleted successfully.');
+        else
+            Message::error('Error deleting translation, please try again.');
+
+        Url::redirect('admin/multilanguage/strings/manage/' . $stringId);
+    }
+
+    /**
+     * Deletes an actual stored string and redirects back to manage strings page. This will
+     * also delete any translations associated with it.
+     */
+    public static function delete($stringId)
+    {
+        Multilanguage::string()->where('stringcontent_id', '=', $stringId)->delete();
+
+        if(Multilanguage::stringcontent()->delete($stringId))
+            Message::ok('String deleted successfully.');
+        else
+            Message::error('Error deleting string, please try again.');
+
+        Url::redirect('admin/multilanguage/strings/manage');
     }
 
 }

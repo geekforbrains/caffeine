@@ -2,9 +2,7 @@
 
 class Validate extends Module {
 
-
     private static $_errors = array();
-
 
     /**
      * Gets an error for a given field. If no error is set, null is returned.
@@ -16,7 +14,6 @@ class Validate extends Module {
         return null;
     }
 
-
     /**
      * Used by child validation classes to set an error message for the checked field.
      */
@@ -24,16 +21,21 @@ class Validate extends Module {
         self::$_errors[$field] = $message;
     }
 
-
-    public static function passed()
+    /**
+     * Determines if there where any errors in the previous validation checks. If there was,
+     * it sets an error message. Once can optionally set the error message.
+     *
+     * @param string The error message to display if validation failed (Optional)
+     * @return boolean.
+     */
+    public static function passed($message = 'Missing or invalid fields.')
     {
         if(!self::$_errors)
             return true;
 
-        Message::error('Missing or invalid fields.');
+        Message::error($message);
         return false;
     }
-
 
     /**
      * Calls a corresponding class based on the validation option for the given posted

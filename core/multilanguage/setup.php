@@ -52,6 +52,15 @@
             'callback' => array('admin_module', 'manageContent'),
             'permissions' => array('multilanguage.manage_modules')
         ),
+        'admin/multilanguage/modules/manage/:slug/:slug/:num/edit/:num' => array(
+            'title' => 'Edit Translation',
+            'callback' => array('admin_module', 'editContent'),
+            'permissions' => array('multilanguage.manage_modules')
+        ),
+        'admin/multilanguage/modules/manage/:slug/:slug/:num/delete/:num' => array(
+            'callback' => array('admin_module', 'deleteContent'),
+            'permissions' => array('multilanguage.manage_modules')
+        ),
 
         // Strings
         'admin/multilanguage/strings' => array(
@@ -68,6 +77,19 @@
             'title' => 'Manage Content',
             'callback' => array('admin_string', 'manageContent'),
             'permissions' => array('multilanguage.manage_strings')
+        ),
+        'admin/multilanguage/strings/edit/:id/:id' => array(
+            'title' => 'Edit Content',
+            'callback' => array('admin_string', 'editContent'),
+            'permissions' => array('multilanguage.edit_strings')
+        ),
+        'admin/multilanguage/strings/delete/:id/:id' => array(
+            'callback' => array('admin_string', 'deleteContent'),
+            'permissions' => array('multilanguage.edit_strings')
+        ),
+        'admin/multilanguage/strings/delete/:id' => array(
+            'callback' => array('admin_string', 'delete'),
+            'permissions' => array('multilanguage.edit_strings')
         ),
 
         // Languages
