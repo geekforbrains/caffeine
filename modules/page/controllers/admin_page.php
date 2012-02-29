@@ -59,26 +59,23 @@ class Page_Admin_PageController extends Controller {
      */
     public static function create()
     {
-        if($_POST)
+        if(isset($_POST['create_page']) && Html::form()->validate())
         {
-            if(Html::form()->validate())
-            {
-                $pageId = Page::page()->insert(array(
-                    'page_id' => $_POST['page_id'],
-                    'user_id' => User::current()->id,
-                    'slug' => String::slugify($_POST['title']),
-                    'title' => $_POST['title'],
-                    'body' => $_POST['body']
-                ));
+            $pageId = Page::page()->insert(array(
+                'page_id' => $_POST['page_id'],
+                'user_id' => User::current()->id,
+                'slug' => String::slugify($_POST['title']),
+                'title' => $_POST['title'],
+                'body' => $_POST['body']
+            ));
 
-                if($pageId)
-                {
-                    Message::ok('Page created successfully.');
-                    $_POST = array(); // Clear form
-                }
-                else
-                    Message::error('Error creating page. Please try again.');
+            if($pageId)
+            {
+                Message::ok('Page created successfully.');
+                $_POST = array(); // Clear form
             }
+            else
+                Message::error('Error creating page. Please try again.');
         }
 
         // Either get all pages or only current users pages based on permission
@@ -113,7 +110,7 @@ class Page_Admin_PageController extends Controller {
                     'type' => 'textarea',
                     'attributes' => array('class' => 'tinymce')
                 ),
-                'submit' => array(
+                'create_page' => array(
                     'value' => 'Create Page',
                     'type' => 'submit',
                 )
@@ -138,22 +135,19 @@ class Page_Admin_PageController extends Controller {
      */
     public static function edit($id)
     {
-        if($_POST)
+        if(isset($_POST['update_page']) && Html::form()->validate())
         {
-            if(Html::form()->validate())
-            {
-                $status = Page::page()->where('id', '=', $id)->update(array(
-                    'page_id' => $_POST['page_id'],
-                    'title' => $_POST['title'],
-                    'slug' => $_POST['slug'],
-                    'body' => $_POST['body']
-                ));
+            $status = Page::page()->where('id', '=', $id)->update(array(
+                'page_id' => $_POST['page_id'],
+                'title' => $_POST['title'],
+                'slug' => $_POST['slug'],
+                'body' => $_POST['body']
+            ));
 
-                if($status)
-                    Message::ok('Page updated successfully.');
-                else
-                    Message::error('Error updating page. Please try again.');
-            }
+            if($status)
+                Message::ok('Page updated successfully.');
+            else
+                Message::error('Error updating page. Please try again.');
         }
 
         $page = Page::page()->find($id);
@@ -200,7 +194,7 @@ class Page_Admin_PageController extends Controller {
                     'default_value' => $page->body,
                     'attributes' => array('class' => 'tinymce')
                 ),
-                'submit' => array(
+                'update_page' => array(
                     'value' => 'Update Page',
                     'type' => 'submit',
                 )

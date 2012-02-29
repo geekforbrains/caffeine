@@ -11,6 +11,9 @@ class Multilanguage extends Module {
      * Gets the current language. If non is set, this will return null. If there is a language
      * set, the language object will be returned which contains the language id, code and human readable name
      *
+     * The language code should be a 3 letter language code. See http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+     * for language codes.
+     *
      * @return Language object if one is set, null otherwise
      */
     public static function getCurrentLang() {
