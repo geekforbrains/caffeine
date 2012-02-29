@@ -373,7 +373,7 @@ class Db_Query extends Module {
      * Db()->get('users')->where('age', '>', '23')->count()
      * ---------------------------------------------------------------------------  
      */
-    public function count() {
+    public function count($column = '*') {
         return $this->select(sprintf('COUNT(%s) AS count', $column))->first()->count;
     }
 
