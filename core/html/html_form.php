@@ -331,7 +331,7 @@ class Html_Form {
         //return sprintf('<input%s type="submit" name="%s" value="%s" />', self::_attributes($data), $name, $data['value']);
 
         $html = sprintf('<input type="hidden" name="%s" value="true" />', $name); // So we can track which button was clicked
-        $html .= sprintf('<a class="btn blue" href="javascript:document.%s.submit(); return false;">%s</a>', 
+        $html .= sprintf('<a class="btn blue" href="javascript:document.%s.submit();">%s</a>', 
             $data['form_name'], $data['value']);
 
         return $html;

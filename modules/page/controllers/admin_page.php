@@ -203,7 +203,7 @@ class Page_Admin_PageController extends Controller {
 
         return array(
             array(
-                'title' => 'Edit User',
+                'title' => 'Edit Page',
                 'content' => Html::form()->build($fields)
             )
         );
