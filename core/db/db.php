@@ -34,10 +34,13 @@ class Db extends Module {
             }
             else
             {
-                if(stripos($sql, 'SELECT') === 0 || stripos($sql, 'DESCRIBE') === 0)
+                if(stripos($sql, 'SHOW TABLES') === 0)
+                    return $query->fetchAll(); // Always return show tables as an array
+
+                elseif(stripos($sql, 'SELECT') === 0 || stripos($sql, 'DESCRIBE') === 0)
                     return $query->fetchAll(PDO::FETCH_CLASS, $class);
 
-                elseif(stripos($sql, 'UPDATE') === 0 || stripos($sql, 'DELETE') === 0 || stripos($sql, 'SHOW TABLES') === 0)
+                elseif(stripos($sql, 'UPDATE') === 0 || stripos($sql, 'DELETE') === 0)
                     return $query->rowCount();
 
                 elseif($result && $getInsertId)
@@ -59,14 +62,6 @@ class Db extends Module {
      */
     public static function table($table) {
         return new Db_Query($table);
-    }
-    
-    public static function install()
-    {
-        if(!Config::get('db.install'))
-            return;
-        
-        Db_Installer::init();
     }
 
     /**

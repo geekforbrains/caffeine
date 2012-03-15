@@ -6,16 +6,16 @@
         'db.pass' => null,
         'db.host' => null,
         'db.driver' => 'mysql',
-        'db.engine' => 'MyISAM', // Used in ORM when creating tables
-
-        // Creates model tables and keeps them up to date based on model fields.
-        // Should be disabled on production server
-        'db.install' => false 
+        'db.engine' => 'MyISAM',
+        'db.enable_url_runner' => false
     ),
 
     'routes' => array(
-        'db/install' => array(
-            'callback' => array('db', 'install')
+        'db/:slug' => array(
+            'callback' => array('db', 'runner')
+        ),
+        'db/:slug/:slug' => array( // Used for /db/install/force
+            'callback' => array('db', 'runner')
         )
     )
 

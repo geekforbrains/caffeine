@@ -3,17 +3,32 @@
 class Db_DbController extends Controller {
 
     /**
-     * Used for running database updates and installs through the browser by accessing
-     * the route "db/install". Installing must be enabled in the config in order for this
-     * to run, otherwise 404 is returned.
+     * TODO
      */
-    public static function install()
+    public static function runner($cmd, $force = false)
     {
-        if(Config::get('db.install'))
+        $force = ($force == 'force') ? true : false;
+
+        if(Config::get('db.enable_url_runner'))
         {
-            Db::install();
-            echo '<h1>Installing/Updating Database</h1>';
-            Dev::outputDebug();
+            switch($cmd)
+            {
+                case 'install':
+                    Db_Runner::install($force);
+                    break;
+
+                case 'update':
+                    Db_Runner::update();
+                    break;
+
+                case 'seed':
+                    Db_Runner::seed();
+                    break;
+
+                default:
+                    die('Invalid command, must be install, update or seed.');
+            }
+
             exit();
         }
         else

@@ -47,6 +47,9 @@ class Load extends Module {
      */
     public static function auto($class)
     {
+        if(class_exists('Dev'))
+            Dev::debug('load', 'Autoloading: ' . $class);
+
         $dir = strtolower($class);
         $file = $dir;
         

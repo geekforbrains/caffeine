@@ -21,11 +21,15 @@ class Site extends Module {
     {
         if(is_null(self::$_sitePath))
         {
-            $path = sprintf('sites/%s/', $_SERVER['HTTP_HOST']);
+            if(!IS_CLI) // Sites not supported in CLI mode
+            {
+                $path = sprintf('sites/%s/', $_SERVER['HTTP_HOST']);
 
-            if(file_exists(ROOT . $path))
-                self::$_sitePath = $path;
-            else
+                if(file_exists(ROOT . $path))
+                    self::$_sitePath = $path;
+            }
+
+            if(is_null(self::$_sitePath))
                 self::$_sitePath = 'sites/default/';
         }
 

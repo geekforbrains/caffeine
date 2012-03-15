@@ -3,8 +3,8 @@
 /**
  * Caffeine
  *
- * Caffeine is a simple PHP layer that combines modules through the use of events
- * to form an application.
+ * A simple PHP framework that combines modules through the use of routes and 
+ * events to form an application.
  *
  * @version 1.0
  * @author Gavin Vickery <gavin@geekforbrains.com>
@@ -44,6 +44,11 @@ class Caffeine {
             spl_autoload_register('Load::auto');
 
             Load::loadSetupFiles();
+
+            // If CLI mode, everything thats needed has been loaded
+            if(IS_CLI)
+                return;
+
             date_default_timezone_set(Config::get('system.timezone'));
 
             Event::trigger('caffeine.started');
@@ -73,14 +78,11 @@ class Caffeine {
                         // Call the routes controller and method
                         $response = call_user_func_array(array($controller, $method), $params);
 
-                        // Ignore method return values unless they are int, which are assumed to be error codes
-                        if(!is_int($response))
+                        if(!self::_isErrorResponse($response))
                         {
                             Event::trigger('module.response', array($response));
                             View::load($module, $controller, $method);
                         }
-
-                        // Return value was int, load error view
                         else
                             View::error($response);
                     }
@@ -90,7 +92,7 @@ class Caffeine {
                 else
                 {
                     if($route !== '[index]' || !View::directLoad('index'))
-                        View::error(ERROR_NOTFOUND);
+                        View::error(ERROR_404);
                 }
             }
 
@@ -140,6 +142,23 @@ class Caffeine {
         return $hasPermission;
     }
 
+    /**
+     * Checks if a Controller response is related to an error constant.
+     *
+     * @param mixed $response The response to compare errors to.
+     * @return boolean
+     */
+    private static function _isErrorResponse($response)
+    {
+        return in_array($response, array(
+            ERROR_NOTFOUND, // DEPRECATED
+            ERROR_404,
+            ERROR_500,
+            ERROR_ACCESSDENIED,
+            ERROR_MAINTENANCE
+        ));
+    }
+
 }
 
 /**
@@ -149,24 +168,34 @@ class Caffeine {
 define('ROOT', __DIR__ . '/');
 define('EXT', '.php');
 define('VERSION', '1.0');
+define('IS_CLI', defined('CLI'));
 
 /**
  * These constants are used to load specific error view pages such as 404, 
  * access denied and maintenance.
  */
-define('ERROR_NOTFOUND', 404);
-define('ERROR_ACCESSDENIED', 401);
+define('ERROR_NOTFOUND', 404); // !! DEPRECATED !!
+define('ERROR_404', 404);
+define('ERROR_500', 500);
+define('ERROR_ACCESSDENIED', 'access_denied');
 define('ERROR_MAINTENANCE', 'maintenance');
 
 /**
  * Sometimes PHP complains if a timezone isn't set, so set UTC initially but we'll set it again
  * using the Config module once its loaded.
  *
- * DONT CHANGE LANGUAGE HERE, DO IT IN CONFIG WITH "system.timezone".
+ * DONT CHANGE TIMEZONE HERE, DO IT IN CONFIG WITH "system.timezone".
  */
 date_default_timezone_set('UTC');
 
+/**
+ * Only load sessions if we're running in default (HTTP) mode.
+ */
+if(!IS_CLI)
+{
+    session_start();
+    session_regenerate_id();
+}
+
 // Vroom, vroom!
-session_start();
-session_regenerate_id();
 Caffeine::init();

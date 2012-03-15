@@ -13,8 +13,12 @@ class Dev extends Module {
      * @param string $module The module name setting the message (this is to determine where the message came from)
      * @param string $message The debug message to output
      */
-    public static function debug($module, $message) {
-        self::$_debug[] = array(time(), strtolower(trim($module)), $message);
+    public static function debug($module, $message)
+    {
+        if(IS_CLI)
+            fwrite(STDOUT, "$module - $message\n");
+        else
+            self::$_debug[] = array(time(), strtolower(trim($module)), $message);
     }
 
     /**
