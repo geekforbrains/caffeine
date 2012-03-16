@@ -47,9 +47,6 @@ class Load extends Module {
      */
     public static function auto($class)
     {
-        if(class_exists('Dev'))
-            Dev::debug('load', 'Autoloading: ' . $class);
-
         $dir = strtolower($class);
         $file = $dir;
         
@@ -176,6 +173,9 @@ class Load extends Module {
         return false;
     }
 
+    /**
+     * TODO Description
+     */
     private static function _loadSetupFile($setupFile, $module = null)
     {
         $setup = require($setupFile);
@@ -187,18 +187,30 @@ class Load extends Module {
         }
     }
 
+    /**
+     * TODO Description
+     */
     private static function _formatFilename($string) {
         return strtolower(String::splitCamelCase($string));
     }
 
+    /**
+     * TODO Description
+     */
     private static function _formatController($controller) {
         return 'controllers/' . self::_formatFilename(substr($controller, 0, -10));
     }
 
+    /**
+     * TODO Description
+     */
     private static function _formatModel($model) {
         return 'models/' . self::_formatFilename(substr($model, 0, -5));
     }
 
+    /**
+     * TODO Description
+     */
     private static function _formatSubClass($subclass) {
         return self::_formatFilename($subclass);
     }

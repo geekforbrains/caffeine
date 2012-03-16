@@ -26,9 +26,18 @@ class Db_Runner extends Db_Driver {
      */
     public static function update()
     {
-        // Loop through models
-        // If model has table, check for updates
-        // If model doesn't have table, create it
+        if($models = self::_getModels())
+        {
+            foreach($models as $model)
+            {
+                $instance = new $model();
+                
+                if($instance->exists())
+                    self::_updateTable($instance);
+                else
+                    self::_createTable($instance);
+            }
+        }
     }
 
     /**
@@ -37,6 +46,17 @@ class Db_Runner extends Db_Driver {
     public static function seed()
     {
 
+    }
+
+    /**
+     * Runs the optimize command on all tables in the current database. This is not
+     * reflected by models, but tables that already exist.
+     */
+    public static function optimize()
+    {
+        if($results = Db::query('SHOW TABLES FROM ' . Config::get('db.name')))
+            foreach($results as $table)
+                $result = Db::query('OPTIMIZE TABLE ' . $table[0]);
     }
 
     /**
@@ -110,17 +130,7 @@ class Db_Runner extends Db_Driver {
 
         // Only add id field if enabled and one wasn't added manually
         if($model->_createId && !isset($fields['id']))
-        {
-            $fields = array_merge(array(
-                'id' => array(
-                    'type' => 'auto increment',
-                    'size' => 'normal',
-                    'unsigned' => true,
-                    'not null' => true
-                )),
-                $fields
-            );
-        }
+            $fields = self::_addIdField($fields);
 
         // Add timestamps fields if timestamps are enabled
         if($model->_timestamps)
@@ -164,6 +174,23 @@ class Db_Runner extends Db_Driver {
     }
 
     /**
+     * Adds a standard id field to the given array of fields.
+     *
+     * This method is used in the _createTable and _updateTable methods.
+     */
+    private static function _addIdField($fields)
+    {
+        return array_merge(array(
+            'id' => array(
+                'type' => 'auto increment',
+                'unsigned' => true,
+                'not null' => true
+            )),
+            $fields
+        );
+    }
+
+    /**
      * Creates a reference table for models with the hasAndBelongsToMany option set.
      *
      * HABTM tables are a combination of each models module and model name. The two names
@@ -199,6 +226,63 @@ class Db_Runner extends Db_Driver {
                 Config::get('db.engine')
             ));
         }
+    }
+    
+    /**
+     * Gets the details of a models table and compares it with the current fields and options
+     * of the model. If anything has changed, the table will be altered
+     */
+    private static function _updateTable($model)
+    {
+        $rawFields = $model->describe();
+        //print_r($rawFields);
+
+        $tableFields = array();
+
+        // Sort table fields into nice array format for easier look ups by id and type
+        foreach($rawFields as $f)
+        {
+            $tableFields[$f->Field] = array(
+                'type' => $f->Type,
+                'not null' => ($f->Null == 'NO') ? true : false,
+                'key' => $f->Key,
+                'default' => $f->Default
+            );
+        }
+
+        $modelFields = $model->_fields;
+
+        // If no id set, but ids are enabled, manually add it
+        if($model->_createId && !isset($modelFields['id']))
+            $modelFields = self::_addIdField($modelFields);
+
+        foreach($modelFields as $field => $data)
+        {
+            // Check for new fields, which are fields in the model but not in the table
+            if(!isset($tableFields[$field]))
+                Db::query(rtrim('ALTER TABLE ' . $model->_table . ' ADD ' . self::_buildField($field, $data), ','));
+            
+            // Check if model field is different from current able field, if it is, update
+            else
+            {
+                if(self::_fieldIsDifferent($field, $data, $tableFields[$field]))
+                    Db::query(rtrim('ALTER TABLE ' . $model->_table . ' MODIFY ' . self::_buildField($field, $data), ','));
+
+                // Check for new or removed indexes
+                self::_checkIndexes($model->_table, $field, $data, $tableFields[$field], $model->_indexes);
+            }
+        }
+
+        // Check for fields that were removed from model, but exist in table, delete them
+        // TODO Add warning with option to skip, delete or delete without prompt
+        // TODO Above should work with http mode via force, or cmd line
+        foreach($tableFields as $field => $data)
+        {
+            if(!isset($modelFields[$field]))
+                Db::query('ALTER TABLE ' . $model->_table . ' DROP COLUMN ' . $field);
+        }
+
+        exit();
     }
 
     /**
@@ -284,6 +368,79 @@ class Db_Runner extends Db_Driver {
             foreach($results as $table)
                 Db::query('DROP TABLE ' . $dbName . '.' . $table[0]);
         }
+    }
+
+    /**
+     * Checks if the given field in the model is different from the data in the table.
+     *
+     * This command is used in the _updateTable method to determine if this column needs
+     * to be altered.
+     */
+    private static function _fieldIsDifferent($field, $modelData, $tableData)
+    {
+        $tmp = $tableData['type'];
+
+        if(strstr($tmp, '('))
+        {
+            $tableData['type'] = substr($tmp, 0, strpos($tmp, '('));
+
+            if(preg_match('/\((.*?)\)/', $tmp, $match))
+            {
+                if(is_numeric($match[1]))
+                    $tableData['length'] = $match[1];
+            }
+        }
+
+        if(strstr($tmp, 'unsigned'))
+            $tableData['unsigned'] = true;
+
+        if(isset($modelData['size']))
+            $modelData['type'] = strtolower(self::$_typeMap[$modelData['type']][$modelData['size']]);
+
+        if($modelData['type'] == 'auto increment')
+            $modelData['type'] = 'int';
+
+        /*
+        print_r($tableData);
+        print_r($modelData);
+        echo "----------\n";
+        */
+
+        if($modelData['type'] != $tableData['type'])
+            return true;
+
+        if((isset($modelData['unsigned']) && !isset($tableData['unsigned'])) ||
+            (!isset($modelData['unsigned']) && isset($tableData['unsigned'])))
+                return true;
+
+        if((isset($modelData['not null']) && !isset($tableData['not null'])) ||
+            (isset($modelData['not null']) && isset($tableData['not null']) && $modelData['not null'] != $tableData['not null']))
+                return true;
+
+        if(isset($modelData['length']) && isset($tableData['length']) &&
+            $modelData['length'] != $tableData['length'])
+                return true;
+
+        return false;
+    }
+
+    /**
+     * Checks if a models column has an index associated with it. If one exists in the model,
+     * but not in the table, a new index is added. If it was removed from the model but exists in the table
+     * the index will be removed.
+     */
+    private static function _checkIndexes($table, $field, $modelData, $tableData, $indexes)
+    {
+        $modelData['key'] = false;
+
+        if(in_array($field, $indexes) || $modelData['type'] == 'auto increment')
+            $modelData['key'] = true;
+        
+        if($modelData['key'] && !$tableData['key'])
+            Db::query('CREATE INDEX ' . $field . ' ON ' . $table . ' (' . $field . ')');
+
+        elseif(!$modelData['key'] && $tableData['key'])
+            Db::query('ALTER TABLE ' . $table . ' DROP INDEX ' . $field);
     }
 
 }
