@@ -22,7 +22,10 @@ class Db extends Module {
             $debugSql = $sql;
             foreach($bindings as $value)
                 $debugSql = preg_replace('/\?/', "'".$value."'", $debugSql, 1);
-            Dev::debug('db', $debugSql);
+
+            // Show and Describe queries are too noisy, ignore them
+            if(!strstr($debugSql, 'SHOW') && !strstr($debugSql, 'DESCRIBE'))
+                Dev::debug('db', $debugSql);
 
             $query = self::$_conn->prepare($sql);
             $result = $query->execute($bindings);
@@ -34,7 +37,7 @@ class Db extends Module {
             }
             else
             {
-                if(stripos($sql, 'SHOW TABLES') === 0)
+                if(stripos($sql, 'SHOW') === 0)
                     return $query->fetchAll(); // Always return show tables as an array
 
                 elseif(stripos($sql, 'SELECT') === 0 || stripos($sql, 'DESCRIBE') === 0)

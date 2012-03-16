@@ -13,11 +13,12 @@ class Db_Runner extends Db_Driver {
      */
     public static function install($force = false)
     {
-        self::_clearDatabase($force);
-
-        if($models = self::_getModels())
-            foreach($models as $model)
-                self::_createTable(new $model());
+        if(self::_clearDatabase($force))
+        {
+            if($models = self::_getModels())
+                foreach($models as $model)
+                    self::_createTable(new $model());
+        }
     }
 
     /**
@@ -151,7 +152,8 @@ class Db_Runner extends Db_Driver {
             ));
         }
 
-        $sql = 'CREATE TABLE ' . $model->tableName . ' (';
+        //$sql = 'CREATE TABLE IF NOT EXISTS ' . $model->tableName . ' (';
+        $sql = 'CREATE TABLE IF NOT EXISTS ' . $model->_table . ' (';
         
         foreach($fields as $field => $fieldData)
             $sql .= self::_buildField($field, $fieldData);
@@ -159,8 +161,9 @@ class Db_Runner extends Db_Driver {
         foreach($model->_indexes as $k)
             $sql .= 'INDEX(' . $k . '),';
 
-        if($model->_fulltext)
-            $sql .= sprintf('FULLTEXT(%s),', implode(',', $model->_fulltext));
+        foreach($model->_fulltext as $ft)
+            $sql .= sprintf('FULLTEXT(' . $ft . '),');
+            //$sql .= sprintf('FULLTEXT(%s),', implode(',', $model->_fulltext));
 
         if(isset($fields['id']))
             $sql .= 'PRIMARY KEY(id)';
@@ -205,7 +208,8 @@ class Db_Runner extends Db_Driver {
     {
         foreach($model->_hasAndBelongsToMany as $refModel)
         {
-            $tbl1Bits = explode('_', $model->tableName);
+            //$tbl1Bits = explode('_', $model->tableName);
+            $tbl1Bits = explode('_', $model->_table);
             $tbl1Key = $tbl1Bits[0] . '_' . String::singular($tbl1Bits[1]);
             $tbl1 = implode('', $tbl1Bits);
 
@@ -231,17 +235,32 @@ class Db_Runner extends Db_Driver {
     /**
      * Gets the details of a models table and compares it with the current fields and options
      * of the model. If anything has changed, the table will be altered
+     *
+     * TODO Create belongsTo fields and indexes that are new/re-added
      */
     private static function _updateTable($model)
     {
         $rawFields = $model->describe();
-        //print_r($rawFields);
-
         $tableFields = array();
+        $belongsToFields = array();
+
+        foreach($model->_belongsTo as $ref)
+        {
+            $refBits = explode('.', $ref);
+            $belongsToFields[] = $refBits[1] . '_id';       
+        }
 
         // Sort table fields into nice array format for easier look ups by id and type
         foreach($rawFields as $f)
         {
+            // Ignore timestamps fields, we'll handle those seperately
+            if($f->Field == 'created_at' || $f->Field == 'updated_at')
+                continue;
+
+            // Ignore any belongsTo ids (foreign keys)
+            if($model->_belongsTo && in_array($f->Field, $belongsToFields))
+                continue;
+
             $tableFields[$f->Field] = array(
                 'type' => $f->Type,
                 'not null' => ($f->Null == 'NO') ? true : false,
@@ -263,15 +282,12 @@ class Db_Runner extends Db_Driver {
                 Db::query(rtrim('ALTER TABLE ' . $model->_table . ' ADD ' . self::_buildField($field, $data), ','));
             
             // Check if model field is different from current able field, if it is, update
-            else
-            {
-                if(self::_fieldIsDifferent($field, $data, $tableFields[$field]))
-                    Db::query(rtrim('ALTER TABLE ' . $model->_table . ' MODIFY ' . self::_buildField($field, $data), ','));
-
-                // Check for new or removed indexes
-                self::_checkIndexes($model->_table, $field, $data, $tableFields[$field], $model->_indexes);
-            }
+            elseif(self::_fieldIsDifferent($field, $data, $tableFields[$field]))
+                Db::query(rtrim('ALTER TABLE ' . $model->_table . ' MODIFY ' . self::_buildField($field, $data), ','));
         }
+
+        // Check for new or removed indexes
+        self::_checkIndexes($model, $belongsToFields);
 
         // Check for fields that were removed from model, but exist in table, delete them
         // TODO Add warning with option to skip, delete or delete without prompt
@@ -281,8 +297,6 @@ class Db_Runner extends Db_Driver {
             if(!isset($modelFields[$field]))
                 Db::query('ALTER TABLE ' . $model->_table . ' DROP COLUMN ' . $field);
         }
-
-        exit();
     }
 
     /**
@@ -356,7 +370,7 @@ class Db_Runner extends Db_Driver {
                     if($answer == 'yes')
                         break;
                     elseif($answer == 'no')
-                        return;
+                        return false;
                     else
                         fwrite(STDOUT, "Please enter yes or no\n");
                 }
@@ -368,6 +382,8 @@ class Db_Runner extends Db_Driver {
             foreach($results as $table)
                 Db::query('DROP TABLE ' . $dbName . '.' . $table[0]);
         }
+
+        return true;
     }
 
     /**
@@ -429,18 +445,53 @@ class Db_Runner extends Db_Driver {
      * but not in the table, a new index is added. If it was removed from the model but exists in the table
      * the index will be removed.
      */
-    private static function _checkIndexes($table, $field, $modelData, $tableData, $indexes)
+    private static function _checkIndexes($model, $belongsToFields)
     {
-        $modelData['key'] = false;
+        if($result = Db::query('SHOW INDEX FROM ' . $model->_table))
+        { 
+            $tableIndexes = array();
 
-        if(in_array($field, $indexes) || $modelData['type'] == 'auto increment')
-            $modelData['key'] = true;
-        
-        if($modelData['key'] && !$tableData['key'])
-            Db::query('CREATE INDEX ' . $field . ' ON ' . $table . ' (' . $field . ')');
+            foreach($result as $row)
+            {
+                if($row['Key_name'] == 'PRIMARY')
+                    continue;
+                
+                $tableIndexes[$row['Key_name']] = $row['Index_type'];
+            }
 
-        elseif(!$modelData['key'] && $tableData['key'])
-            Db::query('ALTER TABLE ' . $table . ' DROP INDEX ' . $field);
+            // Check for indexes in model, that aren't in table
+            foreach($model->_indexes as $field)
+            {
+                if(!isset($tableIndexes[$field]))
+                    Db::query('CREATE INDEX ' . $field . ' ON ' . $model->_table . ' (' . $field . ')');
+            }
+
+            // Check for fulltext indexes in model, that aren't in table
+            foreach($model->_fulltext as $field)
+            {
+                if(!isset($tableIndexes[$field]))
+                    Db::query('ALTER TABLE ' . $model->_table . ' ADD FULLTEXT(' . $field . ')');
+            }
+
+            // Check for indexes in table, that arent in model, and drop them
+            foreach($tableIndexes as $field => $indexType)
+            {
+                // Ignore indexes created from belongsTo
+                if(in_array($field, $belongsToFields))
+                    continue;
+
+                if(($indexType == 'BTREE' && !in_array($field, $model->_indexes)) ||
+                    ($indexType == 'FULLTEXT' && !in_array($field, $model->_fulltext)))
+                        Db::query('ALTER TABLE ' . $model->_table . ' DROP INDEX ' . $field);
+            }
+
+            // Check for belongsTo fields that aren't in the table, and create them
+            foreach($belongsToFields as $field)
+            {
+                if(!isset($tableIndexes[$field]))
+                    Db::query('CREATE INDEX ' . $field . ' ON ' . $model->_table . ' (' . $field . ')');
+            }
+        }
     }
 
 }

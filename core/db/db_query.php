@@ -2,8 +2,8 @@
 
 class Db_Query extends Module {
 
-    public $tableName       = null;
-    public $fieldNames      = array();
+    //public $tableName       = null;
+    //public $fieldNames      = array();
 
     private $_table         = null;
     private $_class         = null;
@@ -28,7 +28,8 @@ class Db_Query extends Module {
     protected $_belongsTo   = array();
     protected $_hasAndBelongsToMany = array();
 
-    private static $_describes = array();
+    private static $_describes  = array();
+    private static $_exists     = array();
 
     /**
      * Allow read access to private properties.
@@ -43,18 +44,19 @@ class Db_Query extends Module {
     public function __construct($table = null)
     {
         if(!is_null($table))
-            $this->tableName = $table;
+            $this->_table = $table;
 
-        if(is_null($this->tableName))
-            $this->tableName = $this->_getTableName();
+        if(is_null($this->_table))
+            $this->_table = $this->_getTableName();
 
-        $this->_table = $this->tableName;
+        //$this->_table = $this->tableName;
         $this->_from = sprintf(' FROM %s', $this->_table);
 
         // Produce query results that are of the same class as this model
         $this->_class = get_called_class(); 
 
         // Setup blank properties for this class based on table description
+        /*
         $fields = $this->describe();
         if($fields && is_array($fields))
         {
@@ -65,6 +67,7 @@ class Db_Query extends Module {
                     $this->{$field->Field} = null;
             }
         }
+        */
     }
 
     /**
@@ -194,12 +197,18 @@ class Db_Query extends Module {
     {
         if(!isset(self::$_describes[$this->_table]))
         {
-            $data = Db::query('DESCRIBE ' . $this->_table);
-            // Only store a describe if it returns data, otherwise the table probably wasn't created yet
-            if($data)
-                self::$_describes[$this->_table] = $data;
+            if($this->exists())
+            {
+                $data = Db::query('DESCRIBE ' . $this->_table);
+
+                // Only store a describe if it returns data, otherwise the table probably wasn't created yet
+                if($data)
+                    self::$_describes[$this->_table] = $data;
+                else
+                    return $data;
+            }
             else
-                return $data;
+                return null;
         }
 
         return self::$_describes[$this->_table];
@@ -207,12 +216,17 @@ class Db_Query extends Module {
 
 
     /**
-     * ---------------------------------------------------------------------------  
-     * TODO
-     * ---------------------------------------------------------------------------  
+     * Determines if a table exists. After this first call to this, the response is stored
+     * to avoid multiple, unecessary calls to the database.
+     *
+     * @param boolean $force Forces the query to be run, regardless if its been run before.
      */
-    public function exists() {
-        return Db::query('SHOW TABLES LIKE \'' . $this->_table . '\'');
+    public function exists($force = false)
+    {
+        if(!isset(self::$_exists[$this->_table]) || $force)
+            self::$_exists[$this->_table] = Db::query('SHOW TABLES LIKE \'' . $this->_table . '\'');
+
+        return self::$_exists[$this->_table];
     }
 
 
@@ -421,11 +435,11 @@ class Db_Query extends Module {
         return $this->join($table, $column1, $operator, $column2, 'LEFT');
     }
 
-
     /**
-     * ---------------------------------------------------------------------------  
-     * TODO
-     * ---------------------------------------------------------------------------  
+     * Determines the tables name based on the class name. The table name will be
+     * the module name, an underscore and the model name in plural form.
+     *
+     * Example: Blog_PostModel = blog_posts
      */
     private function _getTableName()
     {
@@ -438,6 +452,5 @@ class Db_Query extends Module {
 
         return String::plural($model);
     }
-
 
 }
