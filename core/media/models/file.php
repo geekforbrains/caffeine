@@ -2,9 +2,7 @@
 
 class Media_FileModel extends Model {
 
-
     public $_timestamps = true;
-
 
     public $_fields = array(
         'name' => array(
@@ -33,8 +31,6 @@ class Media_FileModel extends Model {
         )
     );
 
-
     public $_indexes = array('name', 'file_type');
-
 
 }

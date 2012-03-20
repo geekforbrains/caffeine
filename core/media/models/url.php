@@ -2,9 +2,7 @@
 
 class Media_UrlModel extends Model {
 
-
     public $_timestamps = true;
-
 
     public $_fields = array(
         'url' => array(
@@ -19,5 +17,4 @@ class Media_UrlModel extends Model {
         )
     );
     
-
 }

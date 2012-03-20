@@ -13,8 +13,8 @@ class User_User_AdminController extends Controller {
             // TODO Check if filtering role
             $users = User::user()
                 ->select('user_users.*')
-                ->leftJoin('roles_users', 'roles_users.user_id', '=', 'user_users.id')
-                ->where('roles_users.role_id', '=', $_POST['role_id'])
+                ->leftJoin('habtm_roleusers_userusers t', 't.user_id', '=', 'user_users.id')
+                ->where('t.role_id', '=', $_POST['role_id'])
                 ->all();
         }
         else

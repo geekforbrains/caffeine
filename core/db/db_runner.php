@@ -10,6 +10,8 @@ class Db_Runner extends Db_Driver {
     /**
      * Clears the database of any tables and re-creates new tables for every 
      * model found in the system.
+     *
+     * @param boolean $force Used to force re-creating the database from the URL runner.
      */
     public static function install($force = false)
     {
@@ -22,7 +24,7 @@ class Db_Runner extends Db_Driver {
     }
 
     /**
-     * Updates any existing tables who's models have changed, and creates
+     * Updates any existing tables who's models have changed and creates
      * any new tables as needed.
      */
     public static function update()
@@ -44,9 +46,8 @@ class Db_Runner extends Db_Driver {
     /**
      * TODO Will install test seed data based on the seed.php file.
      */
-    public static function seed()
-    {
-
+    public static function seed() {
+        Dev::debug('db', 'The seed command has not been implemented yet.');
     }
 
     /**
@@ -104,7 +105,9 @@ class Db_Runner extends Db_Driver {
     }
 
     /**
-     * TODO
+     * Creates a table based off a models name and fields.
+     *
+     * @param object $model An instance of the model to create a table for
      */
     private static function _createTable($model)
     {
@@ -152,7 +155,6 @@ class Db_Runner extends Db_Driver {
             ));
         }
 
-        //$sql = 'CREATE TABLE IF NOT EXISTS ' . $model->tableName . ' (';
         $sql = 'CREATE TABLE IF NOT EXISTS ' . $model->_table . ' (';
         
         foreach($fields as $field => $fieldData)
@@ -163,7 +165,6 @@ class Db_Runner extends Db_Driver {
 
         foreach($model->_fulltext as $ft)
             $sql .= sprintf('FULLTEXT(' . $ft . '),');
-            //$sql .= sprintf('FULLTEXT(%s),', implode(',', $model->_fulltext));
 
         if(isset($fields['id']))
             $sql .= 'PRIMARY KEY(id)';
@@ -208,7 +209,6 @@ class Db_Runner extends Db_Driver {
     {
         foreach($model->_hasAndBelongsToMany as $refModel)
         {
-            //$tbl1Bits = explode('_', $model->tableName);
             $tbl1Bits = explode('_', $model->_table);
             $tbl1Key = $tbl1Bits[0] . '_' . String::singular($tbl1Bits[1]);
             $tbl1 = implode('', $tbl1Bits);
@@ -235,8 +235,6 @@ class Db_Runner extends Db_Driver {
     /**
      * Gets the details of a models table and compares it with the current fields and options
      * of the model. If anything has changed, the table will be altered
-     *
-     * TODO Create belongsTo fields and indexes that are new/re-added
      */
     private static function _updateTable($model)
     {
@@ -290,8 +288,6 @@ class Db_Runner extends Db_Driver {
         self::_checkIndexes($model, $belongsToFields);
 
         // Check for fields that were removed from model, but exist in table, delete them
-        // TODO Add warning with option to skip, delete or delete without prompt
-        // TODO Above should work with http mode via force, or cmd line
         foreach($tableFields as $field => $data)
         {
             if(!isset($modelFields[$field]))
@@ -416,12 +412,6 @@ class Db_Runner extends Db_Driver {
         if($modelData['type'] == 'auto increment')
             $modelData['type'] = 'int';
 
-        /*
-        print_r($tableData);
-        print_r($modelData);
-        echo "----------\n";
-        */
-
         if($modelData['type'] != $tableData['type'])
             return true;
 
@@ -444,6 +434,9 @@ class Db_Runner extends Db_Driver {
      * Checks if a models column has an index associated with it. If one exists in the model,
      * but not in the table, a new index is added. If it was removed from the model but exists in the table
      * the index will be removed.
+     *
+     * This will only effect indexes created with _indexes and _fulltext. Primary ID indexes will
+     * not be modified.
      */
     private static function _checkIndexes($model, $belongsToFields)
     {

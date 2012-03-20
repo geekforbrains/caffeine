@@ -2,9 +2,7 @@
 
 class User_DataModel extends Model {
 
-
     public $_belongsTo = array('user.user');
-
 
     public $_fields = array(
         'name' => array(
@@ -19,8 +17,6 @@ class User_DataModel extends Model {
         )
     );
 
-
     public $_indexes = array('name', 'value');
-
 
 }
