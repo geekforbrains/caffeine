@@ -21,7 +21,9 @@ class Multilanguage_Admin_LanguageController extends Controller {
                 $row = $table->addRow();
                 $row->addCol(Html::a()->get($lang->name, 'admin/multilanguage/languages/edit/' . $lang->id));
                 $row->addCol(
-                    Html::a()->get('Delete', 'admin/multilanguage/languages/delete/' . $lang->id),
+                    Html::a('Delete', 'admin/multilanguage/languages/delete/' . $lang->id, array(
+                        'onclick' => "return confirm('Delete this language?')"
+                    )),
                     array('class' => 'right')
                 );
             }
@@ -66,16 +68,16 @@ class Multilanguage_Admin_LanguageController extends Controller {
         $form[] = array(
             'fields' => array(
                 'name' => array(
-                    'title' => 'Language Name <em>(Ex: Spanish)</em>',
+                    'title' => 'Language Name <em>(Ex: Russian)</em>',
                     'type' => 'text',
                     'validate' => array('required')
                 ),
                 'code' => array(
-                    'title' => '3 Letter Language Code <em>(Ex: spa)<em>',
+                    'title' => '2 Letter Language Code <em>(Ex: ru)<em>',
                     'type' => 'text',
-                    'validate' => array('required', 'min:3'),
+                    'validate' => array('required', 'min:2'),
                     'attributes' => array(
-                        'maxlength' => 3
+                        'maxlength' => 2
                     )
                 ),
                 'create_language' => array(
@@ -101,7 +103,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
     public static function edit($id)
     {
         if(!$lang = Multilanguage::language()->find($id))
-            return ERROR_NOTFOUND;
+            return ERROR_404;
 
         if(isset($_POST['update_language']) && Html::form()->validate())
         {
@@ -119,17 +121,17 @@ class Multilanguage_Admin_LanguageController extends Controller {
         $form[] = array(
             'fields' => array(
                 'name' => array(
-                    'title' => 'Language Name <em>(Ex: Spanish)</em>',
+                    'title' => 'Language Name <em>(Ex: Russian)</em>',
                     'type' => 'text',
                     'validate' => array('required'),
                     'default_value' => $lang->name
                 ),
                 'code' => array(
-                    'title' => '3 Letter Language Code <em>(Ex: spa)<em>',
+                    'title' => '2 Letter Language Code <em>(Ex: ru)<em>',
                     'type' => 'text',
-                    'validate' => array('required', 'min:3'),
+                    'validate' => array('required', 'min:2'),
                     'attributes' => array(
-                        'maxlength' => 3
+                        'maxlength' => 2
                     ),
                     'default_value' => $lang->code
                 ),

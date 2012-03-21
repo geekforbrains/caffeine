@@ -35,10 +35,11 @@ class Page_Admin_PageController extends Controller {
                 $row->addCol(Html::a()->get($page->indent . $page->title, 'admin/page/edit/' . $page->id));
                 $row->addCol($user->email);
                 $row->addCol(
-                    Html::a()->get('Delete', 'admin/page/delete/' . $page->id),
+                    Html::a('Delete', 'admin/page/delete/' . $page->id, array(
+                        'onclick' => "return confirm('Delete this page? All child pages will be deleted as well.')"
+                    )),
                     array(
-                        'class' => 'right',
-                        'onclick' => 'return confirm(\'All child pages will be deleted. Do you want to continue?\');'
+                        'class' => 'right'
                     )
                 );
             }

@@ -2,7 +2,6 @@
 
 class Validate_Numeric {
 
-
     public static function check($fieldName, $fieldValue)
     {
         if(!is_numeric($fieldValue))
@@ -13,6 +12,5 @@ class Validate_Numeric {
 
         return true;
     }
-
 
 }

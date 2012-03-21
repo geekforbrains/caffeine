@@ -15,11 +15,12 @@ class Page_PageController extends Controller {
 
         if($page)
         {
+            View::setTitle($page->title);
             View::data('page', $page);
             return;
         }
 
-        return ERROR_NOTFOUND;
+        return ERROR_404;
     }
 
 }

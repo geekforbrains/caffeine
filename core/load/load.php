@@ -83,6 +83,32 @@ class Load extends Module {
     }
 
     /**
+     * Returns the full path to $file in the $module "assets" directory.
+     *
+     * @param string $module The module we need an asset file from.
+     * @param string $file The filename to get from the modules assets/ dir.
+     * @param boolean $load If false, the file wont automatically be loaded, only the file path returned.
+     *
+     * @return String if file exists, false otherwise.
+     */
+    public static function asset($module, $file, $load = true)
+    {
+        if($modulePath = self::getModulePath($module))
+        {
+            $filePath = $modulePath . 'assets/' . $file; 
+
+            if(file_exists($filePath))
+            {
+                if($load)
+                    require_once($filePath);
+                return $filePath;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Finds and loads all module setup files.
      */
     public static function loadSetupFiles()
@@ -93,6 +119,7 @@ class Load extends Module {
         if(file_exists($rootSetup = ROOT . 'setup' . EXT))
             self::_loadSetupFile($rootSetup);
 
+        /*
         $paths = self::getModulePaths();
         foreach($paths as $path)
         {
@@ -106,6 +133,18 @@ class Load extends Module {
 
                 if(file_exists($setupFile))
                     self::_loadSetupFile($setupFile, $module);
+            }
+        }
+        */
+
+        if($modules = self::getModules())
+        {
+            foreach($modules as $moduleName => $modulePath)
+            {
+                $setupFile = $modulePath . 'setup' . EXT;
+
+                if(file_exists($setupFile))
+                    self::_loadSetupFile($setupFile, $moduleName);
             }
         }
     }
@@ -134,6 +173,9 @@ class Load extends Module {
 
     /**
      * Gets the name of all modules available. Module names are based on their directory name.
+     *
+     * This method takes into account the system.enabled_custom_modules and system.disabled_core_modules
+     * configs. See the main setup.php file for more info.
      */
     public static function getModules()
     {
@@ -146,10 +188,20 @@ class Load extends Module {
                 if(!file_exists($path))
                     continue;
 
+                $inModules = strstr($path, ROOT . 'modules/');
+                $inCore = strstr($path, ROOT . 'core/');
+
                 $items = scandir($path);
+
                 foreach($items as $i)
                 {
                     if($i{0} == '.')
+                        continue;
+
+                    if($inModules && !in_array($i, Config::get('system.enabled_custom_modules')))
+                        continue;
+
+                    elseif($inCore && in_array($i, Config::get('system.disabled_core_modules')))
                         continue;
 
                     if(!in_array($i, self::$_modules))

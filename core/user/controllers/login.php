@@ -1,6 +1,6 @@
 <?php 
 
-class User_User_LoginController extends Controller {
+class User_LoginController extends Controller {
 
     public static function login()
     {

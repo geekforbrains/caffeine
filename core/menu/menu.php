@@ -2,19 +2,13 @@
 
 class Menu {
 
-
     /**
-     * --------------------------------------------------------------------------- 
      * Stores sorted routes to be used for building Menu.
-     * --------------------------------------------------------------------------- 
      */
     private static $_sorted = array();
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     public static function build($depth = -1, $offset = null, $data = array())
     {
@@ -32,11 +26,8 @@ class Menu {
         return null;
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     private static function _offset($sorted, $offset)
     {
@@ -61,11 +52,8 @@ class Menu {
         return $sorted;
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     private static function _depth($sorted, $depth)
     {
@@ -84,11 +72,8 @@ class Menu {
         return $tmp;
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     private static function _getHtml($sorted, $data)
     {
@@ -162,11 +147,8 @@ class Menu {
         return $html;
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     private static function _getSorted()
     {
@@ -179,16 +161,6 @@ class Menu {
                 if(isset($routeData['permissions']) && $routeData['permissions'])
                     if(!User::current()->hasPermission($routeData['permissions']))
                         continue;
-
-                // Ignore paths without a title
-                /*
-                if(!isset($routeData['title']) || is_null($routeData['title']))
-                    continue;
-
-                // Ignore paths that are set as hidden
-                if(isset($routeData['hidden']) && $routeData['hidden'] === true)
-                    continue;
-                */
 
                 $ref =& self::$_sorted;
                 $routeBits = explode('/', $route);
@@ -211,13 +183,6 @@ class Menu {
 
                         if($path == $route)
                         {
-                            /*
-                            if(isset($routeData['title']))
-                                $ref[$path]['title'] = $routeData['title'];
-                            else
-                                die(sprintf('The route "%s" doesnt have a title.', $route));
-                            */
-
                             if(isset($routeData['title']))
                                 $ref[$path]['title'] = $routeData['title'];
 
@@ -237,6 +202,5 @@ class Menu {
 
         return self::$_sorted;
     }
-
 
 }

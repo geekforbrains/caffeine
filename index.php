@@ -6,7 +6,8 @@
  * A simple PHP framework that combines modules through the use of routes and 
  * events to form an application.
  *
- * @version 1.0
+ * @version 1.0.0
+ * @date 2012-03-21
  * @author Gavin Vickery <gavin@geekforbrains.com>
  * @license http://www.opensource.org/licenses/mit-license.php
  */
@@ -76,15 +77,25 @@ class Caffeine {
                         $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
 
                         // Call the routes controller and method
-                        $response = call_user_func_array(array($controller, $method), $params);
-
-                        if(!self::_isErrorResponse($response))
+                        if(method_exists($controller, $method))
                         {
-                            Event::trigger('module.response', array($response));
-                            View::load($module, $controller, $method);
+                            $response = call_user_func_array(array($controller, $method), $params);
+
+                            if(!self::_isErrorResponse($response))
+                            {
+                                Event::trigger('module.response', array($response));
+                                View::load($module, $controller, $method);
+                            }
+                            else
+                                View::error($response);
                         }
                         else
-                            View::error($response);
+                        {
+                            Log::error($module, sprintf('The method %s::%s() called by route %s doesn\'t exist.',
+                                $controller, $method, $route));
+                            
+                            View::error(ERROR_500);
+                        }
                     }
                     else
                         View::error(ERROR_ACCESSDENIED);
@@ -115,7 +126,7 @@ class Caffeine {
         if(empty($data['permissions']) || User::current()->hasPermission($data['permissions']))
         {
             $hasPermission = true;
-            Dev::debug('user', 'User has permission');
+            Log::debug('user', 'User has permission to access this route.');
 
             // Only do user permission callbacks if not admin, otherwise its pointless
             if(User::current()->is_admin <= 0)
@@ -129,7 +140,7 @@ class Caffeine {
 
                     if(User::getPermissionStatus() === false)
                     {
-                        Dev::debug('user', 'Custom permission callback failed, setting access denied');
+                        Log::debug('user', 'Custom permission callback failed, setting access denied');
                         $hasPermission = false;
                         break;
                     }
@@ -137,7 +148,7 @@ class Caffeine {
             }
         }
         else
-            Dev::debug('user', 'User does NOT have permission');
+            Log::debug('user', 'User does NOT have permission to access this route.');
 
         return $hasPermission;
     }
@@ -167,7 +178,7 @@ class Caffeine {
  */
 define('ROOT', __DIR__ . '/');
 define('EXT', '.php');
-define('VERSION', '1.0');
+define('VERSION', '1.0.0');
 define('IS_CLI', defined('CLI'));
 
 /**

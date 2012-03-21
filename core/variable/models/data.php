@@ -2,7 +2,6 @@
 
 class Variable_DataModel extends Model {
 
-
     public $_fields = array(
         'data_key' => array(
             'type' => 'varchar',
@@ -16,8 +15,6 @@ class Variable_DataModel extends Model {
         )
     );
 
-
     public $_indexes = array('data_key');
-
 
 }

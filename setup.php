@@ -11,10 +11,11 @@
         'db.host' => 'localhost',
 
         /**
-         * Custom modules located in modules/ or sites/<site>/modules/ must
-         * be enabled by defining them in the array below.
+         * Custom modules located in <root>/modules/ must be enabled by defining 
+         * them in the array below. Modules within sites/<site>/modules are loaded 
+         * automatically.
          */
-        'system.enabled_custom_modules' => array(),
+        'system.enabled_custom_modules' => array('page'),
 
         /**
          * All core modules are loaded by default. If for some reason you need to
@@ -24,11 +25,14 @@
 
         /**
          * Sets the timezone for the entire application. Default is UTC.
+         *
+         * A list of supported timezones can be found here:
+         * http://ca.php.net/manual/en/timezones.php
          */
         'system.timezone' => 'UTC',
 
         /**
-         * When true, Caffeine will return the errors/maintenance.php view and halt
+         * When true, Caffeine will display the errors/maintenance.php view and halt
          * further execution.
          */
         'system.maintenance_mode' => false

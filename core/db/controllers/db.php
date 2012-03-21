@@ -43,7 +43,7 @@ class Db_DbController extends Controller {
             exit();
         }
         else
-            return ERROR_NOTFOUND;
+            return ERROR_404;
     }
 
 }

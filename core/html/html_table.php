@@ -1,23 +1,5 @@
 <?php
 
-/**
-
-<table class="table" cellpadding="0">
-    <tr class="headers">
-        <th colspan="2">Header</th>
-    </tr>
-
-    <tr class="even">
-        <td>Some Content</td>
-        <td class="right">End Content</td>
-    </tr>
-
-    <tr class="odd">
-        <td colspan="2">Custom Col</td>
-    </tr>
-</table>
-
-**/
 class Html_Table {
 
     /**
@@ -49,13 +31,13 @@ class Html_Table {
     /**
      * Starts the table tag and adds any table level attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($args = array())
     {
         $this->_pointer =& $this->_html;
         $this->_pointer = '<table';
 
-        if($attributes)
-            $this->_addAttr($attributes);
+        if(isset($args[0]))
+            $this->_addAttr($args[0]);
 
         $this->_pointer .= '>';
     }
@@ -132,82 +114,6 @@ class Html_Table {
 
         $this->_pointer .= '>';
         $this->_tr =& $this->_pointer;
-    }
-
-    /**
-     * --------------------------------------------------------------------
-     * THE BELOW METHODS ARE DEPRECATED AND SHOULD NOT BE USED.
-     * --------------------------------------------------------------------
-     */
-
-    /**
-     * Builds a table based on given headers, rows and table attributes.
-     *
-     * @param array $headers An array of headers and optional attributes.
-     * @param array $rows An array of rows and optional attributes.
-     * @param array $attributes A key, value array of attributes to add to <table> tag.
-     */
-    public static function build($headers, $rows, $attributes = null)
-    {
-        $html = '<table';
-
-        if(!is_null($attributes))
-            foreach($attributes as $k => $v)
-                $html .= sprintf(' %s="%s"', $k, $v);
-
-        $html .= '>';
-
-        // Create headers
-        $html .= '<thead>';
-        $html .= '<tr>';
-        $html .= self::_row($headers, 'th');
-        $html .= '</tr>';
-        $html .= '</thead>';
-
-        // Create rows
-        $count = 1;
-        $html .= '<tbody>';
-        foreach($rows as $row)
-        {
-            $class = ($count % 2) ? 'odd' : 'even';
-
-            $html .= '<tr class="' . $class . '">';
-            $html .= self::_row($row, 'td', $class);
-            $html .= '</tr>';
-
-            $count++;
-        }
-        $html .= '</tbody>';
-
-        // TODO Add <tfooter>
-
-        $html .= '</table>';
-        return $html;
-    }
-
-    /**
-     * TODO
-     */
-    private static function _row($row, $tag)
-    {
-        $html = '';
-
-        foreach($row as $col)
-        {
-            $html .= '<' . $tag;
-
-            if(is_array($col) && isset($col['attributes']))
-            {
-                foreach($col['attributes'] as $k => $v)
-                    $html .= sprintf(' %s="%s"', $k, $v);
-            }
-
-            $html .= '>';
-            $html .= (is_array($col)) ? $col[0] : $col;
-            $html .= '</' . $tag . '>';
-        }
-
-        return $html;
     }
 
 }

@@ -10,7 +10,7 @@ class Multilanguage_LanguageModel extends Model {
         ),
         'code' => array(
             'type' => 'varchar',
-            'length' => 3,
+            'length' => 2,
             'not null' => true
         )
     );

@@ -2,14 +2,12 @@
 
 class Variable extends Module {
 
-    
     public static function get($key, $default = null)
     {
         if($var = Variable::data()->where('data_key', '=', $key)->first())
             return $var->data_value;
         return $default;
     }
-
 
     public static function store($key, $value)
     {
@@ -27,6 +25,5 @@ class Variable extends Module {
             ));
         }
     }
-
 
 }

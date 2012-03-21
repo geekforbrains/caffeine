@@ -2,11 +2,8 @@
 
 class Media_ImageController extends Controller {
 
-    
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     public static function render($id, $rotation = null, $widthOrPercent = null, $height = null)
     {
@@ -18,11 +15,8 @@ class Media_ImageController extends Controller {
         die();
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
      * Placeholder code adapted from dummyimage.com
-     * --------------------------------------------------------------------------- 
      */
     public static function placeholder($width, $height)
     {
@@ -77,12 +71,13 @@ class Media_ImageController extends Controller {
                 break;
         }
 
-
         imageDestroy($img);
         exit();
     }
 
-
+    /**
+     * TODO Comments.
+     */
     private static function _imagettfbbox_t($size, $text_angle, $fontfile, $text)
     {
         // compute size with a zero angle
@@ -103,6 +98,5 @@ class Media_ImageController extends Controller {
         }
         return $ret;
     }
-
 
 }

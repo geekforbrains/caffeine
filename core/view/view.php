@@ -56,8 +56,12 @@ class View extends Module {
     /**
      * Gets the current page title.
      */
-    public static function getTitle() {
-        return self::$_title;
+    public static function getTitle($default, $prepend = null, $append = null)
+    {
+        if(is_null(self::$_title))
+            return $default;
+
+        return $prepend . self::$_title . $append;
     }
 
     /**
@@ -69,7 +73,7 @@ class View extends Module {
     public static function setPath($path)
     {
         self::$_path = $path . Config::get('view.dir');
-        Dev::debug('view', 'Setting view path to: ' . self::$_path);
+        Log::debug('view', 'Setting view path to: ' . self::$_path);
     }
 
     /**
@@ -101,7 +105,14 @@ class View extends Module {
      *
      * @param int $code The error code to display
      */
-    public static function error($code) {
+    public static function error($code)
+    {
+        if($code == ERROR_404)
+            header('HTTP/1.1 404 Not Found');
+
+        elseif($code == ERROR_500)
+            header('HTTP/1.1 500 Internal Server Error');
+
         self::$_error = self::getPath() . 'errors/' . $code . EXT;
     }
 
@@ -139,7 +150,7 @@ class View extends Module {
     public static function insert($view)
     {
         $viewFile = self::getPath() . $view . EXT;
-        Dev::debug('view', 'Inserting view: ' . $viewFile);
+        Log::debug('view', 'Inserting view: ' . $viewFile);
         require($viewFile);
     }
 
@@ -197,11 +208,11 @@ class View extends Module {
         foreach($checks as $file)
         {
             $filePath = self::getPath() . $file;
-            Dev::debug('view', 'Checking for view: ' . $filePath);
+            Log::debug('view', 'Checking for view: ' . $filePath);
 
             if(file_exists($filePath))
             {
-                Dev::debug('view', 'Loading view: ' . $filePath);
+                Log::debug('view', 'Loading view: ' . $filePath);
                 self::$_views[] = $filePath;
                 return;
             }
@@ -257,7 +268,7 @@ class View extends Module {
      */
     public static function output()
     {
-        Dev::debug('view', 'Outputting views to browser');
+        Log::debug('view', 'Outputting views to browser');
 
         if(self::$_error === 0)
         {

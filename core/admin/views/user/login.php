@@ -1,10 +1,10 @@
-<?php View::insert('includes/header'); ?>
+<? View::insert('includes/header'); ?>
 
 <!-- start content -->
 <div class="content container_12">
     <div class="grid_4 prefix_4 spacer">
         <h1>Login</h1>
-        <?php echo Html::form()->open(null, 'post', false, array('id' => 'login', 'name' => 'login')); ?>
+        <?= Html::form()->open(null, 'post', false, array('id' => 'login', 'name' => 'login')); ?>
             <ul style="margin-top: 18px;">
                 <li class="text full">
                     <label>Email</label>
@@ -15,13 +15,12 @@
                     <input type="password" name="password" />
                 </li>
                 <li class="buttons">
-                    <a class="btn blue" href="javascript:document.login.submit();">Login</a>&nbsp;
-                    <a class="btn gray" href="javascript:alert('This doesnt work yet');">Reset Password</a>
+                    <a class="btn blue submitter" href="#">Login</a>&nbsp;
                 </li>
             </ul>
-        <?php echo Html::form()->close(); ?>
+        <?= Html::form()->close(); ?>
     </div>
 </div>
 <!-- end content -->
 
-<?php View::insert('includes/footer'); ?>
+<? View::insert('includes/footer'); ?>

@@ -2,31 +2,19 @@
 
 class Media_Imager {
 
-
-    /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
-     */
 	private static $_thumb;
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function open($path)
 	{
-		require_once(ROOT . 'core/media/phpthumb/ThumbLib.inc.php');
+        Load::asset('media', 'phpthumb/ThumbLib.inc.php');
 		self::$_thumb = PhpThumbFactory::create($path, array('resizeUp' => true));
 	}
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function resize($width, $height, $adaptive = false) 
 	{
@@ -36,21 +24,15 @@ class Media_Imager {
 			self::$_thumb->resize($width, $height);
 	}
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function percent($percent) {
 		self::$_thumb->resizePercent($percent);
 	}
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function crop($width, $height = null, $x = null, $y = null)
 	{
@@ -61,35 +43,25 @@ class Media_Imager {
 			self::$_thumb->cropFromCenter($width, $height);
 	}
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function rotate($degrees) {
 		self::$_thumb->rotateImageNDegrees($degrees);
 	}
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function show() {
 		self::$_thumb->show();
 	}
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO
-     * ---------------------------------------------------------------------------   
+     * TODO Comments
      */
 	public static function save($path, $format = null) {
 		self::$_thumb->save($path, $format);
 	}
-
 
 }

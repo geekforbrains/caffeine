@@ -2,11 +2,8 @@
 
 class Media_Image extends Media_File {
 
-
     /**
-     * --------------------------------------------------------------------------- 
      * Set the allowed image formats to be uploaded. Based on config in setup.php
-     * --------------------------------------------------------------------------- 
      */
     public function __construct()
     {
@@ -14,40 +11,29 @@ class Media_Image extends Media_File {
         $this->_allowedExts = Config::get('media.allowed_image_formats');
     }
 
-
     /**
-     * ---------------------------------------------------------------------------   
      * Has the same options as render, but instead of returning the system path
      * it returns a relative URL to the file.
-     * ---------------------------------------------------------------------------   
      */
     public function getUrl($id, $rotation = null, $widthOrPercent = null, $height = null) {
-        return Url::to($this->render($id, $rotation, $widthOrPercent, $height));
+        return Url::toLang(null, $this->render($id, $rotation, $widthOrPercent, $height));
     }
 
-
     /**
-     * ---------------------------------------------------------------------------   
      * Alias of render.
-     * ---------------------------------------------------------------------------   
      */
     public function getPath($id, $rotation = null, $widthOrPercent = null, $height = null) {
         return $this->render($id, $rotation, $widthOrPercent, $height);
     }
 
-
     /**
-     * ---------------------------------------------------------------------------   
      * Returns the URL for a placeholder image (see image controller)
-     * ---------------------------------------------------------------------------   
      */
     public function placeholder($width, $height) {
         return Url::to('media/placeholder/' . $width . '/' . $height);
     }
 
-
     /**
-     * ---------------------------------------------------------------------------   
      * Gets an image by id sized and rotated based on the passed params. If the file
      * doesn't exist, it is created using the imager class and stored in cache dir. Every 
      * call after that will load the file directly.
@@ -66,7 +52,6 @@ class Media_Image extends Media_File {
      * @param $height int The height to size the image.
      *
      * @return string The relative path from ROOT to the file, if it exists. Boolean false otherwise.
-     * ---------------------------------------------------------------------------   
      */
     public function render($id, $rotation = null, $widthOrPercent = null, $height = null)
     {
@@ -101,22 +86,19 @@ class Media_Image extends Media_File {
                 return Media::getFilesPath() . Media::getCachePath() . $cachedFilename;
             }
         } catch(Exception $e) {
-            Dev::debug('media', 'ERROR: ' . $e->getMessage());
+            Log::error('media', $e->getMessage());
         }
 
         return false;
     }
 
-
     /**
-     * ---------------------------------------------------------------------------   
      * Saves an image posted from a multipart form.
      *
      * @param $name string The name of the field posted in $_FILES.
      *
      * @return object This current object. Used to check if there was an error
      *      or get the returned id.
-     * ---------------------------------------------------------------------------   
      */
     public function save($name) {
         $response = Media_Uploader::save($name, 'image', Config::get('media.allowed_image_formats'));
@@ -129,7 +111,9 @@ class Media_Image extends Media_File {
         return $this;
     }
 
-
+    /**
+     * TODO Comments.
+     */
     public function saveBinary($filename, $binary, $mimeType)
     {
         $response = Media_Uploader::saveBinary($filename, $binary, $mimeType, 'image');
@@ -142,13 +126,18 @@ class Media_Image extends Media_File {
         return $this;
     }
 
-
     /**
-     * ---------------------------------------------------------------------------   
-     * TODO Reads an image from the given url and stores it on disk.
-     * ---------------------------------------------------------------------------   
+     * Reads an image from the given url and stores it on disk.
      */
-    public function saveFromUrl($url) {}
+    public function saveFromUrl($url) {
+        $response = Media_Uploader::saveFromUrl($url, 'image');
 
+        if(!$response)
+            $this->_error = Media_Uploader::getError();
+        else
+            $this->_id = $response;
+
+        return $this;
+    }
 
 }

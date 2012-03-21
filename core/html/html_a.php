@@ -7,6 +7,7 @@ class Html_A {
      * be added to the attributes.
      *
      * Basic Example:
+     * Html::a('My Text', 'some/path'); // Short hand
      * Html::a()->get('My Text', 'some/path');
      *
      * Attributes Example:

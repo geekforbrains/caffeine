@@ -18,7 +18,7 @@ class Admin {
      */
     public static function isConfigured()
     {
-        if(User::user()->where('is_admin', '>', 0)->first())
+        if(User::user()->where('is_admin', '>', 0)->limit(1)->first())
             return true;
         return false;
     }

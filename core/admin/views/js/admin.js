@@ -1,4 +1,9 @@
 $(function() {
+    $('.submitter').click(function(e){
+        e.preventDefault();
+        $(this).closest('form').submit();
+    });
+
     $('table tr').mouseover(function() {
         $(this).addClass('hover')
     });

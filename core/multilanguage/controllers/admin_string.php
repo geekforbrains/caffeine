@@ -26,7 +26,9 @@ class Multilanguage_Admin_StringController extends Controller {
                     'admin/multilanguage/strings/manage/' . $string->id)
                 );
                 $row->addCol(
-                    Html::a()->get('Delete', 'admin/multilanguage/strings/delete/' . $string->id),
+                    Html::a()->get('Delete', 'admin/multilanguage/strings/delete/' . $string->id, array(
+                        'onclick' => "return confirm('Delete this string?')"
+                    )),
                     array('class' => 'right')
                 );
             }
@@ -51,7 +53,7 @@ class Multilanguage_Admin_StringController extends Controller {
     public static function manageContent($id)
     {
         if(!$string = Multilanguage::stringcontent()->find($id))
-            return ERROR_NOTFOUND;
+            return ERROR_404;
 
         if(isset($_POST['create_translation']) && Html::form()->validate())
         {
@@ -120,7 +122,9 @@ class Multilanguage_Admin_StringController extends Controller {
                 ));
                 $row->addCol($t->language);
                 $row->addCol(
-                    Html::a()->get('Delete', 'admin/multilanguage/strings/delete/' . $id . '/' . $t->id),
+                    Html::a()->get('Delete', 'admin/multilanguage/strings/delete/' . $id . '/' . $t->id, array(
+                        'onclick' => "return confirm('Delete this translation?')"
+                    )),
                     array('class' => 'right')
                 );
             }
@@ -146,7 +150,7 @@ class Multilanguage_Admin_StringController extends Controller {
     public static function editContent($stringId, $contentId)
     {
         if(!$translation = Multilanguage::string()->find($contentId))
-            return ERROR_NOTFOUND;
+            return ERROR_404;
 
         if(isset($_POST['update_translation']) && Html::form()->validate())
         {

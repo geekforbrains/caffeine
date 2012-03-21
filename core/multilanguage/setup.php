@@ -5,7 +5,7 @@
          * When enabled, will perform checks on the url to determine if a new language is to be used
          * but also inserts new strings being translated via the t() function.
          */
-        'multilanguage.enabled' => false
+        'multilanguage.enabled' => true
     ),
 
     'permissions' => array(

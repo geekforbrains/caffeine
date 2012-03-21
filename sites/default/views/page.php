@@ -1,3 +1,7 @@
-<h1><?php echo $page->title; ?></h1>
+<? View::insert('includes/header'); ?>
 
-<?php echo $page->body; ?>
+<h1><?= $page->title; ?></h1>
+
+<?= $page->body; ?>
+
+<? View::insert('includes/footer'); ?>
