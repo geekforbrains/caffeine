@@ -73,23 +73,23 @@
         ),
         'admin/user/role/manage' => array(
             'title' => 'Manage',
-            'callback' => array('user_role_admin', 'manage'),
+            'callback' => array('admin_role', 'manage'),
             'permissions' => array('user.manage_roles')
         ),
         'admin/user/role/create' => array(
             'title' => 'Create',
-            'callback' => array('user_role_admin', 'create'),
+            'callback' => array('admin_role', 'create'),
             'permissions' => array('user.create_roles')
         ),
         'admin/user/role/edit/%d' => array(
             'title' => 'Edit Role',
-            'callback' => array('user_role_admin', 'edit'),
+            'callback' => array('admin_role', 'edit'),
             'permissions' => array('user.edit_roles'),
             'hidden' => true
         ),
         'admin/user/role/delete/%d' => array(
             'title' => 'Delete Role',
-            'callback' => array('user_role_admin', 'delete'),
+            'callback' => array('admin_role', 'delete'),
             'permissions' => array('user.delete_roles'),
             'hidden' => true
         )

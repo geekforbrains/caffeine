@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="<?php echo View::getBaseHref(); ?>" />
+    <base href="<?= View::getBaseHref(); ?>" />
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-    <title><?php echo View::getTitle('Control Panel', null, ' - Control Panel'); ?></title>
+    <title><?= View::getTitle('Control Panel', null, ' - Control Panel'); ?></title>
 
     <link rel="stylesheet" type="text/css" href="css/reset.css" />
     <link rel="stylesheet" type="text/css" href="css/grid.css" />
@@ -18,40 +18,33 @@
     <script type="text/javascript" src="plugins/chosen/chosen.jquery.js"></script>
 
     <script type="text/javascript">
-        var baseHref = '<?php echo View::getBaseHref(); ?>'; // Used by plugins to get relative paths to scripts
+        var baseHref = '<?= View::getBaseHref(); ?>'; // Used by plugins to get relative paths to scripts
     </script>
 
     <script type="text/javascript" src="js/admin.js"></script>
 </head>
 <body>
 
-
-<!-- jquey modal -->
-<div id="modal" title="Hello World">
-   <p>This is a modal</p> 
-</div>
-
-
 <!-- start header -->
 <div class="header">
     <div class="container_12">
         <h1 class="grid_12">Control Panel</h1>
 
-        <?php if(!User::current()->isAnonymous()): ?>
+        <? if(!User::current()->isAnonymous()): ?>
             <div class="user_box">
                 Logged in as
-                <?php Html::a(User::current()->email, 'admin/user/edit/' . User::current()->id); ?>
+                <?= Html::a(User::current()->email, 'admin/user/edit/' . User::current()->id); ?>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <?php Html::a('Logout', 'admin/logout'); ?>
+                <?= Html::a('Logout', 'admin/logout'); ?>
             </div>
-        <?php endif; ?>
+        <? endif; ?>
     </div>
     <div class="clear">&nbsp;</div>
 
     <div class="tab_bar">
         <div class="container_12">
             <div class="grid_12">
-                <?php echo Menu::build(0, 'admin', array('attributes' => array('class' => 'tabs'))); ?>
+                <?= Menu::build(0, 'admin', array('attributes' => array('class' => 'tabs'))); ?>
             </div>
             <div class="clear">&nbsp;</div>
         </div>
@@ -74,15 +67,15 @@
 
 
 <!-- start messages -->
-<?php if($messages = Message::get()): ?>
+<? if($messages = Message::get()): ?>
     <div class="container_12">
         <div class="grid_12 messages">
-            <?php foreach($messages as $type => $typeMessages): ?>
-                <?php foreach($typeMessages as $message): ?>
-                    <p class="<?php echo $type; ?>"><?php echo $message; ?></p>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
+            <? foreach($messages as $type => $typeMessages): ?>
+                <? foreach($typeMessages as $message): ?>
+                    <p class="<?= $type; ?>"><?= $message; ?></p>
+                <? endforeach; ?>
+            <? endforeach; ?>
         </div>
     </div>
-<?php endif; ?>
+<? endif; ?>
 <!-- end messages -->

@@ -1,7 +1,7 @@
 <!-- start footer -->
 <div class="footer container_12">
     <div class="grid_12">
-        Powered by <a href="http://github.com/geekforbrains/caffeine" target="_blank">Caffeine <?php echo VERSION; ?></a>
+        Powered by <a href="http://github.com/geekforbrains/caffeine" target="_blank">Caffeine <?= VERSION; ?></a>
     </div>
     <div class="clear">&nbsp;</div>
 </div>

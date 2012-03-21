@@ -21,7 +21,15 @@ class User_Admin_UserController extends Controller {
                 $row->addCol(Html::a($user->email, 'admin/user/edit/' . $user->id));
 
                 if($user->is_admin <= 0)
-                    $row->addCol(Html::a('Delete', 'admin/user/delete/' . $user->id), array('class' => 'right'));
+                {
+                    $row->addCol(
+                        Html::a('Delete', 'admin/user/delete/' . $user->id), 
+                        array(
+                            'class' => 'right',
+                            'onclick' => "return confirm('Delete this user?')"
+                        )
+                    );
+                }
                 else
                     $row->addCol('&nbsp;');
             }
@@ -40,39 +48,36 @@ class User_Admin_UserController extends Controller {
      */
     public static function create()
     {
-        if($_POST)
+        if(isset($_POST['create_user']) && Html::form()->validate())
         {
-            if(Html::form()->validate())
+            if(!User::user()->where('email', 'LIKE', $_POST['email'])->first())
             {
-                if(!User::user()->where('email', 'LIKE', $_POST['email'])->first())
+                $userId = User::user()->insert(array(
+                    'email' => $_POST['email'],
+                    'pass' => md5($_POST['password'])
+                ));
+
+                if($userId && isset($_POST['role_id']))
                 {
-                    $userId = User::user()->insert(array(
-                        'email' => $_POST['email'],
-                        'pass' => md5($_POST['password'])
-                    ));
-
-                    if($userId && isset($_POST['role_id']))
+                    foreach($_POST['role_id'] as $roleId)
                     {
-                        foreach($_POST['role_id'] as $roleId)
-                        {
-                            Db::table('roles_users')->insert(array(
-                                'role_id' => $roleId,
-                                'user_id' => $userId
-                            ));
-                        }
+                        Db::table('habtm_userroles_userusers')->insert(array(
+                            'user_role_id' => $roleId,
+                            'user_user_id' => $userId
+                        ));
                     }
+                }
 
-                    if($userId)
-                    {
-                        Message::ok('User created successfully.');
-                        Url::redirect('admin/user/manage');
-                    }
-                    else
-                        Message::error('Error creating user.');
+                if($userId)
+                {
+                    Message::ok('User created successfully.');
+                    Url::redirect('admin/user/manage');
                 }
                 else
-                    Message::error('A user with that email exists.');
+                    Message::error('Error creating user.');
             }
+            else
+                Message::error('A user with that email exists.');
         }
 
         $options = array();
@@ -104,7 +109,7 @@ class User_Admin_UserController extends Controller {
                     'options' => $options,
                     'attributes' => array('multiple' => 'multiple')
                 ),
-                'submit' => array(
+                'create_user' => array(
                     'value' => 'Create User',
                     'type' => 'submit'
                 )
@@ -112,10 +117,8 @@ class User_Admin_UserController extends Controller {
         );
 
         return array(
-            array(
-                'title' => 'Create User',
-                'content' => Html::form()->build($fields)
-            )
+            'title' => 'Create User',
+            'content' => Html::form()->build($fields)
         );
     }
 
@@ -126,7 +129,7 @@ class User_Admin_UserController extends Controller {
     {
         $user = User::user()->find($id);
 
-        if($_POST)
+        if(isset($_POST['update_user']))
         {
             // First check if new email is already in use
             if($_POST['email'] == $user->email || !User::user()->where('email', '=', $_POST['email'])->first())
@@ -136,16 +139,15 @@ class User_Admin_UserController extends Controller {
                     'pass' => isset($_POST['pass']) ? md5($_POST['pass']) : $user->pass
                 ));
 
-                // Always clear current roles when updating, new roles will be inserted after
-                Db::table('roles_users')->where('user_id', '=', $user->id)->delete();
+                Db::table('habtm_userroles_userusers')->where('user_user_id', '=', $user->id)->delete();
 
                 if(isset($_POST['role_id']))
                 {
                     foreach($_POST['role_id'] as $roleId)
                     {
-                        Db::table('roles_users')->insert(array(
-                            'role_id' => $roleId,
-                            'user_id' => $user->id
+                        Db::table('habtm_userroles_userusers')->insert(array(
+                            'user_role_id' => $roleId,
+                            'user_user_id' => $user->id
                         ));
                     }
                 }
@@ -163,13 +165,14 @@ class User_Admin_UserController extends Controller {
         $selected = array();
 
         $roles = User::role()->all();
-        $selectedRoles = Db::table('roles_users')->where('user_id', '=', $id)->all();
+        $selectedRoles = Db::table('habtm_userroles_userusers')->where('user_user_id', '=', $id)->all();
 
         foreach($roles as $role)
             $options[$role->id] = $role->name;
 
-        foreach($selectedRoles as $role)
-            $selected[] = $role->role_id;
+        if($selectedRoles)
+            foreach($selectedRoles as $role)
+                $selected[] = $role->role_id;
 
         $fields[] = array(
             'fields' => array(
@@ -189,7 +192,7 @@ class User_Admin_UserController extends Controller {
                     'selected' => $selected,
                     'attributes' => array('multiple' => 'multiple')
                 ),
-                'submit' => array(
+                'update_user' => array(
                     'value' => 'Update User',
                     'type' => 'submit'
                 )

@@ -1,6 +1,6 @@
 <?php
 
-class User_User_Role_AdminController extends Controller {
+class User_Admin_RoleController extends Controller {
 
     public static function manage()
     {
@@ -45,27 +45,24 @@ class User_User_Role_AdminController extends Controller {
 
     public static function create()
     {
-        if($_POST)
+        if(isset($_POST['create_role']) && Html::form()->validate())
         {
-            if(Html::form()->validate())
+            if(!User::role()->where('name', 'LIKE', '%' . $_POST['name'] . '%')->first())
             {
-                if(!User::role()->where('name', 'LIKE', '%' . $_POST['name'] . '%')->first())
-                {
-                    $roleId = User::role()->insert(array(
-                        'name' => $_POST['name']
-                    ));
+                $roleId = User::role()->insert(array(
+                    'name' => $_POST['name']
+                ));
 
-                    if($roleId)
-                    {
-                        Message::ok('Role created successfully.');
-                        Url::redirect('admin/user/role/edit/' . $roleId);
-                    }
-                    else
-                        Message::error('Error creating role.');
+                if($roleId)
+                {
+                    Message::ok('Role created successfully.');
+                    Url::redirect('admin/user/role/edit/' . $roleId);
                 }
                 else
-                    Message::error('A role with that name already exists.');
+                    Message::error('Error creating role.');
             }
+            else
+                Message::error('A role with that name already exists.');
         }
 
         $fields[] = array(
@@ -75,7 +72,7 @@ class User_User_Role_AdminController extends Controller {
                     'type' => 'text',
                     'validate' => array('required')
                 ),
-                'submit' => array(
+                'create_role' => array(
                     'value' => 'Create Role',
                     'type' => 'submit'
                 )
@@ -83,10 +80,8 @@ class User_User_Role_AdminController extends Controller {
         );
 
         return array(
-            array(
-                'title' => 'Create Role',
-                'content' => Html::form()->build($fields)
-            )
+            'title' => 'Create Role',
+            'content' => Html::form()->build($fields)
         );
     }
 
@@ -98,43 +93,39 @@ class User_User_Role_AdminController extends Controller {
     {
         $role = User::role()->find($id);
 
-        if($_POST)
+        if(isset($_POST['update_role']))
         {
-            if(isset($_POST['update_role']))
+            if($_POST['name'] == $role->name || !User::role()->where('name', 'LIKE', $_POST['name'])->first())
             {
-                // Check if name is in use
-                if($_POST['name'] == $role->name || !User::role()->where('name', 'LIKE', $_POST['name'])->first())
-                {
-                    $status = User::role()->where('id', '=', $id)->update(array(
-                        'name' => $_POST['name']
-                    ));
-                    
-                    if($status)
-                        Message::ok('Role updated successfully.');
-                    else
-                        Message::info('Nothing changed.');
-                }
+                $status = User::role()->where('id', '=', $id)->update(array(
+                    'name' => $_POST['name']
+                ));
+                
+                if($status)
+                    Message::ok('Role updated successfully.');
                 else
-                    Message::error('A role with that name is already in use.');
+                    Message::info('Nothing changed.');
             }
+            else
+                Message::error('A role with that name is already in use.');
+        }
 
-            if(isset($_POST['update_roles']))
+        if(isset($_POST['update_roles']))
+        {
+            User::permission()->where('role_id', '=', $role->id)->delete();
+
+            if(isset($_POST['permissions']))
             {
-                User::permission()->where('role_id', '=', $role->id)->delete();
-
-                if(isset($_POST['permissions']))
+                foreach($_POST['permissions'] as $permission)
                 {
-                    foreach($_POST['permissions'] as $permission)
-                    {
-                        User::permission()->insert(array(
-                            'role_id' => $id,
-                            'permission' => $permission
-                        ));
-                    }
+                    User::permission()->insert(array(
+                        'role_id' => $id,
+                        'permission' => $permission
+                    ));
                 }
-
-                Message::ok('Permissions updated successfully.');
             }
+
+            Message::ok('Permissions updated successfully.');
         }
 
         $fields[] = array(

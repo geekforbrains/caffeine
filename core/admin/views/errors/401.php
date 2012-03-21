@@ -1,4 +1,4 @@
-<?php View::insert('includes/header'); ?>
+<? View::insert('includes/header'); ?>
 
 <!-- start content -->
 <div class="content container_12">
@@ -9,4 +9,4 @@
 </div>
 <!-- end content -->
 
-<?php View::insert('includes/footer'); ?>
+<? View::insert('includes/footer'); ?>
