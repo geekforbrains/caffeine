@@ -116,7 +116,7 @@ class Caffeine {
         if(empty($data['permissions']) || User::current()->hasPermission($data['permissions']))
         {
             $hasPermission = true;
-            Dev::debug('user', 'User has permission');
+            Log::debug('user', 'User has permission to access this route.');
 
             // Only do user permission callbacks if not admin, otherwise its pointless
             if(User::current()->is_admin <= 0)
@@ -130,7 +130,7 @@ class Caffeine {
 
                     if(User::getPermissionStatus() === false)
                     {
-                        Dev::debug('user', 'Custom permission callback failed, setting access denied');
+                        Log::debug('user', 'Custom permission callback failed, setting access denied');
                         $hasPermission = false;
                         break;
                     }
@@ -138,7 +138,7 @@ class Caffeine {
             }
         }
         else
-            Dev::debug('user', 'User does NOT have permission');
+            Log::debug('user', 'User does NOT have permission to access this route.');
 
         return $hasPermission;
     }

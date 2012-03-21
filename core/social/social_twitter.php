@@ -37,4 +37,35 @@ class Social_Twitter {
 			return false;
 	}
 
+    /**
+     * TODO
+     */
+    public function oauth()
+    {
+        require_once(Load::getModulePath('social') . 'twitteroauth/twitteroauth' . EXT);
+        return new TwitterOAuth(Config::get('social.twitter_consumer_key'), Config::get('social.twitter_consumer_secret'));
+    }
+
+    /**
+     * TODO
+     */
+    public function sendToTwitterForAuth()
+    {
+        $conn = $this->oauth();
+        $request = $conn->getRequestToken(Config::get('social.twitter_callback_url'));
+
+        $_SESSION['oauth_token'] = $request['oauth_token'];
+        $_SESSION['oauth_token_secret'] = $request['oauth_token_secret'];
+         
+        switch($conn->http_code)
+        {
+            case 200:
+                $url = $conn->getAuthorizeURL($request['oauth_token']);
+                Url::redirect($url);
+                break;
+            default:
+                die('Could not connect to Twitter!'); // TODO Actual error page or message
+        }
+    }
+
 }

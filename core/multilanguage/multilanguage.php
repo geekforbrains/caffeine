@@ -43,7 +43,7 @@ class Multilanguage extends Module {
             $module = $bits[0];
             $type = str_replace('model', '', $bits[1]);
 
-            Dev::debug('multilanguage', sprintf('Translating view data %s:%s', $module, $type));
+            Log::debug('multilanguage', sprintf('Translating view data %s:%s', $module, $type));
 
             $content = Multilanguage::content()
                 ->where('module', '=', $module)
@@ -123,7 +123,7 @@ class Multilanguage extends Module {
             
             if($lang)
             {
-                Dev::debug('multilanguage', 'Setting language to: ' . $lang->name);
+                Log::debug('multilanguage', 'Setting language to: ' . $lang->name);
                 self::$_currentLang = $lang;
                 return true;
             }

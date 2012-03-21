@@ -101,7 +101,7 @@ class Media_Image extends Media_File {
                 return Media::getFilesPath() . Media::getCachePath() . $cachedFilename;
             }
         } catch(Exception $e) {
-            Dev::debug('media', 'ERROR: ' . $e->getMessage());
+            Log::error('media', $e->getMessage());
         }
 
         return false;

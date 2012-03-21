@@ -69,7 +69,7 @@ class View extends Module {
     public static function setPath($path)
     {
         self::$_path = $path . Config::get('view.dir');
-        Dev::debug('view', 'Setting view path to: ' . self::$_path);
+        Log::debug('view', 'Setting view path to: ' . self::$_path);
     }
 
     /**
@@ -139,7 +139,7 @@ class View extends Module {
     public static function insert($view)
     {
         $viewFile = self::getPath() . $view . EXT;
-        Dev::debug('view', 'Inserting view: ' . $viewFile);
+        Log::debug('view', 'Inserting view: ' . $viewFile);
         require($viewFile);
     }
 
@@ -197,11 +197,11 @@ class View extends Module {
         foreach($checks as $file)
         {
             $filePath = self::getPath() . $file;
-            Dev::debug('view', 'Checking for view: ' . $filePath);
+            Log::debug('view', 'Checking for view: ' . $filePath);
 
             if(file_exists($filePath))
             {
-                Dev::debug('view', 'Loading view: ' . $filePath);
+                Log::debug('view', 'Loading view: ' . $filePath);
                 self::$_views[] = $filePath;
                 return;
             }
@@ -257,7 +257,7 @@ class View extends Module {
      */
     public static function output()
     {
-        Dev::debug('view', 'Outputting views to browser');
+        Log::debug('view', 'Outputting views to browser');
 
         if(self::$_error === 0)
         {

@@ -47,7 +47,7 @@ class Db_Runner extends Db_Driver {
      * TODO Will install test seed data based on the seed.php file.
      */
     public static function seed() {
-        Dev::debug('db', 'The seed command has not been implemented yet.');
+        Log::debug('db', 'The seed command has not been implemented yet.');
     }
 
     /**

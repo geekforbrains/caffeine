@@ -28,7 +28,7 @@
         'system.timezone' => 'UTC',
 
         /**
-         * When true, Caffeine will return the errors/maintenance.php view and halt
+         * When true, Caffeine will display the errors/maintenance.php view and halt
          * further execution.
          */
         'system.maintenance_mode' => false

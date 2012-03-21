@@ -1,23 +1,5 @@
 <?php
 
-/**
-
-<table class="table" cellpadding="0">
-    <tr class="headers">
-        <th colspan="2">Header</th>
-    </tr>
-
-    <tr class="even">
-        <td>Some Content</td>
-        <td class="right">End Content</td>
-    </tr>
-
-    <tr class="odd">
-        <td colspan="2">Custom Col</td>
-    </tr>
-</table>
-
-**/
 class Html_Table {
 
     /**
@@ -49,13 +31,13 @@ class Html_Table {
     /**
      * Starts the table tag and adds any table level attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($args = array())
     {
         $this->_pointer =& $this->_html;
         $this->_pointer = '<table';
 
-        if($attributes)
-            $this->_addAttr($attributes);
+        if(isset($args[0]))
+            $this->_addAttr($args[0]);
 
         $this->_pointer .= '>';
     }
