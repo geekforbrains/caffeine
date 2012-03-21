@@ -2,7 +2,7 @@
 
     'configs' => array(
         'admin.title' => 'Control Panel', // The main title displayed on admin pages
-        'admin.default_route' => 'admin/dashboard' // The default route to redirect to when accessing "/admin"
+        'admin.default_route' => 'admin/user' // The default route to redirect to when accessing "/admin"
     ),
 
     'permissions' => array(
@@ -14,11 +14,13 @@
             'title' => 'Admin',
             'callback' => array('admin', 'redirect'),
         ),
+        /*
         'admin/dashboard' => array(
             'title' => 'Dashboard',
             'callback' => array('admin', 'dashboard'),
             'permissions' => array('admin.access') // User must at least have access to admin to view dashboard
         ),
+        */
         'admin/install' => array(
             'title' => 'Install',
             'callback' => array('admin', 'install'),
