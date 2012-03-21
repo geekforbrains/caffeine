@@ -25,7 +25,7 @@ class Html extends Module {
         $obj = new $class($args);
 
         if($args && method_exists($obj, 'get'))
-            echo call_user_func_array(array($obj, 'get'), $args);
+            return call_user_func_array(array($obj, 'get'), $args);
 
         return $obj;
     }

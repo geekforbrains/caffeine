@@ -45,23 +45,23 @@
         ),
         'admin/user/manage' => array(
             'title' => 'Manage',
-            'callback' => array('user_admin', 'manage'),
+            'callback' => array('admin_user', 'manage'),
             'permissions' => array('user.admin')
         ),
         'admin/user/create' => array(
             'title' => 'Create',
-            'callback' => array('user_admin', 'create'),
+            'callback' => array('admin_user', 'create'),
             'permissions' => array('user.create')
         ),
         'admin/user/edit/%d' => array(
             'title' => 'Edit User',
-            'callback' => array('user_admin', 'edit'),
+            'callback' => array('admin_user', 'edit'),
             'hidden' => true,
             'permissions' => array('user.edit', 'user.edit_mine')
         ),
         'admin/user/delete/%d' => array(
             'title' => 'Delete User',
-            'callback' => array('user_admin', 'delete'),
+            'callback' => array('admin_user', 'delete'),
             'hidden' => true,
             'permissions' => array('user.delete')
         ),

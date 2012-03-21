@@ -56,8 +56,12 @@ class View extends Module {
     /**
      * Gets the current page title.
      */
-    public static function getTitle() {
-        return self::$_title;
+    public static function getTitle($default, $prepend = null, $append = null)
+    {
+        if(is_null(self::$_title))
+            return $default;
+
+        return $prepend . self::$_title . $append;
     }
 
     /**

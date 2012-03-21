@@ -4,7 +4,7 @@
     <base href="<?php echo View::getBaseHref(); ?>" />
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-    <title>Control Panel</title>
+    <title><?php echo View::getTitle('Control Panel', null, ' - Control Panel'); ?></title>
 
     <link rel="stylesheet" type="text/css" href="css/reset.css" />
     <link rel="stylesheet" type="text/css" href="css/grid.css" />

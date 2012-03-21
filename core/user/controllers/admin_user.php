@@ -1,101 +1,37 @@
 <?php
 
-class User_User_AdminController extends Controller {
+class User_Admin_UserController extends Controller {
 
     /**
      * Displays a table of current users.
      */
     public static function manage()
     {
-        if($_POST)
-        {
-            // TODO Check if using keywords
-            // TODO Check if filtering role
-            $users = User::user()
-                ->select('user_users.*')
-                ->leftJoin('habtm_roleusers_userusers t', 't.user_id', '=', 'user_users.id')
-                ->where('t.role_id', '=', $_POST['role_id'])
-                ->all();
-        }
-        else
-            $users = User::user()->orderBy('email')->all();
+        $table = Html::table();
+        $header = $table->addHeader();
+        $header->addCol('Username', array('colspan' => 2));
 
-        $rows = array();
-        $headers = array(
-            array(
-                'Username',
-                'attributes' => array('colspan' => 2)
-            )
-        );
+        $users = User::user()->orderBy('email')->all();
 
         if($users)
         {
             foreach($users as $user)
             {
-                $attributes = null;
+                $row = $table->addRow();
+                $row->addCol(Html::a($user->email, 'admin/user/edit/' . $user->id));
 
                 if($user->is_admin <= 0)
-                {
-                    $attributes = array(
-                        Html::a()->get('Delete', 'admin/user/delete/' . $user->id),
-                        'attributes' => array('class' => 'right')
-                    );
-                }
-
-                $rows[] = array(
-                    Html::a()->get($user->email, 'admin/user/edit/' . $user->id),
-                    $attributes
-                );
+                    $row->addCol(Html::a('Delete', 'admin/user/delete/' . $user->id), array('class' => 'right'));
+                else
+                    $row->addCol('&nbsp;');
             }
         }
         else
-        {
-            $rows[] = array(
-                array(
-                    '<em>No users.</em>',
-                    'attributes' => array('colspan' => '2')
-                )
-            );
-        }
-
-        $roles = User::role()->orderBy('name')->all();
-        $sortedRoles = array('All');
-
-        if($roles)
-            foreach($roles as $role)
-                $sortedRoles[$role->id] = $role->name;
-
-        $searchForm[] = array(
-            'fields' => array(
-                'keywords' => array(
-                    'title' => 'Name or Email',
-                    'type' => 'text',
-                    'validate' => array('required')
-                ),
-                'role_id[]' => array(
-                    'title' => 'Roles',
-                    'type' => 'select',
-                    'options' => $sortedRoles,
-                    'attributes' => array(
-                        'multiple' => 'multiple'
-                    )
-                ),
-                'search' => array(
-                    'type' => 'submit',
-                    'value' => 'Search'
-                )
-            )
-        );
+            $table->addRow()->addCol('<em>No users</em>', array('colspan' => 2));
 
         return array(
-            array(
-                'title' => 'Search Users',
-                'content' => Html::form()->build($searchForm)
-            ),
-            array(
-                'title' => 'Manage Users',
-                'content' => Html::table()->build($headers, $rows)
-            )
+            'title' => 'Manage Users',
+            'content' => $table->render()
         );
     }
 

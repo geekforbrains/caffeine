@@ -14,11 +14,6 @@
     'routes' => array(
         // Front
         'page/:slug' => array(
-            'title' => function($slug) {
-                if($page = Page::page()->find($slug))
-                    return $page->title;
-                return null;
-            },
             'callback' => array('page', 'view')
         ),
 
