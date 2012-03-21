@@ -105,7 +105,14 @@ class View extends Module {
      *
      * @param int $code The error code to display
      */
-    public static function error($code) {
+    public static function error($code)
+    {
+        if($code == ERROR_404)
+            header('HTTP/1.1 404 Not Found');
+
+        elseif($code == ERROR_500)
+            header('HTTP/1.1 500 Internal Server Error');
+
         self::$_error = self::getPath() . 'errors/' . $code . EXT;
     }
 

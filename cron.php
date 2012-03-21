@@ -14,7 +14,10 @@ define('PASSCODE', '');
  * Dont allow cron to be run via the browser, it must be run from CLI
  */
 if(isset($_SERVER['HTTP_HOST']))
+{
+    header('HTTP/1.1 403 Forbidden');
     exit(1);
+}
 
 if(!isset($argv[1]) || !strlen(PASSCODE) || PASSCODE !== $argv[1])
     exit("Missing or invalid pass code.\n");
