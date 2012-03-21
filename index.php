@@ -77,15 +77,25 @@ class Caffeine {
                         $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
 
                         // Call the routes controller and method
-                        $response = call_user_func_array(array($controller, $method), $params);
-
-                        if(!self::_isErrorResponse($response))
+                        if(method_exists($controller, $method))
                         {
-                            Event::trigger('module.response', array($response));
-                            View::load($module, $controller, $method);
+                            $response = call_user_func_array(array($controller, $method), $params);
+
+                            if(!self::_isErrorResponse($response))
+                            {
+                                Event::trigger('module.response', array($response));
+                                View::load($module, $controller, $method);
+                            }
+                            else
+                                View::error($response);
                         }
                         else
-                            View::error($response);
+                        {
+                            Log::error($module, sprintf('The method %s::%s() called by route %s doesn\'t exist.',
+                                $controller, $method, $route));
+                            
+                            View::error(ERROR_500);
+                        }
                     }
                     else
                         View::error(ERROR_ACCESSDENIED);
