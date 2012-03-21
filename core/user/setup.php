@@ -29,12 +29,12 @@
     'routes' => array(
         'admin/login' => array(
             'title' => 'Login',
-            'callback' => array('user_login', 'login'),
+            'callback' => array('login', 'login'),
             'hidden' => true
         ),
         'admin/logout' => array(
             'title' => 'Logout',
-            'callback' => array('user_login', 'logout'),
+            'callback' => array('login', 'logout'),
             'hidden' => true
         ),
 
