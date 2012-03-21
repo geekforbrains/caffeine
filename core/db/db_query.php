@@ -136,7 +136,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function select()
     {
@@ -153,7 +153,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function insert($data, $getInsertId = true)
     {
@@ -183,7 +183,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function update($data)
     {
@@ -206,7 +206,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function delete($id = null)
     {
@@ -222,7 +222,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function truncate()
     {
@@ -231,7 +231,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function describe() 
     {
@@ -269,7 +269,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function distinct()
     {
@@ -349,7 +349,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function orderBy($column, $direction = 'ASC')
     {
@@ -363,7 +363,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function limit($limit, $offset = null)
     {
@@ -395,7 +395,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function andWhere($column, $operator, $value)
     {
@@ -404,7 +404,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function orWhere($column, $operator, $value)
     {
@@ -429,7 +429,7 @@ class Db_Query extends Module {
     }
 
     /**
-     * TODO
+     * TODO Comments
      */
     public function leftJoin($table, $column1, $operator, $column2)
     {

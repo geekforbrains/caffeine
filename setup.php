@@ -25,6 +25,9 @@
 
         /**
          * Sets the timezone for the entire application. Default is UTC.
+         *
+         * A list of supported timezones can be found here:
+         * http://ca.php.net/manual/en/timezones.php
          */
         'system.timezone' => 'UTC',
 

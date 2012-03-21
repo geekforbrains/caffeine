@@ -14,13 +14,6 @@
             'title' => 'Admin',
             'callback' => array('admin', 'redirect'),
         ),
-        /*
-        'admin/dashboard' => array(
-            'title' => 'Dashboard',
-            'callback' => array('admin', 'dashboard'),
-            'permissions' => array('admin.access') // User must at least have access to admin to view dashboard
-        ),
-        */
         'admin/install' => array(
             'title' => 'Install',
             'callback' => array('admin', 'install'),

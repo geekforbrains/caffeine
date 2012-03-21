@@ -2,29 +2,23 @@
 
 class MultiArray extends Module {
     
-
     /**
      * TODO
      */
 	private static $_data = array();
-
 
     /**
      * TODO
      */
     private static $_parentKey = 'parent_id';
 
-
     /**
      * TODO
      */
     private static $_childKey = 'children';
 
-
     /**
-	 * --------------------------------------------------------------------------- 
      * TODO
-	 * --------------------------------------------------------------------------- 
      */
     public static function load($data, $parentKey = 'parent_id', $childKey = 'children')
     {
@@ -33,9 +27,7 @@ class MultiArray extends Module {
         self::$_childKey = $childKey;
     }
 
-
     /**
-	 * --------------------------------------------------------------------------- 
      * Sorts a multi-dimensional array based on id and parent id associations.
      * Returns a multi-dimensional array.
      *
@@ -45,7 +37,6 @@ class MultiArray extends Module {
      * should equal '0'. 
      *
      * @return array
-	 * --------------------------------------------------------------------------- 
      */
     public static function sort($dataArr = null, $parentId = 0)
     {
@@ -66,15 +57,12 @@ class MultiArray extends Module {
         return $tmpArr;
     }
 
-
     /**
-	 * --------------------------------------------------------------------------- 
      * Returns a single dimension array of children assocated with the
      * given parent ID. Only goes one level deep. Sub-children are NOT included.
      * 
      * @param int $parentID
      * @return array
-	 * --------------------------------------------------------------------------- 
      */
     public static function childrenOf($parentId)
     {
@@ -87,15 +75,12 @@ class MultiArray extends Module {
         return $tmpArr;
     }
 
-
     /**
-	 * --------------------------------------------------------------------------- 
      * Returns a single dimension array of all children associated with the
      * given parent ID. Includes all sub-children to an unlimited depth.
      * 
      * @param int $parentID
      * @return array
-	 * --------------------------------------------------------------------------- 
      */
     public static function allChildrenOf($parentId = 0, &$tmpArr = array())
     {
@@ -111,11 +96,8 @@ class MultiArray extends Module {
         return $tmpArr;
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     public static function indent($spacer = '&nbsp;&nbsp;&nbsp;&nbsp;', $parentId = 0, &$items = array(), $depth = 0)
     {
@@ -150,6 +132,5 @@ class MultiArray extends Module {
 
         return $items;
     }
-    
 
 }

@@ -123,6 +123,12 @@ a:hover {
     color: #660000;
 }
 
+.messages p.info {
+    background-color: #FFFFE5;
+    border: 1px solid #CCCC00;
+    color: #808000;
+}
+
 .content h1,
 .content h2 {
     font-weight: bold;

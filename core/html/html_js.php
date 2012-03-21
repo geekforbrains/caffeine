@@ -4,7 +4,15 @@ class Html_Js {
 
     private static $_paths = array();
 
-    // Html::js()->add('some/path', 'footer');
+    /**
+     * Stores the path to be js file to be loaded in a View.
+     *
+     * Example:
+     *      Html::js()->add('relative/path/to/file.js', 'location')
+     *
+     * @param string $filePath The relative path to the js file.
+     * @param string $area An optional area that js will be associated with, used with the get() method.
+     */
     public function add($filePath, $area = 'default') {
     {
         if(!isset(self::$_paths[$area]))
@@ -13,7 +21,11 @@ class Html_Js {
         self::$_paths[$area][] = $filePath;
     }
 
-    // Html::js()->get('footer');
+    /**
+     * Gets all the js files for an area. 
+     *
+     * @param string $area An optional param for specifying the area to get js files for.
+     */
     public function get($area = 'default')
     {
         if(isset(sef::$_paths[$area]))

@@ -1,6 +1,5 @@
 <?php return array(
 
-
     'configs' => array(
         'media.allowed_file_formats' => array(), // Leave blank for anything
         'media.allowed_image_formats' => array('.gif', '.png', '.jpg', '.jpeg'),
@@ -14,7 +13,6 @@
         'media.youtube_api' => 'http://gdata.youtube.com/feeds/api/videos/%s',
         'media.vimeo_api' => 'http://vimeo.com/api/clip/%s.xml'
     ),
-
 
     'routes' => array(
         // placeholder (width / height)
@@ -47,6 +45,5 @@
             'callback' => array('file', 'download')
         )
     )
-
 
 );

@@ -136,7 +136,7 @@ class User_Admin_UserController extends Controller {
             {
                 $status = User::user()->where('id', '=', $id)->update(array(
                     'email' => $_POST['email'],
-                    'pass' => isset($_POST['pass']) ? md5($_POST['pass']) : $user->pass
+                    'pass' => strlen($_POST['pass']) ? md5($_POST['pass']) : $user->pass
                 ));
 
                 Db::table('habtm_userroles_userusers')->where('user_user_id', '=', $user->id)->delete();
@@ -172,7 +172,7 @@ class User_Admin_UserController extends Controller {
 
         if($selectedRoles)
             foreach($selectedRoles as $role)
-                $selected[] = $role->role_id;
+                $selected[] = $role->user_role_id;
 
         $fields[] = array(
             'fields' => array(

@@ -1,6 +1,5 @@
 <?php return array(
 
-
     'configs' => array(
         'view.cache_js' => false,
         'view.cache_css' => false,
@@ -8,7 +7,9 @@
         'view.dir' => 'views/'
     ),
 
-
+    /**
+     * These routes are used for getting compressed js files.
+     */
     'routes' => array(
         'view/js/:any' => array(
             'callback' => array('view', 'js')
@@ -18,7 +19,6 @@
         )
     ),
 
-
     'events' => array(
         'router.data' => function($currentRoute, $routeData)
         {
@@ -26,6 +26,5 @@
                 View::setTitle($routeData['title']);
         }
     )
-
 
 );

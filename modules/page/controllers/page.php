@@ -20,7 +20,7 @@ class Page_PageController extends Controller {
             return;
         }
 
-        return ERROR_NOTFOUND;
+        return ERROR_404;
     }
 
 }
