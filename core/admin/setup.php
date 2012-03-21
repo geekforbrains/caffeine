@@ -91,11 +91,11 @@
                 foreach($paths as $path)
                 {
                     $viewFile = Load::getModulePath($module) . Config::get('view.dir') . $path . EXT;
-                    Dev::debug('admin', 'Checking for custom view: ' . $viewFile);
+                    Log::debug('admin', 'Checking for custom view: ' . $viewFile);
 
                     if(file_exists($viewFile))
                     {
-                        Dev::debug('admin', 'Loading custom view: ' . $viewFile);
+                        Log::debug('admin', 'Loading custom view: ' . $viewFile);
                         return $viewFile;
                     }
                 }

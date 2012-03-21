@@ -120,7 +120,7 @@ class User_Current extends Module {
                 }
             }
 
-            Dev::debug('user', 'Current user ID: ' . self::$_user['id']);
+            Log::debug('user', 'Current user ID: ' . self::$_user['id']);
         }
 
         return self::$_instance;

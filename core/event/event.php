@@ -54,8 +54,6 @@ class Event extends Module {
      */
     public static function trigger($event, $data = null, $triggerCallback = null)
     {
-        Dev::debug('event', 'Triggering: ' . $event);
-
         if(is_null($data))
             $data = array(); // To be compatible with call_user_func_array
 
@@ -72,7 +70,7 @@ class Event extends Module {
                 // from each event callback to the trigger
                 if(!is_null($triggerCallback))
                 {
-                    Dev::debug('event', 'Calling back: ' . $triggerCallback[0] . '::' . $triggerCallback[1]);
+                    Log::debug('event', 'Calling back: ' . $triggerCallback[0] . '::' . $triggerCallback[1]);
                     call_user_func($triggerCallback, $returnData);
                 }
             }

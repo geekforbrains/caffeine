@@ -146,7 +146,7 @@ class Multilanguage_Admin_ModuleController extends Controller {
                             break;
 
                         default:
-                            Dev::debug('multilanguage', 'ERROR: Attempting to create content of unkown type "' . $k . '"');
+                            Log::error('multilanguage', 'Attempting to create content of unkown type "' . $k . '"');
                             Message::error('Error creating content, unkown content type encountered.');
                     }
 
@@ -266,7 +266,7 @@ class Multilanguage_Admin_ModuleController extends Controller {
                         break;
 
                     default:
-                        Dev::debug('multilanguage', 'ERROR: Attempting to update content of unkown type "' . $k . '"');
+                        Log::error('multilanguage', 'Attempting to update content of unkown type "' . $k . '"');
                         Message::error('Error updating content, unkown content type encountered.');
                 }
 

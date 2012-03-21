@@ -16,10 +16,9 @@ class Cron_CronController extends Controller {
         if($passphrase == Config::get('cron.passphrase'))
             Event::trigger('cron.run');
         else
-            Dev::debug('cron', 'Cant run cron job, invalid passphrase');
+            Log::debug('cron', 'Cant run cron job, invalid passphrase');
 
-        Dev::outputDebug();
-
+        Log::output();
         exit();
     }
 

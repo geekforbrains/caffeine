@@ -25,7 +25,7 @@ class Db extends Module {
 
             // Show and Describe queries are too noisy, ignore them
             if(!strstr($debugSql, 'SHOW') && !strstr($debugSql, 'DESCRIBE'))
-                Dev::debug('db', $debugSql);
+                Log::debug('db', $debugSql);
 
             $query = self::$_conn->prepare($sql);
             $result = $query->execute($bindings);
@@ -33,7 +33,7 @@ class Db extends Module {
             if(!$result)
             {
                 $info = $query->errorInfo();
-                Dev::debug('db', 'ERROR: ' . $info[2]);
+                Log::error('db', $info[2]);
             }
             else
             {
@@ -56,6 +56,7 @@ class Db extends Module {
         } 
         catch(Exception $e)
         {
+            Log::error('db', $e->getMessage());
             die($e->getMessage());
         }
     }
