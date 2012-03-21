@@ -6,8 +6,8 @@
  * A simple PHP framework that combines modules through the use of routes and 
  * events to form an application.
  *
- * @version 1.0
- * @date 2012-03-17
+ * @version 1.0.0
+ * @date 2012-03-21
  * @author Gavin Vickery <gavin@geekforbrains.com>
  * @license http://www.opensource.org/licenses/mit-license.php
  */
@@ -178,7 +178,7 @@ class Caffeine {
  */
 define('ROOT', __DIR__ . '/');
 define('EXT', '.php');
-define('VERSION', '1.0');
+define('VERSION', '1.0.0');
 define('IS_CLI', defined('CLI'));
 
 /**
