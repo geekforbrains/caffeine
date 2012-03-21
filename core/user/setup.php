@@ -1,15 +1,8 @@
 <?php return array(
 
-
     'configs' => array(
-        /*
-        'user.access_denied_redirect' => '',
-        'user.login_redirect' => 'admin/user',
-        'user.logout_redirect' => 'admin/login',
-        */
         'user.session_key' => 'user_id'
     ),
-
 
     'permissions' => array(
         'user.admin' => 'Administer users',
@@ -24,7 +17,6 @@
         'user.edit_roles' => 'Edit roles',
         'user.delete_roles' => 'Delete roles'
     ),
-
 
     'routes' => array(
         'admin/login' => array(
@@ -95,7 +87,6 @@
         )
     ),
 
-
     'events' => array(
         'user.permission[user.edit_mine]' => function($route, $data)
         {
@@ -107,6 +98,5 @@
             return false;
         }
     )
-
 
 );

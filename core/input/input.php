@@ -6,7 +6,10 @@ class Input extends Module {
      * Used for getting a posted value from $_POST or a default value
      * if the posted value doesn't exist.
      *
-     * @todo Add XSS filtering
+     * Example
+     *      echo Input::post('some_filed', 'Default Value');
+     *
+     * TODO Add XSS filtering
      *
      * @param string $field The field to get within $_POST
      * @param mixed $defaultValue An optional default value to return if $field doesn't exist within $_POST
@@ -20,12 +23,12 @@ class Input extends Module {
     }
 
     /**
-     * @todo Will be used for working with sessions securely.
+     * TODO  Will be used for working with sessions securely.
      */
     public static function session() {}
 
     /**
-     * @todo Will be used for working with cookies securely.
+     * TODO Will be used for working with cookies securely.
      */
     public static function cookie() {}
 

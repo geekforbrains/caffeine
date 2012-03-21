@@ -192,9 +192,10 @@ class Multilanguage_Admin_ModuleController extends Controller {
                 );
 
                 $row->addCol(
-                    Html::a()->get(
+                    Html::a(
                         'Delete', 
-                        'admin/multilanguage/modules/manage/' . $module . '/' . $type . '/' . $typeId . '/delete/' . $t->id
+                        'admin/multilanguage/modules/manage/' . $module . '/' . $type . '/' . $typeId . '/delete/' . $t->id,
+                        array('onclick' => "return confirm('Delete this translation?')")
                     ),
                     array('class' => 'right')
                 );

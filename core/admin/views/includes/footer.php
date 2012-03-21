@@ -1,7 +1,8 @@
 <!-- start footer -->
 <div class="footer container_12">
     <div class="grid_12">
-        Powered by <a href="http://github.com/geekforbrains/caffeine" target="_blank">Caffeine <?= VERSION; ?></a>
+        System Time: <?= date('M jS, Y - h:i A'); ?> (<?= Config::get('system.timezone'); ?>)
+        <a style="float: right" href="http://github.com/geekforbrains/caffeine" target="_blank">Caffeine <?= VERSION; ?></a>
     </div>
     <div class="clear">&nbsp;</div>
 </div>

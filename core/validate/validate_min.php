@@ -2,7 +2,6 @@
 
 class Validate_Min {
 
-
     public static function check($fieldName, $fieldValue, $minCount)
     {
         if((is_array($fieldValue) && count($fileValue) < $minCount) || strlen($fieldValue) < $minCount)
@@ -13,6 +12,5 @@ class Validate_Min {
 
         return true;
     }
-
 
 }

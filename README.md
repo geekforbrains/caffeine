@@ -5,7 +5,7 @@ A simple PHP framework that combines modules through the use of routes and event
 
 Requirements
 ------------
-* PHP 5.2
+* PHP 5.2+
 * MySQL/PDO (more databases coming soon)
 * Web server (Apache, Nginx, etc) with mod rewrite
 

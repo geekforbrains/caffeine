@@ -21,7 +21,9 @@ class Multilanguage_Admin_LanguageController extends Controller {
                 $row = $table->addRow();
                 $row->addCol(Html::a()->get($lang->name, 'admin/multilanguage/languages/edit/' . $lang->id));
                 $row->addCol(
-                    Html::a()->get('Delete', 'admin/multilanguage/languages/delete/' . $lang->id),
+                    Html::a('Delete', 'admin/multilanguage/languages/delete/' . $lang->id, array(
+                        'onclick' => "return confirm('Delete this language?')"
+                    )),
                     array('class' => 'right')
                 );
             }
@@ -101,7 +103,7 @@ class Multilanguage_Admin_LanguageController extends Controller {
     public static function edit($id)
     {
         if(!$lang = Multilanguage::language()->find($id))
-            return ERROR_NOTFOUND;
+            return ERROR_404;
 
         if(isset($_POST['update_language']) && Html::form()->validate())
         {

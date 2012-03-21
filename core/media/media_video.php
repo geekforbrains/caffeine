@@ -2,24 +2,18 @@
 
 class Media_Video extends Media_File {
 
-        
     /**
-     * --------------------------------------------------------------------------- 
      * Set the allowed image formats to be uploaded. Based on config in setup.php
-     * --------------------------------------------------------------------------- 
      */
     public function __construct()
     {
         $this->_type = 'video';
         $this->_allowedExts = Config::get('media.allowed_video_formats');
     }
-
     
     /**
-     * --------------------------------------------------------------------------- 
      * Used for saving videos from YouTube and Vimeo. Does NOT save a video file
      * from a url like file or image.
-     * --------------------------------------------------------------------------- 
      */
     public function saveFromUrl($url)
     {
@@ -41,11 +35,8 @@ class Media_Video extends Media_File {
         return $this;
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     public function embed($id, $width = 560, $height = 345)
     {
@@ -75,11 +66,8 @@ class Media_Video extends Media_File {
         }
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     public function _getVideoData($url)
     {
@@ -117,11 +105,8 @@ class Media_Video extends Media_File {
         return false; // Invalid url
     }
 
-
     /**
-     * --------------------------------------------------------------------------- 
-     * TODO
-     * --------------------------------------------------------------------------- 
+     * TODO Comments.
      */
     private function _getVideoId($url)
     {
@@ -145,6 +130,5 @@ class Media_Video extends Media_File {
 
         return false;
     }
-
 
 }

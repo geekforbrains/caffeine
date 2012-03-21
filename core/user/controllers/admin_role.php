@@ -2,47 +2,38 @@
 
 class User_Admin_RoleController extends Controller {
 
+    /**
+     * Displays a table for managing users.
+     */
     public static function manage()
     {
-        $rows = array();
-        $headers = array(
-            array(
-                'Role',
-                'attributes' => array('colspan' => 2)
-            )
-        );
+        $table = Html::table();
+        $table->addHeader()->addCol('Role', array('colspan' => 2));
 
         if($roles = User::role()->all())
         {
             foreach($roles as $role)
             {
-                $rows[] = array(
-                    Html::a()->get($role->name, 'admin/user/role/edit/' . $role->id),
-                    array(
-                        Html::a()->get('Delete', 'admin/user/role/delete/' . $role->id),
-                        'attributes' => array('class' => 'right')
-                    )
+                $row = $table->addRow();
+                $row->addCol(Html::a()->get($role->name, 'admin/user/role/edit/' . $role->id));
+                $row->addCol(
+                    Html::a('Delete', 'admin/user/role/delete/' . $role->id, array('onclick' => "return confirm('Delete this role?')")),
+                    array('class' => 'right')
                 );
             }
         }
         else
-        {
-            $rows[] = array(
-                array(
-                    '<em>No roles.</em>',
-                    'attributes' => array('colspan' => 2)
-                )
-            );
-        }
+            $table->addRow()->addCol('<em>No roles.</em>', array('colspan' => 2));
 
         return array(
-            array(
-                'title' => 'Manage Roles',
-                'content' => Html::table()->build($headers, $rows)
-            )
+            'title' => 'Manage Roles',
+            'content' => $table->render()
         );
     }
 
+    /**
+     * Displays a form for creating new roles.
+     */
     public static function create()
     {
         if(isset($_POST['create_role']) && Html::form()->validate())
@@ -102,7 +93,10 @@ class User_Admin_RoleController extends Controller {
                 ));
                 
                 if($status)
+                {
                     Message::ok('Role updated successfully.');
+                    $role->name = $_POST['name']; // Set updated name for form
+                }
                 else
                     Message::info('Nothing changed.');
             }
@@ -110,7 +104,7 @@ class User_Admin_RoleController extends Controller {
                 Message::error('A role with that name is already in use.');
         }
 
-        if(isset($_POST['update_roles']))
+        if(isset($_POST['update_perms']))
         {
             User::permission()->where('role_id', '=', $role->id)->delete();
 
@@ -145,13 +139,8 @@ class User_Admin_RoleController extends Controller {
 
         $formHtml = Html::form()->build($fields);
 
-        $rows = array();
-        $headers = array(
-            array(
-                'Module Roles',
-                'attributes' => array('colspan' => 2)
-            )
-        );
+        $table = Html::table();
+        $table->addHeader()->addCol('Module Roles', array('colspan' => 2));
 
         $sortedPermissions = User::getSortedPermissions();
         $setPermissions = User::permission()->where('role_id', '=', $id)->all();
@@ -164,31 +153,31 @@ class User_Admin_RoleController extends Controller {
 
         foreach($sortedPermissions as $module => $modulePermissions)
         {
-            $rows[] = array(
-                array(
-                    sprintf('<strong>%s</strong>', ucfirst($module)),
-                    'attributes' => array('colspan' => 2)
-                )
-            );
+            $nameRow = $table->addRow();
+            $nameRow->addCol(sprintf('<strong>%s</strong>', ucfirst($module)), array('colspan' => 2));
 
             foreach($modulePermissions as $permission => $desc)
             {
+                $fieldRow = $table->addRow();
+
                 $checked = in_array($permission, $setPermissions) ? ' checked="checked"' : '';
 
-                $rows[] = array(
-                    array(
-                        '<input type="checkbox" name="permissions[]" value="' . $permission . '"' . $checked . ' />',
-                        'attributes' => array('width' => 10)
-                    ),
-                    $desc
+                $fieldRow->addCol(
+                    '<input type="checkbox" name="permissions[]" value="' . $permission . '"' . $checked . ' />',
+                    array('width' => 10)
                 );
+
+                $fieldRow->addCol($desc);
             }
         }
 
-        // This is a bit hacky, figure a better way to make tables into forms
-        $tableHtml = Html::form()->open();
-        $tableHtml .= Html::table()->build($headers, $rows);
-        $tableHtml .= '<input type="submit" name="update_roles" value="Update Permissions" />';
+        // TODO This is a bit hacky, figure a better way to make tables into forms
+        $tableHtml = Html::form()->open(null, 'post', false, array('name' => 'perms', 'id' => 'perms'));
+        $tableHtml .= $table->render();
+        $tableHtml .= '<div class="buttons">';
+            $tableHtml .= '<input type="hidden" name="update_perms" value="true" />';
+            $tableHtml .= '<a class="blue btn submitter" href="#">Update Permissions</a>';
+        $tableHtml .= '</div>';
         $tableHtml .= Html::form()->close();
 
         return array(
@@ -203,6 +192,9 @@ class User_Admin_RoleController extends Controller {
         );
     }
 
+    /**
+     * Deletes a role and redirects back to manage roles page.
+     */
     public static function delete($id)
     {
         if(User::role()->delete($id))

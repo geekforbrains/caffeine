@@ -2,7 +2,6 @@
 
 class View_ViewController extends Controller {
 
-    
     public static function js($cacheKey)
     {
         ob_start('ob_gzhandler');
@@ -17,7 +16,6 @@ class View_ViewController extends Controller {
         die();
     }
 
-
     public static function css($cacheKey)
     {
         ob_start('ob_gzhandler');
@@ -31,6 +29,5 @@ class View_ViewController extends Controller {
 
         die();
     }
-
 
 }

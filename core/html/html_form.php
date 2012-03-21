@@ -1,24 +1,10 @@
 <?php
 
-/**
-$form = Html::form();
-
-$legend = $form->addLegend('My Legend');
-$legend->addField('field_name', array());
- 
-$form->addField('name', array(
-    'title' => 'Name',
-    'default_value' => 'Yay',
-    'options' => array(),
-    'validate' => array('required')
-));
-
-$form->addButton('submit', 'Create Page');
-
-$form->render();
-**/
 class Html_Form {
 
+    /**
+     * TODO Comments.
+     */
     public function open($action = null, $method = 'post', $enctype = false, $attributes = array())
     {
         if(is_null($action))
@@ -35,10 +21,16 @@ class Html_Form {
         return sprintf('<form method="%s" action="%s"%s%s>', $method, $action, $enctype, $attr);
     }
 
+    /**
+     * TODO Comments.
+     */
     public function openMultipart($action = null, $method = 'post') {
         return $this->open($action, $method, true);
     }
 
+    /**
+     * TODO Comments.
+     */
     public function close() {
         return '</form>';
     }
@@ -96,19 +88,8 @@ class Html_Form {
         // Insert form id as hidden field
         $html .= '<input type="hidden" name="form_id" value="' . $formId . '" />';
 
-        // Calls the associated method based on the field type
-        // Ex: type "textarea" calls self::_textarea($fieldName, $fieldData);
-        //$html .= '<ul>';
-
         foreach($fieldsets as $fieldsetData)
         {
-            /*
-            $html .= '<fieldset>';
-
-            if(isset($fieldsetData['legend']))
-                $html .= '<legend>' . $fieldsetData['legend'] . '</legend>';
-            */
-
             $html .= '<ul>';
 
             foreach($fieldsetData['fields'] as $fieldName => $fieldData)
@@ -117,30 +98,8 @@ class Html_Form {
                 if(isset($fieldData['validate']))
                     $formData[$fieldName] = $fieldData;
 
-                // Add form id for buttons
+                // Add form id for js submit buttons
                 $fieldData['form_name'] = $formName;
-
-                /*
-                $html .= '<p';
-                if(isset($fieldData['class']))
-                    $html .= sprintf(' class="%s"', $fieldData['class']);
-                else
-                {
-                    $type = $fieldData['type'] == 'password' ? 'text' : $fieldData['type'];
-                    $html .= sprintf(' class="%s"', $type);
-                }
-                $html .= '>';
-
-                if(isset($fieldData['title']))
-                    $html .= '<label>' . $fieldData['title'] . '</label>';
-                $html .= call_user_func(array('self', '_' . $fieldData['type']), $fieldName, $fieldData);
-
-                if(isset($fieldData['content']))
-                    $html .= $fieldData['content'];
-
-                $html .= Validate::error($fieldName);
-                $html .= '</p>';
-                */
 
                 $html .= '<li';
                 if(isset($fieldData['class']))
@@ -164,7 +123,6 @@ class Html_Form {
                 $html .= '</li>';
             }
 
-            //$html .= '</fieldset>';
             $html .= '</li>';
         }
 
@@ -189,11 +147,9 @@ class Html_Form {
         Cache::store($formId, serialize($formData));
     }
 
-    private static function _validate()
-    {
-
-    }
-
+    /**
+     * TODO Comments.
+     */
     private static function _attributes($data)
     {
         $html = '';
@@ -208,6 +164,9 @@ class Html_Form {
         return $html;
     }
 
+    /**
+     * TODO Comments.
+     */
     private static function _default_value($name, $data) {
         return isset($data['default_value']) ? $data['default_value'] : Input::post($name);
     }
@@ -225,7 +184,9 @@ class Html_Form {
         return sprintf('<input%s type="%s" name="%s" value="%s" />', self::_attributes($data), $type, $name, self::_default_value($name, $data));
     }
 
-    // Alias of text input, but as a password type
+    /**
+     * Alias of text input, but as a password type
+     */
     private static function _password($name, $data) {
         return self::_text($name, $data, 'password');
     }
@@ -284,6 +245,9 @@ class Html_Form {
         return $html;
     }
 
+    /**
+     * TODO Comments.
+     */
     private static function _getSelected($name, $data, $key)
     {
         if(isset($data['selected']))
@@ -301,17 +265,27 @@ class Html_Form {
         return null;
     }
 
+    /**
+     * TODO Comments.
+     */
     private static function _checkbox($name, $data)
     {
         $isChecked = (isset($data['checked']) && $data['checked']) ? 'checked="checked"' : '';
         return sprintf('<input type="checkbox" name="%s"%s />', $name, $isChecked);
     }
 
-    private static function _radio($name, $data)
+    /**
+     * TODO Comments.
+     */
+    private static function _radio($name, $data) 
     {
-
+        $isChecked = (isset($data['checked']) && $data['checked']) ? 'checked="checked"' : '';
+        return sprintf('<input type="radio" name="%s"%s />', $name, $isChecked);
     }
 
+    /**
+     * TODO Comments.
+     */
     private static function _file($name, $data)
     {
         return sprintf('<input type="file" name="%s" />', $name);    
@@ -331,16 +305,9 @@ class Html_Form {
         //return sprintf('<input%s type="submit" name="%s" value="%s" />', self::_attributes($data), $name, $data['value']);
 
         $html = sprintf('<input type="hidden" name="%s" value="true" />', $name); // So we can track which button was clicked
-        $html .= sprintf('<a class="btn blue" href="javascript:document.%s.submit();">%s</a>', 
-            $data['form_name'], $data['value']);
+        $html .= sprintf('<a class="btn blue submitter" href="#">%s</a>', $data['value']);
 
         return $html;
-    }
-
-    // TODO
-    private static function _button($name, $data)
-    {
-
     }
 
 }

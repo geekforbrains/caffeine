@@ -10,17 +10,6 @@ class Admin_AdminController extends Controller {
     }
 
     /**
-     * TODO
-     */
-    public static function dashboard()
-    {
-        return array(
-            'title' => 'Dashboard',
-            'content' => '<p>Dashboard is under development.</p>'
-        );
-    }
-
-    /**
      * Used to run the admin install if it hasn't been created yet.
      */
     public static function install()

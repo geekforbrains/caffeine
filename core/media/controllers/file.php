@@ -2,12 +2,9 @@
 
 class Media_FileController extends Controller {
 
-    
     /**
-     * --------------------------------------------------------------------------- 
      * Forces a download of the file based on the given id. If the file doesn't
      * exist, 404 is shown.
-     * --------------------------------------------------------------------------- 
      */
     public static function download($id)
     {
@@ -32,7 +29,7 @@ class Media_FileController extends Controller {
 			exit;
 		}
 
-		return ERROR_NOTFOUND;
+		return ERROR_404;
     }
 
 
