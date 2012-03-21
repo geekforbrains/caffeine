@@ -42,7 +42,7 @@ class Social_Twitter {
      */
     public function oauth()
     {
-        require_once(Load::getModulePath('social') . 'twitteroauth/twitteroauth' . EXT);
+        Load::asset('social', 'twitteroauth.php');
         return new TwitterOAuth(Config::get('social.twitter_consumer_key'), Config::get('social.twitter_consumer_secret'));
     }
 
