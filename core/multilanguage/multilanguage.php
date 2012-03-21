@@ -111,10 +111,10 @@ class Multilanguage extends Module {
         if(strstr($currentRoute, '/'))
         {
             $bits = explode('/', $currentRoute);
-            if($bits && strlen($bits[0]) == 3)
+            if($bits && strlen($bits[0]) == 2)
                 $code = $bits[0];
         }
-        elseif(strlen($currentRoute) == 3)
+        elseif(strlen($currentRoute) == 2)
             $code = $currentRoute;
 
         if(!is_null($code))

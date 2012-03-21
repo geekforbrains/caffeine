@@ -16,7 +16,7 @@
                 </li>
                 <li class="buttons">
                     <a class="btn blue" href="javascript:document.login.submit();">Login</a>&nbsp;
-                    <a class="btn gray" href="javascript:alert('This doesnt work yet');">Reset Password</a>
+                    <? /*<a class="btn gray" href="javascript:alert('This doesnt work yet');">Reset Password</a>*/ ?>
                 </li>
             </ul>
         <?= Html::form()->close(); ?>

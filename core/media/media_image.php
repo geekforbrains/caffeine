@@ -22,7 +22,7 @@ class Media_Image extends Media_File {
      * ---------------------------------------------------------------------------   
      */
     public function getUrl($id, $rotation = null, $widthOrPercent = null, $height = null) {
-        return Url::to($this->render($id, $rotation, $widthOrPercent, $height));
+        return Url::toLang(null, $this->render($id, $rotation, $widthOrPercent, $height));
     }
 
 

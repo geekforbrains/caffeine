@@ -5,7 +5,7 @@
          * When enabled (true) all messages logged with the Log::debug() method will
          * either be displayed in the browser or written to file (see log.debug_to_file config).
          */
-        'log.debug_enabled' => false,
+        'log.debug_enabled' => true,
 
         /**
          * When enabled, messages logged with the Log::debug() method will be saved to a
