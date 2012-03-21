@@ -9,7 +9,7 @@ class Mailer extends Module {
 	 */
 	public static function init()
 	{
-        require_once(Load::getModulePath('mailer') . 'phpmailer' . EXT);
+        Load::asset('mailer', 'phpmailer.php');
 		self::$_mail = null;
 		self::$_mail = new PHPMailer();
 	}

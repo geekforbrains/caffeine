@@ -83,6 +83,32 @@ class Load extends Module {
     }
 
     /**
+     * Returns the full path to $file in the $module "assets" directory.
+     *
+     * @param string $module The module we need an asset file from.
+     * @param string $file The filename to get from the modules assets/ dir.
+     * @param boolean $load If false, the file wont automatically be loaded, only the file path returned.
+     *
+     * @return String if file exists, false otherwise.
+     */
+    public static function asset($module, $file, $load = true)
+    {
+        if($modulePath = self::getModulePath($module))
+        {
+            $filePath = $modulePath . 'assets/' . $file; 
+
+            if(file_exists($filePath))
+            {
+                if($load)
+                    require_once($filePath);
+                return $filePath;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Finds and loads all module setup files.
      */
     public static function loadSetupFiles()
