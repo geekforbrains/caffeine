@@ -54,6 +54,8 @@ class Event extends Module {
      */
     public static function trigger($event, $data = null, $triggerCallback = null)
     {
+        Log::debug('event', 'Triggering the "' . $event . '" event');
+
         if(is_null($data))
             $data = array(); // To be compatible with call_user_func_array
 
