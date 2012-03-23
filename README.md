@@ -1,4 +1,4 @@
-Caffeine 1.0.0
+Caffeine 1.0.1
 ==============
 
 A simple PHP framework that combines modules through the use of routes and events to form an application.
@@ -119,3 +119,8 @@ them has been implemented into Caffeine, with my own twist.
 Gavin Vickery  
 <gavin@geekforbrains.com>  
 <http://geekforbrains.com>  
+
+Change Log
+----------
+1.0.1
+- Updated getBaseHref method in View module to return full url.
