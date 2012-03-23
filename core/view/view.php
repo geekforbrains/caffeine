@@ -96,7 +96,7 @@ class View extends Module {
     public static function getBaseHref()
     {
         $bits = explode(ROOT, self::getPath());
-        return Url::to($bits[1], false, false) . '/'; // requires trailing slash, dont include language code if any
+        return Url::to($bits[1], true, false) . '/'; // requires trailing slash, dont include language code if any
     }
 
     /**
