@@ -98,12 +98,26 @@ class Log extends Module {
     private static function _writeLog($type, $module, $message)
     {
         $logFile = ROOT . Media::getFilesPath() . Config::get(sprintf('log.%s_file', $type));
+        $logDir = implode('/', explode('/', $logFile, -1));
+
+        if(!file_exists($logDir))
+        {
+            $filesPath = ROOT . Media::getFilesPath();
+
+            if(is_writable($filesPath))
+                mkdir($logDir);
+            else
+                die('Unable to create log directory because your files directory isn\'t writable.');
+        }
+
+        if(!is_writable($logDir))
+            die('Unable to write log file because your log directory isn\'t writable.');
 
         if(!file_exists($logFile))
         {
             $header = "<?php if(!defined('ROOT')) exit; ?>\n";
 
-            if(!$handle = fopen($logFile, 'w'))
+            if(!$handle = fopen($logFile, 'a'))
                 die('Cant create log file: ' . $logFile);
 
             if(fwrite($handle, $header) === false)

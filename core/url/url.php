@@ -49,7 +49,7 @@ class Url extends Module {
     public static function host()
     {
         if(is_null(self::$_host))
-            self::$_host = $_SERVER['HTTP_HOST'];
+            self::$_host = $_SERVER['SERVER_NAME'];
 
         return self::$_host;
     }

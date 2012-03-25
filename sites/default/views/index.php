@@ -4,6 +4,6 @@
 
 <p>Caffeine is a simple PHP framework that combines modules through the use of routes and events to form an application.</p>
 
-<p><a href="http://github.com/geekforbrains/caffeine" target="_blank">Caffeine on GitHub</a></p>
+<p><?= Html::a('Caffeine on Github', 'http://github.com/geekforbrains/caffeine', array('target' => '_blank')); ?></p>
 
 <? View::insert('includes/footer'); ?>

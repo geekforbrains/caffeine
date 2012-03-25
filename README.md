@@ -1,4 +1,4 @@
-Caffeine 1.0.1
+Caffeine 1.0.2
 ==============
 
 A simple PHP framework that combines modules through the use of routes and events to form an application.
@@ -122,5 +122,11 @@ Gavin Vickery
 
 Change Log
 ----------
+1.0.2
+
+- Updated Url module to use SERVER_NAME instead of HTTP_HOST to determine current host.
+- Updated Log module to ensure the files and log directory is writable before creating file.
+
 1.0.1
+
 - Updated getBaseHref method in View module to return full url.
