@@ -75,7 +75,7 @@ class Menu {
     /**
      * TODO Comments.
      */
-    private static function _getHtml($sorted, $data)
+    private static function _getHtml($sorted, $data, $dropdownMenu = false)
     {
         // Determine count of actual items about to be displayed, this is used to determine
         // the "first" and "last" classes to be added to the current item, but also if we should just return
@@ -90,9 +90,18 @@ class Menu {
 
         $html = '<ul';
 
+        // TODO Detailed description
+        if($dropdownMenu)
+            $data['attributes']['class'] = 'dropdown-menu';
+
+        // TODO Detailed description
         if(isset($data['attributes']))
+        {
             foreach($data['attributes'] as $k => $v)
                 $html .= sprintf(' %s="%s"', $k, $v);
+
+            unset($data['attributes']);
+        }
 
         $html .= '>';
         
@@ -106,6 +115,18 @@ class Menu {
                 continue;
 
             $classes = array();
+
+            // Dropdown checks
+            if(isset($data['dropdowns']) && $data['dropdowns'] == true)
+            {
+                if($routeData['children'])
+                {
+                    $dropdownMenu = true; // Make all child <ul> elements dropdown menus
+                    $classes[] = 'dropdown';
+                }
+                else
+                    $dropdownMenu = false;
+            }
 
             if(String::startsWith($currentRoute['route'], $route))
                 $classes[] = 'active';
@@ -122,8 +143,15 @@ class Menu {
             $html .= '>';
 
             $html .= '<a';
+
+            /*
             if($classes)
                 $html .= ' class="' . implode(' ', $classes) . '"';
+            */
+
+            if($dropdownMenu)
+                $html .= ' class="dropdown-toggle" data-toggle="dropdown" data-target="#"';
+
             $html .= ' href="' . Url::to($route) . '">';
             //$html .= '<a href="' . Url::to($route) . '">';
 
@@ -132,10 +160,13 @@ class Menu {
             else
                 $html .= $routeData['title'];
 
+            if($dropdownMenu)
+                $html .= '<b class="caret"></b>';
+
             $html .= '</a>';
 
             if($routeData['children'])
-                $html .= self::_getHtml($routeData['children'], $data);
+                $html .= self::_getHtml($routeData['children'], $data, $dropdownMenu);
 
             $html .= '</li>';
 

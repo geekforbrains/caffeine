@@ -1,81 +1,43 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
     <base href="<?= View::getBaseHref(); ?>" />
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title><?= View::getTitle('Admin', null, ' - Admin'); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <title><?= View::getTitle('Control Panel', null, ' - Control Panel'); ?></title>
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="css/reset.css" />
-    <link rel="stylesheet" type="text/css" href="css/grid.css" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" type="text/css" href="plugins/chosen/chosen.css" />
-	<link rel="stylesheet" type="text/css" href="plugins/smoothness/jquery-ui-1.8.17.custom.css" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="plugins/tiny_mce/jquery.tinymce.js"></script>
-    <script type="text/javascript" src="plugins/chosen/chosen.jquery.js"></script>
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+  </head>
 
-    <script type="text/javascript">
-        var baseHref = '<?= View::getBaseHref(); ?>'; // Used by plugins to get relative paths to scripts
-    </script>
+  <body>
+    <? View::insert('includes/nav'); ?>
 
-    <script type="text/javascript" src="js/admin.js"></script>
-</head>
-<body>
+    <div class="container-fluid">
 
-<!-- start header -->
-<div class="header">
-    <div class="container_12">
-        <h1 class="grid_12">Control Panel</h1>
-
-        <? if(!User::current()->isAnonymous()): ?>
-            <div class="user_box">
-                Logged in as
-                <?= Html::a(User::current()->email, 'admin/user/edit/' . User::current()->id); ?>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                <?= Html::a('Logout', 'admin/logout'); ?>
-            </div>
-        <? endif; ?>
-    </div>
-    <div class="clear">&nbsp;</div>
-
-    <div class="tab_bar">
-        <div class="container_12">
-            <div class="grid_12">
-                <?= Menu::build(0, 'admin', array('attributes' => array('class' => 'tabs'))); ?>
-            </div>
-            <div class="clear">&nbsp;</div>
-        </div>
-    </div>
-
-    <div class="crumbs">
-        <div class="container_12">
-            <div class="grid_12">
-                <!--
-                <a href="#">Cookie</a><span class="splitter">&rarr;</span>
-                <a href="#">Crumb</a><span class="splitter">&rarr;</span>
-                Trail
-                -->
-            </div>
-            <div class="clear">&nbsp;</div>
-        </div>
-    </div>
-</div>
-<!-- end header -->
-
-
-<!-- start messages -->
-<? if($messages = Message::get()): ?>
-    <div class="container_12">
-        <div class="grid_12 messages">
-            <? foreach($messages as $type => $typeMessages): ?>
-                <? foreach($typeMessages as $message): ?>
-                    <p class="<?= $type; ?>"><?= $message; ?></p>
-                <? endforeach; ?>
-            <? endforeach; ?>
-        </div>
-    </div>
-<? endif; ?>
-<!-- end messages -->
+        <? View::insert('includes/breadcrumb'); ?>
+        <? View::insert('includes/messages'); ?>

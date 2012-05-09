@@ -24,16 +24,17 @@
             'permissions' => array('page.admin')
         ),
         'admin/page/manage' => array(
-            'title' => 'Manage',
+            'title' => 'Manage Pages',
             'callback' => array('admin_page', 'manage'),
             'permissions' => array('page.manage', 'page.manage_mine')
         ),
         'admin/page/create' => array(
-            'title' => 'Create',
+            'title' => 'Create Page',
             'callback' => array('admin_page', 'create'),
             'permissions' => array('page.create')
         ),
         'admin/page/edit/%d' => array(
+            'title' => 'Edit Page',
             'callback' => array('admin_page', 'edit'),
             'permissions' => array('page.edit', 'page.edit_mine'),
         ),
