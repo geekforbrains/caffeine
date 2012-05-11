@@ -38,8 +38,14 @@ class User_LoginController extends Controller {
         ));
 
         $form->addSubmit('login', 'Login');
+        $form->addLink('admin/reset-password', 'Forgot password?');
         
         View::data('form', $form->render());
+    }
+
+    public static function resetPassword()
+    {
+
     }
 
     public static function logout()

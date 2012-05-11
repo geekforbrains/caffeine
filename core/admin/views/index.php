@@ -1,10 +1,10 @@
 <? View::insert('includes/header'); ?>
 
-<div class="row-fluid">
-    <? if(is_array($adminContent) && $adminContent): ?>
-        <? if(isset($adminContent[0])): ?>
+<? if(is_array($adminContent) && $adminContent): ?>
+    <? if(isset($adminContent[0])): ?>
 
-            <? foreach($adminContent as $content): ?>
+        <? foreach($adminContent as $content): ?>
+            <div class="row-fluid">
                 <div class="span12">
                     <div class="page-header">
                         <h2><?= $content['title']; ?></h2>
@@ -18,10 +18,12 @@
 
                     <?= $content['content']; ?>
                 </div>
-            <? endforeach; ?>
+            </div>
+        <? endforeach; ?>
 
-        <? else: ?>
-                
+    <? else: ?>
+            
+        <div class="row-fluid">
             <div class="span12">
                 <div class="page-header">
                     <h2><?= $adminContent['title']; ?></h2>
@@ -35,15 +37,17 @@
 
                 <?= $adminContent['content']; ?>
             </div>
-
-        <? endif; ?>
-    <? else: ?>
-
-        <div class="span12">
-            <p><em>Nothing to display</em></p>
         </div>
 
     <? endif; ?>
-</div>
+<? else: ?>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <p><em>Nothing to display</em></p>
+        </div>
+    </div>
+
+<? endif; ?>
 
 <? View::insert('includes/footer'); ?>

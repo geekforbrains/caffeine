@@ -24,6 +24,11 @@
             'callback' => array('login', 'login'),
             'hidden' => true
         ),
+        'admin/reset-password' => array(
+            'title' => 'Reset Password',
+            'callback' => array('login', 'resetPassword'),
+            'hidden' => true
+        ),
         'admin/logout' => array(
             'title' => 'Logout',
             'callback' => array('login', 'logout'),

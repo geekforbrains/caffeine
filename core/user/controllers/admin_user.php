@@ -48,7 +48,7 @@ class User_Admin_UserController extends Controller {
      */
     public static function create()
     {
-        if(Input::post('create_user') && Html::form()->validate())
+        if(Input::post('create_user') && Html::form()->isSecure())
         {
             $post = Input::clean($_POST);
 
@@ -82,11 +82,16 @@ class User_Admin_UserController extends Controller {
                 Message::error('A user with that email exists.');
         }
 
-        $form = Html::form();
+        $form = Html::form(array('class' => 'form-horizontal'))->addFieldset();
 
         $form->addText('email', array(
             'title' => 'Email',
             'validate' => array('required', 'email')
+        ));
+
+        $form->addText('yay', array(
+            'title' => 'Yay',
+            'help' => 'Help meee!'
         ));
 
         $form->addPassword('password', array(
@@ -102,19 +107,21 @@ class User_Admin_UserController extends Controller {
         $options = User::role()->orderBy('name')->all();
         $form->addSelect('role_id[]', $options, array(
             'title' => 'Roles',
-            'option_key' => 'id', // TODO
-            'option_value' => 'name', // TODO Allow this to have 2 values (ex: last_name, first_name)
+            'option_key' => 'id',
+            'option_value' => 'name',
             'attributes' => array(
                 'multiple' => 'multiple'
             )
         ));
 
         $form->addSubmit('create_user', 'Create User');
+        $form->addLink(Url::previous(), 'Cancel');
 
         return array(
             'title' => 'Create User',
             'content' => $form->render()
         );
+
     }
 
     /**

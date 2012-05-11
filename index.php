@@ -61,6 +61,8 @@ class Caffeine {
             {
                 list($route, $data) = Router::getRouteData();
 
+                Event::trigger('caffeine.ready');
+
                 if($data)
                 {
                     if(self::_hasPermission($route, $data))

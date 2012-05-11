@@ -12,17 +12,18 @@ class User_UserModel extends Model {
         'email' => array(
             'type' => 'varchar',
             'length' => 255,
-            'not null' => true
+            'not null' => true,
         ),
         'pass' => array(
             'type' => 'varchar',
             'length' => 32,
-            'not null' => true
+            'not null' => true,
         ),
         'is_admin' => array(
             'type' => 'int',
             'length' => 1,
-            'not null' => true
+            'not null' => true,
+            'default' => 0
         )
     );
 
