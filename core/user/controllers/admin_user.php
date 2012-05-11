@@ -48,18 +48,20 @@ class User_Admin_UserController extends Controller {
      */
     public static function create()
     {
-        if(isset($_POST['create_user']) && Html::form()->validate())
+        if(Input::post('create_user') && Html::form()->isSecure())
         {
-            if(!User::user()->where('email', 'LIKE', $_POST['email'])->first())
+            $post = Input::clean($_POST);
+
+            if(!User::user()->where('email', 'LIKE', $post['email'])->first())
             {
                 $userId = User::user()->insert(array(
-                    'email' => $_POST['email'],
-                    'pass' => md5($_POST['password'])
+                    'email' => $post['email'],
+                    'pass' => md5($post['password'])
                 ));
 
-                if($userId && isset($_POST['role_id']))
+                if($userId && isset($post['role_id']))
                 {
-                    foreach($_POST['role_id'] as $roleId)
+                    foreach($post['role_id'] as $roleId)
                     {
                         Db::table('habtm_userroles_userusers')->insert(array(
                             'user_role_id' => $roleId,
@@ -80,46 +82,46 @@ class User_Admin_UserController extends Controller {
                 Message::error('A user with that email exists.');
         }
 
-        $options = array();
-        $roles = User::role()->all();
+        $form = Html::form(array('class' => 'form-horizontal'))->addFieldset();
 
-        foreach($roles as $role)
-            $options[$role->id] = $role->name;
+        $form->addText('email', array(
+            'title' => 'Email',
+            'validate' => array('required', 'email')
+        ));
 
-        $fields[] = array(
-            'fields' => array(
-                'email' => array(
-                    'title' => 'Email',
-                    'type' => 'text',
-                    'validate' => array('required', 'email')
-                ),
-                'password' => array(
-                    'title' => 'Password',
-                    'type' => 'password',
-                    'validate' => array('required', 'min:4')
-                ),
-                'confirm_password' => array(
-                    'title' => 'Confirm Password',
-                    'type' => 'password',
-                    'validate' => array('required', 'matches:password')
-                ),
-                'role_id[]' => array(
-                    'title' => 'Roles',
-                    'type' => 'select',
-                    'options' => $options,
-                    'attributes' => array('multiple' => 'multiple')
-                ),
-                'create_user' => array(
-                    'value' => 'Create User',
-                    'type' => 'submit'
-                )
+        $form->addText('yay', array(
+            'title' => 'Yay',
+            'help' => 'Help meee!'
+        ));
+
+        $form->addPassword('password', array(
+            'title' => 'Password',
+            'validate' => array('required', 'min:4')
+        ));
+
+        $form->addPassword('confirm_password', array(
+            'title' => 'Confirm Password',
+            'validate' => array('required', 'matches:password')
+        ));
+
+        $options = User::role()->orderBy('name')->all();
+        $form->addSelect('role_id[]', $options, array(
+            'title' => 'Roles',
+            'option_key' => 'id',
+            'option_value' => 'name',
+            'attributes' => array(
+                'multiple' => 'multiple'
             )
-        );
+        ));
+
+        $form->addSubmit('create_user', 'Create User');
+        $form->addLink(Url::previous(), 'Cancel');
 
         return array(
             'title' => 'Create User',
-            'content' => Html::form()->build($fields)
+            'content' => $form->render()
         );
+
     }
 
     /**

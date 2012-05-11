@@ -21,7 +21,8 @@
          * All core modules are loaded by default. If for some reason you need to
          * disable one (ex: multilanguage), add it to this array.
          */
-        'system.disabled_core_modules' => array(),
+        'system.disabled_core_modules' => array('multilanguage'),
+        'multilanguage.enabled' => false,
 
         /**
          * Sets the timezone for the entire application. Default is UTC.
@@ -35,7 +36,10 @@
          * When true, Caffeine will display the errors/maintenance.php view and halt
          * further execution.
          */
-        'system.maintenance_mode' => false
+        'system.maintenance_mode' => false,
+
+        'log.debug_enabled' => false,
+        'log.error_enabled' => false,
     )
 
 );

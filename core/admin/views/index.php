@@ -1,59 +1,53 @@
 <? View::insert('includes/header'); ?>
 
-<!-- start content -->
-<div class="content container_12">
+<? if(is_array($adminContent) && $adminContent): ?>
+    <? if(isset($adminContent[0])): ?>
 
-    <? if($subNav = Menu::build(-1, 'admin/%s', array('attributes' => array('class' => 'menu')))): ?>
-        <div class="grid_3 spacer">
-            <h2>Navigation</h2>
-            <?= $subNav; ?>
-        </div>
-    <? endif; ?>
-
-    <div class="grid_<?= ($subNav) ? '9' : '12'; ?>">
-        <? if(is_array($adminContent) && $adminContent): ?>
-            <? if(isset($adminContent[0])): ?>
-
-                <? foreach($adminContent as $content): ?>
-                    <div class="grid_12 spacer">
-                        <h1><?= $content['title']; ?></h1>
-
-                        <? if(isset($content['topright'])): ?>
-                            <div class="topright">
-                                <?= $content['topright']; ?>
-                            </div>
-                        <? endif; ?>
-
-                        <?= $content['content']; ?>
+        <? foreach($adminContent as $content): ?>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="page-header">
+                        <h2><?= $content['title']; ?></h2>
                     </div>
-                <? endforeach; ?>
 
-            <? else: ?>
-                    
-                <div class="grid_12 spacer">
-                    <h2><?= $adminContent['title']; ?></h2>
-
-                    <? if(isset($adminContent['topright'])): ?>
+                    <? if(isset($content['topright'])): ?>
                         <div class="topright">
-                            <?= $adminContent['topright']; ?>
+                            <?= $content['topright']; ?>
                         </div>
                     <? endif; ?>
 
-                    <?= $adminContent['content']; ?>
+                    <?= $content['content']; ?>
+                </div>
+            </div>
+        <? endforeach; ?>
+
+    <? else: ?>
+            
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="page-header">
+                    <h2><?= $adminContent['title']; ?></h2>
                 </div>
 
-            <? endif; ?>
-        <? else: ?>
+                <? if(isset($adminContent['topright'])): ?>
+                    <div class="topright">
+                        <?= $adminContent['topright']; ?>
+                    </div>
+                <? endif; ?>
 
-            <div class="grid_12 spacer">
-                <p><em>Nothing to display</em></p>
+                <?= $adminContent['content']; ?>
             </div>
+        </div>
 
-        <? endif; ?>
+    <? endif; ?>
+<? else: ?>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <p><em>Nothing to display</em></p>
+        </div>
     </div>
 
-    <div class="clear">&nbsp;</div>
-</div>
-<!-- end content -->
+<? endif; ?>
 
 <? View::insert('includes/footer'); ?>

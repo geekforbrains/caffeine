@@ -98,6 +98,20 @@ class Url extends Module {
     }
 
     /**
+     * Returns the previous url visisted. If no previous url was found, the current url
+     * is returned.
+     */
+    public static function previous($step = 1)
+    {
+        $history = Input::sessionGet('url.history');
+        
+        if(isset($history[$step]))
+            return $history[$step];
+
+        return Url::current();
+    }
+
+    /**
      * Returns all segments of the current URL in an array.
      */
     public static function segments()

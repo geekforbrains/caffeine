@@ -1,19 +1,31 @@
-<!-- start footer -->
-<div class="footer container_12">
-    <div class="grid_12">
-        System Time: <?= date('M jS, Y - h:i A'); ?> (<?= Config::get('system.timezone'); ?>)
-        <a style="float: right" href="http://github.com/geekforbrains/caffeine" target="_blank">Caffeine <?= VERSION; ?></a>
-    </div>
-    <div class="clear">&nbsp;</div>
-</div>
-<!-- end footer -->
+        <? if(User::current()->hasPermission('admin.access')): ?>
+            <hr>
+            <footer>
+                <p><a href="#">Caffeine v<?= VERSION; ?></a></p>
+            </footer>
+        <? endif; ?>
 
+    </div><!--/.fluid-container-->
 
-<script type="text/javascript"> 
-    $('select').addClass('chzn-select');
-    $(".chzn-select").chosen(); 
-    $(".chzn-select-deselect").chosen({allow_single_deselect:true}); 
-</script>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
 
-</body>
+    <!--
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+    -->
+
+  </body>
 </html>

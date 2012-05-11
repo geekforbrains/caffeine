@@ -48,7 +48,7 @@ class Page_Admin_PageController extends Controller {
             $table->addRow()->addCol('<em>No pages</em>', array('colspan' => 2));
 
         return array(
-            'title' => 'Manage Page',
+            'title' => 'Manage Pages',
             'content' => $table->render()
         );
     }

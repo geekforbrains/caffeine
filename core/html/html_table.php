@@ -33,11 +33,22 @@ class Html_Table {
      */
     public function __construct($args = array())
     {
+        $defClasses = Config::get('html.table_default_classes');
+
+        if(!isset($args['class']))
+            $args['class'] = $defClasses;
+        else
+            $args['class'] .= ' ' . $defClasses;
+
         $this->_pointer =& $this->_html;
         $this->_pointer = '<table';
 
+        /*
         if(isset($args[0]))
             $this->_addAttr($args[0]);
+        */
+        if($args)
+            $this->_addAttr($args);
 
         $this->_pointer .= '>';
     }

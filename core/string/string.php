@@ -302,4 +302,17 @@ class String extends Module {
         return preg_replace_callback('/([A-Z])/', $func, $string);
     }
 
+    /**
+     * Generates a unique random key, with the specified length. If no length is specified the full
+     * string (32 char) is returned.
+     */
+    public static function random($length = -1)
+    {
+        $key = md5(uniqid(mt_rand(), true));
+
+        if($length > 0)
+            return substr($key, 0, $length);
+        return $key;
+    }
+
 }
