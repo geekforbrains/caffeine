@@ -84,25 +84,9 @@ class User_Admin_UserController extends Controller {
 
         $form = Html::form(array('class' => 'form-horizontal'))->addFieldset();
 
-        $form->addText('email', array(
-            'title' => 'Email',
-            'validate' => array('required', 'email')
-        ));
-
-        $form->addText('yay', array(
-            'title' => 'Yay',
-            'help' => 'Help meee!'
-        ));
-
-        $form->addPassword('password', array(
-            'title' => 'Password',
-            'validate' => array('required', 'min:4')
-        ));
-
-        $form->addPassword('confirm_password', array(
-            'title' => 'Confirm Password',
-            'validate' => array('required', 'matches:password')
-        ));
+        $form->addText('email', array('title' => 'Email'));
+        $form->addPassword('password', array('title' => 'Password'));
+        $form->addPassword('confirm_password', array('title' => 'Confirm Password'));
 
         $options = User::role()->orderBy('name')->all();
         $form->addSelect('role_id[]', $options, array(
