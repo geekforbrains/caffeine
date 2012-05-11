@@ -37,9 +37,6 @@
          * further execution.
          */
         'system.maintenance_mode' => false,
-
-        'log.debug_enabled' => false,
-        'log.error_enabled' => false,
     )
 
 );
