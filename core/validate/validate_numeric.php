@@ -2,11 +2,11 @@
 
 class Validate_Numeric {
 
-    public static function check($fieldName, $fieldValue)
+    public static function check($data)
     {
-        if(!is_numeric($fieldValue))
+        if(!is_numeric($data))
         {
-            Validate::setError($fieldName, 'Must be a numeric value');
+            Validate::setError(Config::get('validate.numeric_error'));
             return false;
         }
 

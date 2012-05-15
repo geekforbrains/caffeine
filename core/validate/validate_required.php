@@ -2,11 +2,11 @@
 
 class Validate_Required {
 
-    public static function check($fieldName, $fieldValue)
+    public static function check($data)
     {
-        if((is_array($fieldValue) && count($fieldValue) <= 0) || (!is_array($fieldValue) && !strlen(trim($fieldValue))))
+        if(!strlen(trim($data)))
         {
-            Validate::setError($fieldName, 'Cannot be empty');
+            Validate::setError(Config::get('validate.required_error'));
             return false;
         }
 

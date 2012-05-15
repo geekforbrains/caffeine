@@ -2,11 +2,11 @@
 
 class Validate_Min {
 
-    public static function check($fieldName, $fieldValue, $minCount)
+    public static function check($data, $length)
     {
-        if((is_array($fieldValue) && count($fileValue) < $minCount) || strlen($fieldValue) < $minCount)
+        if(strlen(trim($data)) < $length)
         {
-            Validate::setError($fieldName, sprintf('Must be a minimum of %d characters', $minCount));
+            Validate::setError(sprintf(Config::get('validate.min_error'), $length));
             return false;
         }
 

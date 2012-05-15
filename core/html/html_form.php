@@ -4,8 +4,13 @@ class Html_Form {
 
     private $_html = '';
     private $_buttons = ''; // Stores buttons to be added at end of form
+    private $_token = null; // Stores form security token
     private $_rendered = false;
     private $_inFieldset = false;
+
+    // Validation
+    private $_toValidate = array();
+    private static $_errors = array();
 
     /**
      * Create a new form object. Optionally add attributes to the <form> tag.
@@ -89,7 +94,9 @@ class Html_Form {
         $html .= $this->_addAttributes($data);
         $html .= ' />';
 
-        return $this->_builder('text', $html, $data);
+        $this->_addValidation($name, $data);
+
+        return $this->_builder($name, 'text', $html, $data);
     }
 
     /**
@@ -112,7 +119,9 @@ class Html_Form {
         $html .= $this->_addDefaultValue($data, '%s');
         $html .= '</textarea>';
 
-        return $this->_builder('textarea', $html, $data);
+        $this->_addValidation($name, $data);
+
+        return $this->_builder($name, 'textarea', $html, $data);
     }
 
     /**
@@ -166,7 +175,9 @@ class Html_Form {
 
         $html .= '</select>';
 
-        return $this->_builder('select', $html, $data);
+        $this->_addValidation($name, $data);
+
+        return $this->_builder($name, 'select', $html, $data);
     }
 
     /**
@@ -183,13 +194,15 @@ class Html_Form {
 
         $html .= ' />';
 
-        return $this->_builder('checkbox', $html, $data);
+        $this->_addValidation($name, $data);
+
+        return $this->_builder($name, 'checkbox', $html, $data);
     }
 
     /**
      * Creates a radio input field.
      */
-    public function addRadio()
+    public function addRadio($name, $data)
     {
         $html = '<input type="radio" name="' . $name . '"';
         $html .= $this->_addDefaultValue($data, ' value="%s"');
@@ -200,7 +213,9 @@ class Html_Form {
 
         $html .= ' />';
 
-        return $this->_builder('radio', $html, $data);
+        $this->_addValidation($name, $data);
+
+        return $this->_builder($name, 'radio', $html, $data);
     }
 
     /**
@@ -246,13 +261,11 @@ class Html_Form {
         if(!$this->_rendered)
         {
             $this->_buildButtons();
-
             $this->closeFieldset();
-
             $this->_html .= '</form>';
-            $this->_rendered = true;
 
-            // TODO Store validation in cache
+            $this->_cacheValidation();
+            $this->_rendered = true;
         }
 
         return $this->_html;
@@ -264,20 +277,29 @@ class Html_Form {
      * Takes the HTML for an input along with its data and generates the required HTML output
      * for the type of form being created (basic, inline, fieldset etc.)
      */
-    private function _builder($type, $html, $data)
+    private function _builder($field, $type, $html, $data)
     {
         $wrap = '';
 
         if($this->_inFieldset)
         {
+            $hasError = isset(self::$_errors[$field]);
+
             if(isset($data['title']))
                 $wrap .= sprintf(Config::get('html.form_fieldset_title_wrapper'), $data['title']);
+
+            if($hasError)
+                $html .= sprintf(Config::get('html.form_fieldset_error_message'), self::$_errors[$field]);
 
             if(isset($data['help']))
                 $html .= sprintf(Config::get('html.form_fieldset_help_wrapper'), $data['help']);
 
             $wrap .= sprintf(Config::get('html.form_fieldset_control_wrapper'), $html);
-            $wrap = sprintf(Config::get('html.form_fieldset_group_wrapper'), $wrap);
+
+            if($hasError)
+                $wrap = sprintf(Config::get('html.form_fieldset_group_error_wrapper'), $wrap);
+            else
+                $wrap = sprintf(Config::get('html.form_fieldset_group_wrapper'), $wrap);
         }
         else
         {
@@ -305,7 +327,7 @@ class Html_Form {
                 $wrap .= sprintf(Config::get('html.form_help_wrapper', $data['help']));
         }
 
-        $this->_html .= $wrap . '&nbsp;';
+        $this->_html .= $wrap;
 
         return $this;
     }
@@ -356,6 +378,7 @@ class Html_Form {
     private function _addSecurityToken()
     {
         $token = String::random();
+        $this->_token = $token;
         $this->_html .= '<input type="hidden" name="form_token" value="' . $token . '" />';
 
         // Get previous tokens, if any, and add current token to it
@@ -363,6 +386,25 @@ class Html_Form {
         $tokens[] = $token;
 
         Input::sessionSet('form_tokens', $tokens);
+    }
+
+    /**
+     * Checks if the current field has validation requirements. If it does, the field is added to
+     * a local property that will later be cached and used to process validation.
+     */
+    private function _addValidation($name, $data)
+    {
+        if(isset($data['validate']))
+            $this->_toValidate[$name] = $data['validate'];
+    }
+
+    /**
+     * Stores any validation fields into db cache for later processing.
+     */
+    private function _cacheValidation()
+    {
+        if($this->_toValidate)
+            Cache::store($this->_token, serialize($this->_toValidate));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -402,6 +444,8 @@ class Html_Form {
         return '</form>';
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Checks if the posted form token is valid and within the session. If not, an error message is set and
      * boolean false is returned. This method should be called before processing any form to ensure its security.
@@ -411,10 +455,47 @@ class Html_Form {
         $token = Input::post('form_token');
 
         if($token && in_array($token, Input::sessionGet('form_tokens')))
-            return true;
+            return $token;
 
         Message::error('Form was submitted insecurely.');
         return false;
+    }
+
+    /**
+     * Validates the currently posted form (if any) and updates the corresponding form fields with
+     * any error messages encountered. Makes use of the Validate module.
+     */
+    public function validate()
+    {
+        self::$_errors = array();
+
+        if(!$token = $this->isSecure())
+            return false;
+
+        $toValidate = Cache::get(Input::post('form_token'));
+
+        // If no validation is found no checks are performed, so return true
+        if($toValidate === false)
+            return true;
+
+        $fields = unserialize($toValidate);
+
+        foreach($fields as $field => $checks)
+        {
+            if(!Validate::check(Input::post($field), $checks))
+            {
+                Log::debug('html', 'Validation Error: ' . $field . ' - ' . Validate::getLastError());
+                self::$_errors[$field] = Validate::getLastError();
+            }
+        }
+
+        if(self::$_errors)
+        {
+            Message::error(Config::get('html.form_validation_error'));
+            return false;
+        }
+
+        return true;
     }
 
 }

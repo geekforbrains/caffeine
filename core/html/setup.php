@@ -12,6 +12,11 @@
         // ------- FORMS --------
 
         /**
+         * The default message to display if any checks fail during the Html::form()->validate() method.
+         */
+        'html.form_validation_error' => 'Missing or invalid fields.',
+
+        /**
          * The default classes added to the <form> tag if none are set manually.
          */
         'html.form_default_classes' => 'well',
@@ -32,6 +37,14 @@
         'html.form_fieldset_title_wrapper' => '<label class="control-label">%s</label>',
         'html.form_fieldset_help_wrapper' => '<p class="help-block">%s</p>',
         'html.form_fieldset_buttons_wrapper' => '<div class="form-actions">%s</div>',
+
+        /**
+         * Errors, warnings and success messages.
+         */
+        'html.form_fieldset_group_error_wrapper' => '<div class="control-group error">%s</div>',
+        'html.form_fieldset_group_warning_wrapper' => '<div class="control-group warning">%s</div>',
+        'html.form_fieldset_group_success_wrapper' => '<div class="control-group success">%s</div>',
+        'html.form_fieldset_error_message' => '<span class="help-inline">%s</span>',
 
         /**
          * Form buttons HTML, use sprintf() format.

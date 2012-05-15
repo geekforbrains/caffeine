@@ -48,7 +48,7 @@ class User_Admin_UserController extends Controller {
      */
     public static function create()
     {
-        if(Input::post('create_user') && Html::form()->isSecure())
+        if(Input::post('create_user') && Html::form()->validate())
         {
             $post = Input::clean($_POST);
 
@@ -82,11 +82,23 @@ class User_Admin_UserController extends Controller {
                 Message::error('A user with that email exists.');
         }
 
+        // TODO If no class set and form has fieldsets, use form-horizontal automatically
         $form = Html::form(array('class' => 'form-horizontal'))->addFieldset();
 
-        $form->addText('email', array('title' => 'Email'));
-        $form->addPassword('password', array('title' => 'Password'));
-        $form->addPassword('confirm_password', array('title' => 'Confirm Password'));
+        $form->addText('email', array(
+            'title' => 'Email',
+            'validate' => array('required', 'email')
+        ));
+
+        $form->addPassword('password', array(
+            'title' => 'Password',
+            'validate' => array('required', 'min:4')
+        ));
+
+        $form->addPassword('confirm_password', array(
+            'title' => 'Confirm Password',
+            'validate' => array('required', 'matches:password')
+        ));
 
         $options = User::role()->orderBy('name')->all();
         $form->addSelect('role_id[]', $options, array(
@@ -95,7 +107,8 @@ class User_Admin_UserController extends Controller {
             'option_value' => 'name',
             'attributes' => array(
                 'multiple' => 'multiple'
-            )
+            ),
+            'validate' => array('required')
         ));
 
         $form->addSubmit('create_user', 'Create User');
