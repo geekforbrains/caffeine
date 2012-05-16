@@ -7,13 +7,19 @@
             if(String::endsWith(Url::current(), 'favicon.ico'))
                 return;
 
-            $history = Input::sessionGet('url.history', array());
-            array_unshift($history, Url::current());
+            $history = Input::sessionGet('url_history', array());
+            $current = Url::current();
 
-            if(count($history > 3))
+            // Dont add multiple histories for the same page consecutively
+            if(isset($history[0]) && $history[0] == $current)
+                return;
+
+            array_unshift($history, $current);
+
+            if(count($history) > 3)
                array_pop($history); 
 
-            Input::sessionSet('url.history', $history);
+            Input::sessionSet('url_history', $history);
         }
     )
 

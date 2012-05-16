@@ -82,8 +82,7 @@ class User_Admin_UserController extends Controller {
                 Message::error('A user with that email exists.');
         }
 
-        // TODO If no class set and form has fieldsets, use form-horizontal automatically
-        $form = Html::form(array('class' => 'form-horizontal'))->addFieldset();
+        $form = Html::form()->addFieldset();
 
         $form->addText('email', array(
             'title' => 'Email',
@@ -100,19 +99,18 @@ class User_Admin_UserController extends Controller {
             'validate' => array('required', 'matches:password')
         ));
 
-        $options = User::role()->orderBy('name')->all();
-        $form->addSelect('role_id[]', $options, array(
+        $form->addSelect('role_id[]', array(
             'title' => 'Roles',
+            'options' => User::role()->orderBy('name')->all(),
             'option_key' => 'id',
             'option_value' => 'name',
             'attributes' => array(
                 'multiple' => 'multiple'
-            ),
-            'validate' => array('required')
+            )
         ));
 
         $form->addSubmit('create_user', 'Create User');
-        $form->addLink(Url::previous(), 'Cancel');
+        $form->addLink(Url::to('admin/user/manage'), 'Cancel');
 
         return array(
             'title' => 'Create User',
@@ -126,25 +124,27 @@ class User_Admin_UserController extends Controller {
      */
     public static function edit($id)
     {
-        $user = User::user()->find($id);
+        if(!$user = User::user()->find($id))
+            return 404;
 
-        if(isset($_POST['update_user']))
+        if(Input::post('update_user') && Html::form()->validate())
         {
-            // First check if new email is already in use
-            if($_POST['email'] == $user->email || !User::user()->where('email', '=', $_POST['email'])->first())
+            $post = Input::clean($_POST);
+
+            if($post['email'] == $user->email || !User::user()->where('email', '=', $post['email'])->first())
             {
                 $status = User::user()->where('id', '=', $id)->update(array(
-                    'email' => $_POST['email'],
-                    'pass' => strlen($_POST['pass']) ? md5($_POST['pass']) : $user->pass
+                    'email' => $post['email'],
+                    'pass' => strlen($post['pass']) ? md5($post['pass']) : $user->pass
                 ));
 
-                Db::table('habtm_userroles_userusers')->where('user_user_id', '=', $user->id)->delete();
+                Db::habtm('user.role', 'user.user')->where('user_user_id', '=', $user->id)->delete();
 
-                if(isset($_POST['role_id']))
+                if(isset($post['role_id']))
                 {
-                    foreach($_POST['role_id'] as $roleId)
+                    foreach($post['role_id'] as $roleId)
                     {
-                        Db::table('habtm_userroles_userusers')->insert(array(
+                        Db::habtm('user.role', 'user.user')->insert(array(
                             'user_role_id' => $roleId,
                             'user_user_id' => $user->id
                         ));
@@ -152,7 +152,10 @@ class User_Admin_UserController extends Controller {
                 }
 
                 if($status)
+                {
                     Message::ok('User updated successfully.');
+                    $user = User::user()->find($id); // Get updated user for form
+                }
                 else
                     Message::error('Error updating user.');
             }
@@ -160,49 +163,36 @@ class User_Admin_UserController extends Controller {
                 Message::error('That email address is already in use.');
         }
 
-        $options = array();
-        $selected = array();
+        $form = Html::form()->addFieldset();
 
-        $roles = User::role()->all();
-        $selectedRoles = Db::table('habtm_userroles_userusers')->where('user_user_id', '=', $id)->all();
+        $form->addText('email', array(
+            'title' => 'Email',
+            'value' => $user->email,
+            'validate' => array('required')
+        ));
 
-        foreach($roles as $role)
-            $options[$role->id] = $role->name;
+        $form->addPassword('pass', array(
+            'title' => 'Password'
+        ));
 
-        if($selectedRoles)
-            foreach($selectedRoles as $role)
-                $selected[] = $role->user_role_id;
-
-        $fields[] = array(
-            'fields' => array(
-                'email' => array(
-                    'title' => 'Email',
-                    'type' => 'text',
-                    'default_value' => $user->email
-                ),
-                'pass' => array(
-                    'title' => 'Password',
-                    'type' => 'password'
-                ),
-                'role_id[]' => array(
-                    'title' => 'Roles',
-                    'type' => 'select',
-                    'options' => $options,
-                    'selected' => $selected,
-                    'attributes' => array('multiple' => 'multiple')
-                ),
-                'update_user' => array(
-                    'value' => 'Update User',
-                    'type' => 'submit'
-                )
+        $form->addSelect('role_id[]', array(
+            'title' => 'Roles',
+            'options' => User::role()->orderBy('name')->all(),
+            'option_key' => 'id',
+            'option_value' => 'name',
+            'selected' => Db::habtm('user.role', 'user.user')->where('user_user_id', '=', $id)->all(),
+            'selected_key' => 'user_role_id',
+            'attributes' => array(
+                'multiple' => 'multiple'
             )
-        );
+        ));
+
+        $form->addSubmit('update_user', 'Update User');
+        $form->addLink(Url::previous(), 'Cancel');
 
         return array(
-            array(
-                'title' => 'Edit User',
-                'content' => Html::form()->build($fields)
-            )
+            'title' => 'Edit User',
+            'content' => $form->render()
         );
     }
 

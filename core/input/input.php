@@ -48,7 +48,8 @@ class Input extends Module {
     public static function sessionGet($key, $defaultValue = null)
     {
         if(isset($_SESSION[$key]))
-            return self::clean($_SESSION[$key]);
+            return $_SESSION[$key];
+            //return self::clean($_SESSION[$key]);
         return $defaultValue;
     }
 

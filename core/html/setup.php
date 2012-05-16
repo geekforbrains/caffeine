@@ -66,6 +66,24 @@
          */
         'html.form_select_option_key' => 'id', // Ex: $obj->id
         'html.form_select_option_value' => 'name', // Ex: $obj->name
+    ),
+
+    'events' => array(
+        
+        /**
+         * Here we limit the number of form tokens allowed in a session at any given time. This is so we dont reach
+         * our memory limits. This is more reliable than checking if $_POST is present or not and clearing based on that.
+         */
+        'caffeine.started' => function()
+        {
+            $tokens = Input::sessionGet('form_tokens', array());
+
+            if(count($tokens) >= 5) // Its doubtful a single page will have more than 5 individual forms
+            {
+                $tokens = array_slice($tokens, (count($tokens) - 5));
+                Input::sessionSet('form_tokens', $tokens);
+            }
+        }
     )
 
 );

@@ -90,7 +90,7 @@ class Html_Form {
         $type = (isset($data['is_password']) && $data['is_password']) ? 'password' : 'text';
 
         $html = '<input type="' . $type . '" name="' . $name . '"';
-        $html .= $this->_addDefaultValue($data, ' value="%s"');
+        $html .= $this->_addDefaultValue($name, $data, ' value="%s"');
         $html .= $this->_addAttributes($data);
         $html .= ' />';
 
@@ -116,7 +116,7 @@ class Html_Form {
         $html = '<textarea name="' . $name . '"';
         $html .= $this->_addAttributes($data);
         $html .= '>';
-        $html .= $this->_addDefaultValue($data, '%s');
+        $html .= $this->_addDefaultValue($name, $data, '%s');
         $html .= '</textarea>';
 
         $this->_addValidation($name, $data);
@@ -126,21 +126,17 @@ class Html_Form {
 
     /**
      * Creates a select input field, with options.
-     *
-     * Example:
-     *      $form->addSelect('sizes', array('SML', 'MED', 'LRG'), array(
-     *          'title' => 'Choose a size',
-     *          'selected' => 0 // The option key currently selected, can be an array of selected keys
-     *      ));
      */
-    public function addSelect($name, $options = array(), $data = array())
+    public function addSelect($name, $data = array())
     {
         $html = '<select name="' . $name . '"';
         $html .= $this->_addAttributes($data);
         $html .= '>';
 
-        if($options)
+        if(isset($data['options']) && is_array($data['options']))
         {
+            $options = $data['options'];
+
             $optionKey = isset($data['option_key']) ? $data['option_key'] : Config::get('html.form_select_option_key');
             $optionValue = isset($data['option_value']) ? $data['option_value'] : Config::get('html.form_select_option_value');
 
@@ -155,16 +151,32 @@ class Html_Form {
 
                 $selected = false;
 
+                if($postData = Input::post(trim($name, '[]'))) // Trim [] because selects can have multiples options
+                    $data['selected'] = $postData;
+                
                 if(isset($data['selected']))
                 {
-                    if(is_array($data['selected']) && in_array($k, $data['selected']))
-                        $selected = true;
-
+                    if(is_array($data['selected']) && !empty($data['selected']))
+                    {
+                        if(is_object($data['selected'][0]))
+                        {
+                            foreach($data['selected'] as $selObj)
+                            {
+                                if($selObj->{$data['selected_key']} == $k)
+                                {
+                                    $selected = true;
+                                    break;
+                                }
+                            }
+                        }
+                        elseif(in_array($k, $data['selected']))
+                            $selected = true;
+                    }
                     elseif($data['selected'] == $k)
                         $selected = true;
                 }
 
-                $html .= '<option name="' . $k . '"';
+                $html .= '<option value="' . $k . '"';
 
                 if($selected)
                     $html .= ' selected="selected"';
@@ -349,10 +361,16 @@ class Html_Form {
     /**
      * TODO
      */
-    private function _addDefaultValue($data, $wrapper = '%s')
+    private function _addDefaultValue($field, $data, $wrapper = '%s')
     {
+        $postedData = Input::post($field);
+
+        if($postedData)
+            $data['value'] = $postedData;
+
         if(isset($data['value'])) 
             return sprintf($wrapper, $data['value']);
+
         return null;
     }
 
@@ -482,11 +500,10 @@ class Html_Form {
 
         foreach($fields as $field => $checks)
         {
-            if(!Validate::check(Input::post($field), $checks))
-            {
-                Log::debug('html', 'Validation Error: ' . $field . ' - ' . Validate::getLastError());
+            $cleanField = trim($field, '[]');
+
+            if(!Validate::check(Input::post($cleanField), $checks))
                 self::$_errors[$field] = Validate::getLastError();
-            }
         }
 
         if(self::$_errors)

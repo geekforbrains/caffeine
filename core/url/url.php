@@ -103,7 +103,7 @@ class Url extends Module {
      */
     public static function previous($step = 1)
     {
-        $history = Input::sessionGet('url.history');
+        $history = Input::sessionGet('url_history');
         
         if(isset($history[$step]))
             return $history[$step];

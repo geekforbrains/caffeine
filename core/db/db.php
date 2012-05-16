@@ -69,6 +69,22 @@ class Db extends Module {
     }
 
     /**
+     * Builds the habtm table from the two given table names and returns a query object.
+     */
+    public static function habtm($table1, $table2)
+    {
+        $tbl1Bits = explode('.', $table1);
+        $tbl1 = $tbl1Bits[0] . String::plural($tbl1Bits[1]);
+
+        $tbl2Bits = explode('.', $table2);
+        $tbl2 = $tbl2Bits[0] . String::plural($tbl2Bits[1]);
+
+        $names = array($tbl1, $tbl2);
+        sort($names);
+        return self::table('habtm_' . implode('_', $names));
+    }
+
+    /**
      * Creates a PDO connection based on configs.
      */
     private static function _connect()

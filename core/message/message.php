@@ -35,10 +35,18 @@ class Message extends Module {
     }
 
     /**
-     * Shorthand method for setting "ok" messages.
+     * Shorthand method for setting "success" messages.
+     */
+    public static function success($message) {
+        self::set('success', $message);
+    }
+
+    /**
+     * This was the first method used instead of success() but is now deperecated. Is simply an 
+     * alias of success() to support backwards compatability.
      */
     public static function ok($message) {
-        self::set('ok', $message);
+        self::success($message);
     }
 
     /**
@@ -53,6 +61,13 @@ class Message extends Module {
      */
     public static function info($message) {
         self::set('info', $message);
+    }
+
+    /**
+     * Shorthand method for setting "warning" messages.
+     */
+    public static function warning($message) {
+        self::set('warning', $message);
     }
 
 }

@@ -24,6 +24,7 @@ class Caffeine {
     private static $_requiredCore = array(
         'module',
         'config',
+        'event',
         'load',
         'site'
     );
