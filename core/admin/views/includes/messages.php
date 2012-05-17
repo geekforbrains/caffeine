@@ -1,3 +1,9 @@
+<? if(strstr(Url::current(), 'admin/login')): ?>
+    <div class="row-fluid">
+        <div class="span4"></div>
+        <div class="span4">
+<? endif; ?>
+    
 <? if($messages = Message::get()): ?>
     <? foreach($messages as $type => $typeMessages): ?>
 
@@ -15,4 +21,10 @@
         </div>
 
     <? endforeach; ?>
+<? endif; ?>
+
+<? if(strstr(Url::current(), 'admin/login')): ?>
+        </div>
+        <div class="span4"></div>
+    </div>
 <? endif; ?>
