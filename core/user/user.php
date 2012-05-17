@@ -83,4 +83,43 @@ class User extends Module {
         return User_Current::singleton();
     }
 
+    /**
+     * Sends a reset password link to a users email address. This is usually called
+     * due to the reset password form being submitted, but may be called directly.
+     */
+    public static function sendResetPasswordEmail($user)
+    {
+        $token = String::random(); // Used for verifying user link against $user id and token
+
+        $status = User::user()->where('id', '=', $user->id)->update(array(
+            'reset_token' => $token
+        ));
+
+        if($status)
+        {
+            $url = Url::to('admin/set-password/' . $user->id . '/' . $token, true); // true = send as full url
+
+            $template = file_get_contents(Load::asset('user', 'reset_password.txt', false));
+            $template = str_replace(':url', $url, $template);
+            $template = str_replace(':version', VERSION, $template);
+
+            $mail = Plugin::load('phpmailer');
+            $mail->SetFrom(Config::get('system.email_address'), Config::get('system.email_name'));
+            $mail->AddAddress($user->email);
+            $mail->Subject = 'Reset Password';
+            $mail->Body = $template;
+
+            if(!$mail->Send())
+            {
+                Log::error('user', 'Error sending reset password email: ' . $mail->ErrorInfo);
+                return false;
+            }
+
+            return true;
+        }
+
+        Log::error('user', 'Error updating users reset token');
+        return false;
+    }
+
 }

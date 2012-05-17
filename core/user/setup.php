@@ -29,6 +29,11 @@
             'callback' => array('login', 'resetPassword'),
             'hidden' => true
         ),
+        'admin/set-password/:id/:slug' => array(
+            'title' => 'Set Password',
+            'callback' => array('login', 'setPassword'),
+            'hidden' => true
+        ),
         'admin/logout' => array(
             'title' => 'Logout',
             'callback' => array('login', 'logout'),

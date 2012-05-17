@@ -19,6 +19,11 @@ class User_UserModel extends Model {
             'length' => 32,
             'not null' => true,
         ),
+        'reset_token' => array(
+            'type' => 'varchar',
+            'length' => 32,
+            'not null' => true
+        ),
         'is_admin' => array(
             'type' => 'int',
             'length' => 1,
@@ -27,6 +32,6 @@ class User_UserModel extends Model {
         )
     );
 
-    public $_indexes = array('is_admin');
+    public $_indexes = array('reset_token', 'is_admin');
 
 }

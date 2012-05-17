@@ -37,7 +37,10 @@
                         Url::redirect('admin/install');
                 }
 
-                elseif(!String::startsWith($currentRoute, 'admin/login'))
+                elseif(
+                    !String::startsWith($currentRoute, 'admin/login') && 
+                    !String::startsWith($currentRoute, 'admin/reset-password') &&
+                    !String::startsWith($currentRoute, 'admin/set-password'))
                 {
                     $noAccess = !User::current()->hasPermission('admin.access');
                     $isAnon = User::current()->isAnonymous();

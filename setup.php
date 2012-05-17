@@ -11,11 +11,18 @@
         'db.host' => 'localhost',
 
         /**
+         * This is the default email used when sending emails such as notifications or reset
+         * password emails. Other modules may also make use of it.
+         */
+        'system.email_name' => 'Caffeine',
+        'system.email_address' => 'caffeine@localhost',
+
+        /**
          * Custom modules located in <root>/modules/ must be enabled by defining 
          * them in the array below. Modules within sites/<site>/modules are loaded 
          * automatically.
          */
-        'system.enabled_custom_modules' => array('page', 'test'),
+        'system.enabled_custom_modules' => array('page'),
 
         /**
          * All core modules are loaded by default. If for some reason you need to
