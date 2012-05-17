@@ -28,4 +28,8 @@ class Page_PageModel extends Model {
 
     public $_fulltext = array('title', 'body');
 
+    public function getParent() {
+        return $this->where('page_id', '=', $this->page_id)->first();
+    }
+
 }

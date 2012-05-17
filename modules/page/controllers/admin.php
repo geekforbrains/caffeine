@@ -1,6 +1,6 @@
 <?php
 
-class Page_Admin_PageController extends Controller {
+class Page_AdminController extends Controller {
 
     /**
      * Displays a table of pages, either for all users or the currently logged in users pages only 
@@ -18,8 +18,7 @@ class Page_Admin_PageController extends Controller {
 
         $table = Html::table();
         $header = $table->addHeader();
-        $header->addCol('Title');
-        $header->addCol('User', array('colspan' => 2));
+        $header->addCol('Title', array('colspan' => 2));
 
         if($pages)
         {
@@ -33,7 +32,6 @@ class Page_Admin_PageController extends Controller {
 
                 $row = $table->addRow();
                 $row->addCol(Html::a()->get($page->indent . $page->title, 'admin/page/edit/' . $page->id));
-                $row->addCol($user->email);
                 $row->addCol(
                     Html::a('Delete', 'admin/page/delete/' . $page->id, array(
                         'onclick' => "return confirm('Delete this page? All child pages will be deleted as well.')"
@@ -60,20 +58,22 @@ class Page_Admin_PageController extends Controller {
      */
     public static function create()
     {
-        if(isset($_POST['create_page']) && Html::form()->validate())
+        if(Input::post('create_page') && Html::form()->validate())
         {
+            $post = Input::clean($_POST);
+
             $pageId = Page::page()->insert(array(
-                'page_id' => $_POST['page_id'],
+                'page_id' => $post['page_id'],
                 'user_id' => User::current()->id,
-                'slug' => String::slugify($_POST['title']),
-                'title' => $_POST['title'],
-                'body' => $_POST['body']
+                'slug' => String::slugify($post['title']),
+                'title' => $post['title'],
+                'body' => $post['body']
             ));
 
             if($pageId)
             {
                 Message::ok('Page created successfully.');
-                $_POST = array(); // Clear form
+                Url::redirect('admin/page/manage');
             }
             else
                 Message::error('Error creating page. Please try again.');
@@ -94,34 +94,34 @@ class Page_Admin_PageController extends Controller {
         foreach($indentedPages as $page)
             $arrPages[$page->id] = $page->indent . $page->title;
 
-        $fields[] = array(
-            'fields' => array(
-                'page_id' => array(
-                    'title' => 'Parent',
-                    'type' => 'select',
-                    'options' => $arrPages
-                ),
-                'title' => array(
-                    'title' => 'Title',
-                    'type' => 'text',
-                    'validate' => array('required')
-                ),
-                'body' => array(
-                    'title' => 'Body',
-                    'type' => 'textarea',
-                    'attributes' => array('class' => 'tinymce')
-                ),
-                'create_page' => array(
-                    'value' => 'Create Page',
-                    'type' => 'submit',
-                )
+
+        $form = Html::form()->addFieldset();
+
+        $form->addSelect('page_id', array(
+            'title' => 'Parent',
+            'options' => $arrPages
+        ));
+
+        $form->addText('title', array(
+            'title' => 'Title',
+            'validate' => array('required')
+        ));
+
+        $form->addTextarea('body', array(
+            'title' => 'Body',
+            'attributes' => array(
+                'class' => 'span6',
+                'rows' => 8
             )
-        );
+        )); 
+
+        $form->addSubmit('create_page', 'Create Page');
+        $form->addLink(Url::to('admin/page/manage'), 'Cancel');
 
         return array(
             array(
                 'title' => 'Create Page',
-                'content' => Html::form()->build($fields)
+                'content' => $form->render()
             )
         );
     } 
@@ -136,17 +136,22 @@ class Page_Admin_PageController extends Controller {
      */
     public static function edit($id)
     {
-        if(isset($_POST['update_page']) && Html::form()->validate())
+        if(Input::post('update_page') && Html::form()->validate())
         {
+            $post = Input::clean($_POST);
+
             $status = Page::page()->where('id', '=', $id)->update(array(
-                'page_id' => $_POST['page_id'],
-                'title' => $_POST['title'],
-                'slug' => $_POST['slug'],
-                'body' => $_POST['body']
+                'page_id' => $post['page_id'],
+                'title' => $post['title'],
+                'slug' => $post['slug'],
+                'body' => $post['body']
             ));
 
             if($status)
+            {
                 Message::ok('Page updated successfully.');
+                Url::redirect('admin/page/manage');
+            }
             else
                 Message::error('Error updating page. Please try again.');
         }
@@ -169,43 +174,42 @@ class Page_Admin_PageController extends Controller {
         foreach($indentedPages as $p)
             $arrPages[$p->id] = $p->indent . $p->title;
 
-        $fields[] = array(
-            'fields' => array(
-                'page_id' => array(
-                    'title' => 'Parent',
-                    'type' => 'select',
-                    'options' => $arrPages,
-                    'selected' => $page->page_id
-                ),
-                'title' => array(
-                    'title' => 'Title',
-                    'type' => 'text',
-                    'default_value' => $page->title,
-                    'validate' => array('required')
-                ),
-                'slug' => array(
-                    'title' => 'Slug',
-                    'type' => 'text',
-                    'default_value' => $page->slug,
-                    'validate' => array('required')
-                ),
-                'body' => array(
-                    'title' => 'Body',
-                    'type' => 'textarea',
-                    'default_value' => $page->body,
-                    'attributes' => array('class' => 'tinymce')
-                ),
-                'update_page' => array(
-                    'value' => 'Update Page',
-                    'type' => 'submit',
-                )
+        $form = Html::form()->addFieldset();
+
+        $form->addSelect('page_id', array(
+            'title' => 'Parent',
+            'options' => $arrPages,
+            'selected' => $page->page_id
+        ));
+
+        $form->addText('title', array(
+            'title' => 'Title',
+            'value' => $page->title,
+            'validate' => array('required')
+        ));
+
+        $form->addText('slug', array(
+            'title' => 'Slug',
+            'value' => $page->slug,
+            'validate' => array('required')
+        ));
+
+        $form->addTextarea('body', array(
+            'title' => 'Body',
+            'value' => $page->body,
+            'attributes' => array(
+                'class' => 'span6',
+                'rows' => 8
             )
-        );
+        ));
+
+        $form->addSubmit('update_page', 'Update Page');
+        $form->addLink(Url::to('admin/page/manage'), 'Cancel');
 
         return array(
             array(
                 'title' => 'Edit Page',
-                'content' => Html::form()->build($fields)
+                'content' => $form->render()
             )
         );
     }
@@ -219,7 +223,7 @@ class Page_Admin_PageController extends Controller {
     {
         self::_deleteRelated($id); 
         Message::ok('Page deleted successfully.');
-        Url::redirect('admin/page');
+        Url::redirect('admin/page/manage');
     }
 
 

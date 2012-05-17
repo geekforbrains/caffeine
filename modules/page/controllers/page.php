@@ -11,7 +11,7 @@ class Page_PageController extends Controller {
      */
     public static function view($slug)
     {
-        $page = Page::page()->find($slug);
+        $page = Page::page()->find(Input::clean($slug));
 
         if($page)
         {
@@ -20,7 +20,7 @@ class Page_PageController extends Controller {
             return;
         }
 
-        return ERROR_404;
+        return 404;
     }
 
 }

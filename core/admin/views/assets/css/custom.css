@@ -6,3 +6,7 @@ table tr td.right {
 .btn {
     margin-right: 5px;
 }
+
+form.well .form-actions {
+    padding-left: 0;
+}

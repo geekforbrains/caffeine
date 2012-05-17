@@ -351,10 +351,8 @@ class Html_Form {
     {
         if(strlen($this->_buttons))
         {
-            /*
             if($this->_inFieldset)
                 $this->_buttons = sprintf(Config::get('html.form_fieldset_buttons_wrapper'), $this->_buttons);
-            */
 
             $this->_html .= $this->_buttons;
         }

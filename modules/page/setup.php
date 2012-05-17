@@ -25,21 +25,21 @@
         ),
         'admin/page/manage' => array(
             'title' => 'Manage Pages',
-            'callback' => array('admin_page', 'manage'),
+            'callback' => array('admin', 'manage'),
             'permissions' => array('page.manage', 'page.manage_mine')
         ),
         'admin/page/create' => array(
             'title' => 'Create Page',
-            'callback' => array('admin_page', 'create'),
+            'callback' => array('admin', 'create'),
             'permissions' => array('page.create')
         ),
         'admin/page/edit/%d' => array(
             'title' => 'Edit Page',
-            'callback' => array('admin_page', 'edit'),
+            'callback' => array('admin', 'edit'),
             'permissions' => array('page.edit', 'page.edit_mine'),
         ),
         'admin/page/delete/%d' => array(
-            'callback' => array('admin_page', 'delete'),
+            'callback' => array('admin', 'delete'),
             'permissions' => array('page.delete', 'page.delete_mine')
         )
     ),

@@ -63,6 +63,7 @@ class Input extends Module {
         return false;
     }
 
+    // TODO
     public static function cookieSet() {}
     public static function cookieGet() {}
     public static function cookieDel() {}
