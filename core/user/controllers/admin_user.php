@@ -187,11 +187,16 @@ class User_Admin_UserController extends Controller {
             )
         ));
 
-        $form->addSubmit('update_user', 'Update User');
-        $form->addLink(Url::previous(), 'Cancel');
+        $buttonName = $user->id == User::current()->id ? 'Update Profile' : 'Update User';
+        $form->addSubmit('update_user', $buttonName);
+        $form->addLink(Url::to('admin/user/manage'), 'Cancel');
+
+        $title = $user->id == User::current()->id ? 'My Profile' : 'Edit User';
+
+        View::setTitle($title);
 
         return array(
-            'title' => 'Edit User',
+            'title' => $title,
             'content' => $form->render()
         );
     }

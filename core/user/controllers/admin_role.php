@@ -15,9 +15,9 @@ class User_Admin_RoleController extends Controller {
             foreach($roles as $role)
             {
                 $row = $table->addRow();
-                $row->addCol(Html::a()->get($role->name, 'admin/user/role/edit/' . $role->id));
+                $row->addCol(Html::a()->get($role->name, 'admin/role/edit/' . $role->id));
                 $row->addCol(
-                    Html::a('Delete', 'admin/user/role/delete/' . $role->id, array('onclick' => "return confirm('Delete this role?')")),
+                    Html::a('Delete', 'admin/role/delete/' . $role->id, array('onclick' => "return confirm('Delete this role?')")),
                     array('class' => 'right')
                 );
             }
@@ -36,18 +36,20 @@ class User_Admin_RoleController extends Controller {
      */
     public static function create()
     {
-        if(isset($_POST['create_role']) && Html::form()->validate())
+        if(Input::post('create_role') && Html::form()->validate())
         {
-            if(!User::role()->where('name', 'LIKE', '%' . $_POST['name'] . '%')->first())
+            $post = Input::clean($_POST);
+
+            if(!User::role()->where('name', 'LIKE', '%' . $post['name'] . '%')->first())
             {
                 $roleId = User::role()->insert(array(
-                    'name' => $_POST['name']
+                    'name' => $post['name']
                 ));
 
                 if($roleId)
                 {
                     Message::ok('Role created successfully.');
-                    Url::redirect('admin/user/role/edit/' . $roleId);
+                    Url::redirect('admin/role/edit/' . $roleId);
                 }
                 else
                     Message::error('Error creating role.');
@@ -56,23 +58,19 @@ class User_Admin_RoleController extends Controller {
                 Message::error('A role with that name already exists.');
         }
 
-        $fields[] = array(
-            'fields' => array(
-                'name' => array(
-                    'title' => 'Name',
-                    'type' => 'text',
-                    'validate' => array('required')
-                ),
-                'create_role' => array(
-                    'value' => 'Create Role',
-                    'type' => 'submit'
-                )
-            )
-        );
+        $form = Html::form()->addFieldset();
+
+        $form->addText('name', array(
+            'title' => 'Name',
+            'validate' => array('required')
+        ));
+
+        $form->addSubmit('create_role', 'Create Role');
+        $form->addLink(Url::to('admin/role/manage'), 'Cancel');
 
         return array(
             'title' => 'Create Role',
-            'content' => Html::form()->build($fields)
+            'content' => $form->render()
         );
     }
 
@@ -84,18 +82,20 @@ class User_Admin_RoleController extends Controller {
     {
         $role = User::role()->find($id);
 
-        if(isset($_POST['update_role']))
+        if(Input::post('update_role') && Html::form()->validate())
         {
-            if($_POST['name'] == $role->name || !User::role()->where('name', 'LIKE', $_POST['name'])->first())
+            $post = Input::clean($_POST);
+
+            if($post['name'] == $role->name || !User::role()->where('name', 'LIKE', $post['name'])->first())
             {
                 $status = User::role()->where('id', '=', $id)->update(array(
-                    'name' => $_POST['name']
+                    'name' => $post['name']
                 ));
                 
                 if($status)
                 {
                     Message::ok('Role updated successfully.');
-                    $role->name = $_POST['name']; // Set updated name for form
+                    Url::redirect('admin/role/manage');
                 }
                 else
                     Message::info('Nothing changed.');
@@ -104,13 +104,15 @@ class User_Admin_RoleController extends Controller {
                 Message::error('A role with that name is already in use.');
         }
 
-        if(isset($_POST['update_perms']))
+        if(Input::post('update_perms'))
         {
+            $post = Input::clean($_POST);
+
             User::permission()->where('role_id', '=', $role->id)->delete();
 
-            if(isset($_POST['permissions']))
+            if(isset($post['permissions']))
             {
-                foreach($_POST['permissions'] as $permission)
+                foreach($post['permissions'] as $permission)
                 {
                     User::permission()->insert(array(
                         'role_id' => $id,
@@ -122,22 +124,18 @@ class User_Admin_RoleController extends Controller {
             Message::ok('Permissions updated successfully.');
         }
 
-        $fields[] = array(
-            'fields' => array(
-                'name' => array(
-                    'title' => 'Name',
-                    'type' => 'text',
-                    'default_value' => $role->name,
-                    'validate' => array('required')
-                ),
-                'update_role' => array(
-                    'value' => 'Update Role',
-                    'type' => 'submit'
-                )
-            )
-        );
+        $form = Html::form()->addFieldset();
 
-        $formHtml = Html::form()->build($fields);
+        $form->addText('name', array(
+            'title' => 'Name',
+            'value' => $role->name,
+            'validate' => array('required')
+        ));
+
+        $form->addSubmit('update_role', 'Update Role');
+        $form->addLink(Url::to('admin/role/manage'), 'Cancel');
+
+        // -------------------------------------------------------
 
         $table = Html::table();
         $table->addHeader()->addCol('Module Roles', array('colspan' => 2));
@@ -176,14 +174,15 @@ class User_Admin_RoleController extends Controller {
         $tableHtml .= $table->render();
         $tableHtml .= '<div class="buttons">';
             $tableHtml .= '<input type="hidden" name="update_perms" value="true" />';
-            $tableHtml .= '<a class="blue btn submitter" href="#">Update Permissions</a>';
+            //$tableHtml .= '<a class="btn " href="#">Update Permissions</a>';
+            $tableHtml .= '<input class="btn btn-primary" type="submit" value="Update Permissions" />';
         $tableHtml .= '</div>';
         $tableHtml .= Html::form()->close();
 
         return array(
             array(
                 'title' => 'Edit Role',
-                'content' => $formHtml
+                'content' => $form->render()
             ),
             array(
                 'title' => 'Edit Role Permissions', 
@@ -202,7 +201,7 @@ class User_Admin_RoleController extends Controller {
         else
             Message::error('Error deleting role.');
 
-        Url::redirect('admin/user/role/manage');
+        Url::redirect('admin/role/manage');
     }
 
 }

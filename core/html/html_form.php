@@ -238,7 +238,7 @@ class Html_Form {
         if(!isset($data['attributes']['class']))
             $data['attributes']['class'] = Config::get('html.form_submit_default_classes');
 
-        $this->_buttons .= sprintf(Config::get('html.form_submit_button'), $this->_addAttributes($data), $name, $title) . '&nbsp;';
+        $this->_buttons .= sprintf(Config::get('html.form_submit_button'), $this->_addAttributes($data), $name, $title);
 
         return $this;
     }
@@ -260,7 +260,7 @@ class Html_Form {
         if(!isset($data['attributes']['class'])) 
             $data['attributes']['class'] = Config::get('html.form_link_default_classes');
 
-        $this->_buttons .= sprintf(Config::get('html.form_link'), Url::to($url), $this->_addAttributes($data), $title) . '&nbsp;';
+        $this->_buttons .= sprintf(Config::get('html.form_link'), Url::to($url), $this->_addAttributes($data), $title);
 
         return $this;
     }
@@ -351,8 +351,10 @@ class Html_Form {
     {
         if(strlen($this->_buttons))
         {
+            /*
             if($this->_inFieldset)
                 $this->_buttons = sprintf(Config::get('html.form_fieldset_buttons_wrapper'), $this->_buttons);
+            */
 
             $this->_html .= $this->_buttons;
         }

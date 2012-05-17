@@ -2,3 +2,7 @@ table tr th.right,
 table tr td.right {
     text-align: right;
 }
+
+.btn {
+    margin-right: 5px;
+}

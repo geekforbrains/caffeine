@@ -14,7 +14,7 @@
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="#">Profile</a></li>
+              <li><?= Html::a('Profile', 'admin/user/edit/' . User::current()->id); ?></li>
               <li class="divider"></li>
               <li><a href="<?= Url::to('admin/logout'); ?>">Logout</a></li>
             </ul>
