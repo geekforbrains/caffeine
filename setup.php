@@ -15,7 +15,7 @@
          * them in the array below. Modules within sites/<site>/modules are loaded 
          * automatically.
          */
-        'system.enabled_custom_modules' => array('page'),
+        'system.enabled_custom_modules' => array('page', 'test'),
 
         /**
          * All core modules are loaded by default. If for some reason you need to
