@@ -56,7 +56,8 @@ class User_Admin_UserController extends Controller {
             {
                 $userId = User::user()->insert(array(
                     'email' => $post['email'],
-                    'pass' => md5($post['password'])
+                    'pass' => md5($post['password']),
+                    'is_admin' => isset($post['is_admin']) ? 1 : 0
                 ));
 
                 if($userId && isset($post['role_id']))
@@ -109,8 +110,13 @@ class User_Admin_UserController extends Controller {
             )
         ));
 
+        $form->addCheckbox('is_admin', array(
+            'title' => 'Is Admin?'
+        ));
+
         $form->addSubmit('create_user', 'Create User');
         $form->addLink(Url::to('admin/user/manage'), 'Cancel');
+
 
         return array(
             'title' => 'Create User',
@@ -135,7 +141,8 @@ class User_Admin_UserController extends Controller {
             {
                 $status = User::user()->where('id', '=', $id)->update(array(
                     'email' => $post['email'],
-                    'pass' => strlen($post['pass']) ? md5($post['pass']) : $user->pass
+                    'pass' => strlen($post['pass']) ? md5($post['pass']) : $user->pass,
+                    'is_admin' => isset($post['is_admin']) ? 1 : 0
                 ));
 
                 Db::habtm('user.role', 'user.user')->where('user_user_id', '=', $user->id)->delete();
@@ -185,6 +192,12 @@ class User_Admin_UserController extends Controller {
             'attributes' => array(
                 'multiple' => 'multiple'
             )
+        ));
+
+        // TODO Check for permissions
+        $form->addCheckbox('is_admin', array(
+            'title' => 'Is Admin?',
+            'checked' => $user->is_admin
         ));
 
         $buttonName = $user->id == User::current()->id ? 'Update Profile' : 'Update User';

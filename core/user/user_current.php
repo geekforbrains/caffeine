@@ -108,8 +108,8 @@ class User_Current extends Module {
 
                     $permissions = User::permission()
                         ->select('user_permissions.permission')->distinct()
-                        ->leftJoin('habtm_userroles_userusers t', 't.role_id', '=', 'user_permissions.role_id')
-                        ->where('t.user_id', '=', $user->id)
+                        ->leftJoin('habtm_userroles_userusers t', 't.user_role_id', '=', 'user_permissions.role_id')
+                        ->where('t.user_user_id', '=', $user->id)
                         ->get();
 
                     if($permissions)

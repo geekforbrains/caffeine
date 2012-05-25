@@ -222,13 +222,16 @@ class Db_Runner extends Db_Driver {
             sort($names);
             $table = 'habtm_' . implode('_', $names);
 
-            Db::query(sprintf(
-                'CREATE TABLE IF NOT EXISTS %s (%s INT NOT NULL, %s INT NOT NULL, INDEX(%2$s), INDEX(%3$s)) ENGINE=%s',
-                $table,
-                $tbl1Key . '_id',
-                $tbl2Key . '_id',
-                Config::get('db.engine')
-            ));
+            if(!Db::query('SHOW TABLES LIKE \'' . $table . '\''))
+            {
+                Db::query(sprintf(
+                    'CREATE TABLE IF NOT EXISTS %s (%s INT NOT NULL, %s INT NOT NULL, INDEX(%2$s), INDEX(%3$s)) ENGINE=%s',
+                    $table,
+                    $tbl1Key . '_id',
+                    $tbl2Key . '_id',
+                    Config::get('db.engine')
+                ));
+            }
         }
     }
     
@@ -242,10 +245,40 @@ class Db_Runner extends Db_Driver {
         $tableFields = array();
         $belongsToFields = array();
 
+        if($model->_hasAndBelongsToMany)
+            self::_createHABTM($model);
+
         foreach($model->_belongsTo as $ref)
         {
             $refBits = explode('.', $ref);
             $belongsToFields[] = $refBits[1] . '_id';       
+        }
+
+        // Create new belongsTo fields
+        foreach($belongsToFields as $btf)
+        {
+            $new = true;
+
+            foreach($rawFields as $rf)
+            {
+                if($rf->Field == $btf)
+                {
+                    $new = false;
+                    break;
+                }
+            }
+
+            if($new)
+            {
+                $data = array(
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'unsigned' => true,
+                    'not null' => true
+                );
+
+                Db::query(rtrim('ALTER TABLE ' . $model->_table . ' ADD ' . self::_buildField($btf, $data), ','));
+            }
         }
 
         // Sort table fields into nice array format for easier look ups by id and type

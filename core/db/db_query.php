@@ -23,6 +23,7 @@ class Db_Query extends Module {
     private $_where         = '';
     private $_orderBy       = '';
     private $_limit         = '';
+    private $_search        = ''; // Fulltext
     private $_bindings      = array();
 
     /**
@@ -297,6 +298,7 @@ class Db_Query extends Module {
             $this->_from . 
             $this->_join . 
             $this->_where . 
+            $this->_search .
             $this->_orderBy .
             $this->_limit;
 
@@ -434,6 +436,29 @@ class Db_Query extends Module {
     public function leftJoin($table, $column1, $operator, $column2)
     {
         return $this->join($table, $column1, $operator, $column2, 'LEFT');
+    }
+
+    /**
+     * TODO Comments
+     */
+    public function fulltext($match, $against, $boolean = false)
+    {
+        if(is_array($match))
+            $match = implode(',', $match);
+
+        $boolean = $boolean ? ' IN BOOLEAN MODE' : '';
+
+        $this->_search = sprintf(' WHERE MATCH(%s) AGAINST(?%s)', $match, $boolean);
+        $this->_bindings[] = $against;
+
+        return $this;
+    }
+
+    /**
+     * Alias of fulltext()
+     */
+    public function search($match, $against, $boolean = false) {
+        return $this->fulltext($match, $against, $boolean);
     }
 
     /**

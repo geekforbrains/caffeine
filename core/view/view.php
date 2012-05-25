@@ -21,6 +21,7 @@ class View extends Module {
      * Holds the path to the current error, if any. 
      */
     private static $_error = 0;
+    private static $_errorHeader = null;
 
     /**
      * Determines if the View::load method is being overriden by another module via the view.load event
@@ -107,12 +108,42 @@ class View extends Module {
      */
     public static function error($code)
     {
-        if($code == ERROR_404)
-            header('HTTP/1.1 404 Not Found');
+        $codes = array(
+            400 => '400 Bad Request',
+            401 => '401 Unauthorized',
+            402 => '402 Payment Required',
+            403 => '403 Forbidden',
+            404 => '404 Not Found',
+            405 => '405 Method Not Allowed',
+            406 => '406 Not Acceptable',
+            407 => '407 Proxy Authentication Required',
+            408 => '408 Request Timeout',
+            409 => '409 Conflict',
+            410 => '410 Gone',
+            411 => '411 Length Required',
+            412 => '412 412 Precondition Failed',
+            413 => '413 Request Entity Too Large',
+            414 => '414 Request-URI Too Long',
+            415 => '415 Unsupported Media Type',
+            416 => '416 Requested Range Not Satisfiable',
+            417 => '417 Expectation Failed',
+            500 => '500 Internal Server Error',
+            501 => '501 Not Implemented',
+            502 => '502 Bad Gateway',
+            503 => '503 Service Unavailable',
+            504 => '504 Gateway Timeout',
+            505 => '505 HTTP Version Not Supported',
+        );
 
-        elseif($code == ERROR_500)
-            header('HTTP/1.1 500 Internal Server Error');
+        if(isset($codes[$code]))
+            self::$_errorHeader = $codes[$code];
+        else
+        {
+            Log::debug('view', 'HTTP code "' . $code . '" could not be found, defaulting to 500');
+            self::$_errorHeader = $codes[500];
+        }
 
+        header('HTTP/1.1 ' . self::$_errorHeader);
         self::$_error = self::getPath() . 'errors/' . $code . EXT;
     }
 
@@ -160,12 +191,13 @@ class View extends Module {
      * The views are searched for and loaded in the following order.
      *
      * 0. views/<current_url_path>.php
-     * 1. views/module/controller_method.php
-     * 2. views/module/controller.php
-     * 3. views/module_controller_method.php
-     * 4. views/module_controller.php
-     * 5. views/module.php
-     * 6. views/index.php
+     * 1. views/module/controller/method.php
+     * 2. views/module/controller_method.php
+     * 3. views/module/controller.php
+     * 4. views/module_controller_method.php
+     * 5. views/module_controller.php
+     * 6. views/module.php
+     * 7. views/index.php
      *
      * @param string $module The module name
      * @param string $controller The module controller name
@@ -191,15 +223,16 @@ class View extends Module {
         }
 
         $checks = array(
-            sprintf('%s/%s_%s' . EXT, $module, $controller, $method),
-            sprintf('%s/%s' . EXT, $module, $controller),
-            sprintf('%s_%s_%s' . EXT, $module, $controller, $method),
-            sprintf('%s_%s' . EXT, $module, $controller),
-            sprintf('%s' . EXT, $module),
-            Config::get('view.index')
+            sprintf('%s/%s/%s' . EXT, $module, $controller, $method),   // blog/posts/all.php
+            sprintf('%s/%s_%s' . EXT, $module, $controller, $method),   // blog/posts_all.php
+            sprintf('%s/%s' . EXT, $module, $controller),               // blog/posts.php
+            sprintf('%s_%s_%s' . EXT, $module, $controller, $method),   // blog_posts_all.php
+            sprintf('%s_%s' . EXT, $module, $controller),               // blog_posts.php
+            sprintf('%s' . EXT, $module),                               // blog.php
+            Config::get('view.index')                                   // [index].php
         );
 
-        $urlCheck = str_replace('-', '_', strtolower(implode('_', Router::getSegments())) . EXT);
+        $urlCheck = str_replace('-', '_', strtolower(implode('_', Url::segments())) . EXT);
 
         // Only allow url based view if the view file doesn't match any of the default view checks
         if(!in_array($urlCheck, $checks))
@@ -281,7 +314,12 @@ class View extends Module {
             echo $html;
         }
         else
-            require_once(self::$_error);
+        {
+            if(file_exists(self::$_error))
+                require_once(self::$_error);
+            else
+                die(self::$_errorHeader);
+        }
     }
 
     

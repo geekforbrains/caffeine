@@ -198,7 +198,7 @@ class Html_Form {
     public function addCheckbox($name, $data)
     {
         $html = '<input type="checkbox" name="' . $name . '"';
-        $html .= $this->_addDefaultValue($data, ' value="%s"');
+        $html .= $this->_addDefaultValue($name, ' value="%s"');
         $html .= $this->_addAttributes($data);
 
         if(isset($data['checked']) && $data['checked'])
@@ -217,7 +217,7 @@ class Html_Form {
     public function addRadio($name, $data)
     {
         $html = '<input type="radio" name="' . $name . '"';
-        $html .= $this->_addDefaultValue($data, ' value="%s"');
+        $html .= $this->_addDefaultValue($name, ' value="%s"');
         $html .= $this->_addAttributes($data);
 
         if(isset($data['checked']) && $data['checked'])

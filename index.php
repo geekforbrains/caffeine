@@ -57,7 +57,10 @@ class Caffeine {
 
             // If maintenance mode has been set in the config, stop everything and load mainteance view
             if(Config::get('system.maintenance_mode'))
-                View::error(ERROR_MAINTENANCE);
+            {
+                Event::trigger('caffeine.maintenance');
+                View::error(503); // 503 is the HTTP status code for "Service Unavailable"
+            }
             else
             {
                 list($route, $data) = Router::getRouteData();
@@ -84,7 +87,7 @@ class Caffeine {
                         {
                             $response = call_user_func_array(array($controller, $method), $params);
 
-                            if(!self::_isErrorResponse($response))
+                            if(!is_numeric($response))
                             {
                                 Event::trigger('module.response', array($response));
                                 View::load($module, $controller, $method);
@@ -97,16 +100,16 @@ class Caffeine {
                             Log::error($module, sprintf('The method %s::%s() called by route %s doesn\'t exist.',
                                 $controller, $method, $route));
                             
-                            View::error(ERROR_500);
+                            View::error(500);
                         }
                     }
                     else
-                        View::error(ERROR_ACCESSDENIED);
+                        View::error(401);
                 }
                 else
                 {
                     if($route !== '[index]' || !View::directLoad('index'))
-                        View::error(ERROR_404);
+                        View::error(404);
                 }
             }
 
@@ -156,23 +159,6 @@ class Caffeine {
         return $hasPermission;
     }
 
-    /**
-     * Checks if a Controller response is related to an error constant.
-     *
-     * @param mixed $response The response to compare errors to.
-     * @return boolean
-     */
-    private static function _isErrorResponse($response)
-    {
-        return in_array($response, array(
-            ERROR_NOTFOUND, // DEPRECATED
-            ERROR_404,
-            ERROR_500,
-            ERROR_ACCESSDENIED,
-            ERROR_MAINTENANCE
-        ));
-    }
-
 }
 
 /**
@@ -183,16 +169,6 @@ define('ROOT', __DIR__ . '/');
 define('EXT', '.php');
 define('VERSION', '1.0.2');
 define('IS_CLI', defined('CLI'));
-
-/**
- * These constants are used to load specific error view pages such as 404, 
- * access denied and maintenance.
- */
-define('ERROR_NOTFOUND', 404); // !! DEPRECATED !!
-define('ERROR_404', 404);
-define('ERROR_500', 500);
-define('ERROR_ACCESSDENIED', 'access_denied');
-define('ERROR_MAINTENANCE', 'maintenance');
 
 /**
  * Sometimes PHP complains if a timezone isn't set, so set UTC initially but we'll set it again

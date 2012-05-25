@@ -20,8 +20,9 @@ class Db extends Module {
                 self::_connect();
 
             $debugSql = $sql;
-            foreach($bindings as $value)
-                $debugSql = preg_replace('/\?/', "'".$value."'", $debugSql, 1);
+
+            foreach($bindings as &$value)
+                $debugSql = preg_replace('/\?/', "'" . $value . "'", $debugSql, 1);
 
             // Show and Describe queries are too noisy, ignore them
             if(!strstr($debugSql, 'SHOW') && !strstr($debugSql, 'DESCRIBE'))

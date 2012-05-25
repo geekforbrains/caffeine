@@ -10,6 +10,11 @@ class Router extends Module {
     /**
      * TODO
      */
+    private static $_changedRoute = null;
+
+    /**
+     * TODO
+     */
     private static $_routes = array();
 
     /**
@@ -54,22 +59,6 @@ class Router extends Module {
     }
 
     /**
-     * !!! THIS HAS BEEN MOVED TO THE URL MODULE, AND IS NOW DEPRECATED !!!
-     *
-     * Returns the current URL segment, after the application base, as an array
-     */
-    public static function getSegments()
-    {
-        /*
-        if(is_null(self::$_segments))
-            self::$_segments = explode('/', Url::current());
-
-        return self::$_segments;
-        */
-        return Url::segments();
-    }
-
-    /**
      * Loads a modules routes. If a modules callback only contains two items,
      * the current module name is prepended to the callback.
      */
@@ -98,32 +87,19 @@ class Router extends Module {
     {
         $data = false;
         
-        /*
-        $defaultRoute = Config::get('router.default_route');
-        $currentRoute = $defaultRoute;
-
-        if(isset($_GET['r']) && strlen($_GET['r']))
-            $currentRoute = $_GET['r'];
-
-        $currentRoute = rtrim($currentRoute, '/');
-
-        // Look for language code, and modify route if need be
-        if(Multilanguage::routeHasLangCode($currentRoute))
-        {
-            $currentRoute = ltrim(substr($currentRoute, 3), '/');
-
-            // If current route is empty now (due to being at base url with language code (ex: /<code>), set to default
-            if(!strlen($currentRoute))
-                $currentRoute = $defaultRoute;
-        }
-        */
-
         $currentRoute = Url::current();
 
         if($currentRoute == '/')
             $currentRoute = Config::get('router.default_route');
         else
             $currentRoute = ltrim($currentRoute, '/'); // We dont want leading slash of the current url for routes
+
+        Event::trigger('router.change_route', array($currentRoute), array('Router', '_changeRoute'));
+
+        if(!is_null(self::$_changedRoute))
+            $currentRoute = self::$_changedRoute;
+
+        Log::debug('router', 'Current route is: ' . $currentRoute);
 
         while(true)
         {
@@ -171,6 +147,13 @@ class Router extends Module {
         Event::trigger('router.data', array($currentRoute, $data));
 
         return array($currentRoute, $data);
+    }
+
+    /**
+     * TODO
+     */
+    public static function _changeRoute($data) {
+        self::$_changedRoute = $data;
     }
 
 }

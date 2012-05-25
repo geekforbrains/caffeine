@@ -12,6 +12,9 @@ class Input extends Module {
             return $data;
         }
 
+        if(get_magic_quotes_gpc())
+            $data = stripslashes($data);
+
         return strip_tags(htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8')); 
     }
 
