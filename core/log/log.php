@@ -77,9 +77,11 @@ class Log extends Module {
     {
         // Always write to CLI
         if(IS_CLI)
+        {
             fwrite(STDOUT, sprintf("[%s] $module: $message\n", strtoupper($type)));
+            return;
+        }
 
-        
         if(Config::get(sprintf('log.%s_enabled', $type)))
         {
             if(!Config::get(sprintf('log.%s_to_file', $type)))
@@ -97,42 +99,18 @@ class Log extends Module {
 
     private static function _writeLog($type, $module, $message)
     {
-        $logFile = ROOT . Media::getFilesPath() . Config::get(sprintf('log.%s_file', $type));
-        $logDir = implode('/', explode('/', $logFile, -1));
+        $logFile = Config::get(sprintf('log.%s_file', $type));
 
-        if(!file_exists($logDir))
-        {
-            $filesPath = ROOT . Media::getFilesPath();
-
-            if(is_writable($filesPath))
-                mkdir($logDir);
-            else
-                die('Unable to create log directory because your files directory isn\'t writable.');
-        }
-
-        if(!is_writable($logDir))
-            die('Unable to write log file because your log directory isn\'t writable.');
-
-        if(!file_exists($logFile))
-        {
-            $header = "<?php if(!defined('ROOT')) exit; ?>\n";
-
-            if(!$handle = fopen($logFile, 'a'))
-                die('Cant create log file: ' . $logFile);
-
-            if(fwrite($handle, $header) === false)
-                die('Cant write to log file: ' . $logFile);
-
-            fclose($handle);
-        }
+        if(!$logFile)
+            return;
 
         $log = sprintf("[%s] %s: %s\n", date('Y-m-d H:i:s'), $module, $message);
 
         if(!$handle = fopen($logFile, 'a'))
-            die('Cant open log file for writing: ' . $logFile);
+            error_log('Cant open log file for writing: ' . $logFile);
 
         if(fwrite($handle, $log) === false)
-            die('Cant write to log file: ' . $logFile);
+            error_log('Cant write to log file: ' . $logFile);
 
         fclose($handle);
     }

@@ -46,9 +46,6 @@
          * http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
          */
         'system.maintenance_mode' => false,
-
-        'log.debug_enabled' => true,
-        'log.error_enabled' => true,
     )
 
 );

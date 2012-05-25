@@ -15,11 +15,17 @@
         'log.debug_to_file' => false,
 
         /**
-         * The debug log file, relative to the current sites "files/" directory, that debug
-         * messages will be written to. Messages will only be written to file if the
-         * log.debug_to_file config is set to "true".
+         * The full file path to write debug messages to. This is "null" by default and will
+         * not attempt to write to file unless a path is set.
+         *
+         * If you would like to log files relative to your applications path, use the "ROOT"
+         * constant.
+         *
+         * Example: 'log.debug_file' => '/tmp/caffeine_debug.log'
+         *
+         * Note that you must ensure the path given exists and is writable.
          */
-        'log.debug_file' => sprintf('logs/debug_%s.php', date('Y_m_d')),
+        'log.debug_file' => null,
 
         /**
          * When enabled, all messages logged with the Log::error() method will either be
@@ -35,10 +41,17 @@
         'log.error_to_file' => false,
 
         /**
-         * The error log file, relative to the current sites "files/" directory, that error
-         * messages will be written to. 
+         * The full file path to write error messages to. This is "null" by default and will
+         * not attempt to write to file unless a path is set.
+         *
+         * If you would like to log files relative to your applications path, use the "ROOT"
+         * constant.
+         *
+         * Example: 'log.error_file' => '/tmp/caffeine_error.log'
+         *
+         * Note that you must ensure the path given exists and is writable.
          */
-        'log.error_file' => sprintf('logs/error_%s.php', date('Y_m_d'))
+        'log.error_file' => null,
     ),
 
     'events' => array(
