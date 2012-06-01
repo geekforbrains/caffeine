@@ -1,7 +1,7 @@
         <? if(User::current()->hasPermission('admin.access')): ?>
             <hr>
             <footer>
-                <p><a href="#">Caffeine v<?= VERSION; ?></a></p>
+                <p><a href="http://github.com/geekforbrains/caffeine">Caffeine v<?= VERSION; ?></a></p>
             </footer>
         <? endif; ?>
 
