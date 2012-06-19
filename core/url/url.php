@@ -49,7 +49,7 @@ class Url extends Module {
     public static function host()
     {
         if(is_null(self::$_host))
-            self::$_host = $_SERVER['SERVER_NAME'];
+            self::$_host = $_SERVER['SERVER_NAME']; // SERVER_NAME is more reliable than HTTP_HOST
 
         return self::$_host;
     }
@@ -78,7 +78,7 @@ class Url extends Module {
      * Returns the current relative url without trailing slashes. Does NOT include base url.
      * The current url will always start with a slash "/".
      */
-    public static function current()
+    public static function current($includeBase = true)
     {
         if(is_null(self::$_current))
         {
@@ -94,7 +94,10 @@ class Url extends Module {
                 self::$_current = '/' . trim(self::$_current, '/');
         }
 
-        return self::$_current;
+        if(!$includeBase)
+            return self::$_current;
+
+        return Url::to(self::$_current);
     }
 
     /**

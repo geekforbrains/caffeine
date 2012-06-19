@@ -204,7 +204,7 @@ class Load extends Module {
                     elseif($inCore && in_array($i, Config::get('system.disabled_core_modules')))
                         continue;
 
-                    if(!in_array($i, self::$_modules))
+                    if(!isset(self::$_modules[$i]))
                         self::$_modules[$i] = $path . $i . '/';
                 }
             }

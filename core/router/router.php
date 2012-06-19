@@ -87,7 +87,7 @@ class Router extends Module {
     {
         $data = false;
         
-        $currentRoute = Url::current();
+        $currentRoute = Url::current(false); // Dont include base path
 
         if($currentRoute == '/')
             $currentRoute = Config::get('router.default_route');
