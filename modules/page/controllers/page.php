@@ -11,9 +11,7 @@ class Page_PageController extends Controller {
      */
     public static function view($slug)
     {
-        $page = Page::page()->find(Input::clean($slug));
-
-        if($page)
+        if($page = Page::page()->find(Input::clean($slug)))
         {
             View::setTitle($page->title);
             View::data('page', $page);

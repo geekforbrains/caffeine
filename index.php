@@ -74,6 +74,10 @@ class Caffeine {
                         list($module, $controller, $method) = $data['callback'];
                         $params = Router::getParams();
 
+                        // Get HTTP verb and create restful method name, used to check for rest specific methods in next step
+                        $verb = Input::action();
+                        $restMethod = sprintf('_%s%s', $verb, ucfirst($method));
+
                         // Make sure controller words are upper-case
                         $conBits = explode('_', $controller);
                         foreach($conBits as &$bit)
@@ -82,10 +86,17 @@ class Caffeine {
 
                         $controller = sprintf('%s_%sController', ucfirst($module), ucwords($controller));
 
-                        // Call the routes controller and method
-                        if(method_exists($controller, $method))
+                        // Determine which method to call (restful or default)
+                        $methodToCall = null;
+
+                        if(method_exists($controller, $restMethod))
+                            $methodToCall = $restMethod;
+                        elseif(method_exists($controller, $method))
+                            $methodToCall = $method;
+
+                        if(!is_null($methodToCall))
                         {
-                            $response = call_user_func_array(array($controller, $method), $params);
+                            $response = call_user_func_array(array($controller, $methodToCall), $params);
 
                             if(!is_numeric($response))
                             {
@@ -98,7 +109,7 @@ class Caffeine {
                         else
                         {
                             Log::error($module, sprintf('The method %s::%s() called by route %s doesn\'t exist.',
-                                $controller, $method, $route));
+                                $controller, $methodToCall, $route));
                             
                             View::error(500);
                         }

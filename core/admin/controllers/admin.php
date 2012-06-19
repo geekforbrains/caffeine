@@ -14,54 +14,29 @@ class Admin_AdminController extends Controller {
      */
     public static function install()
     {
-        if(Input::post('install') && Html::form()->validate())
+        if(Input::post('install'))
         {
-            $post = Input::clean($_POST);
+            Validate::check('email', array('required', 'email'));
+            Validate::check('pass', array('required'));
+            Validate::check('pass_conf', array('matches:pass'));
 
-            $id = User::user()->insert(array(
-                'email' => $post['email'],
-                'pass' => md5($post['password']),
-                'is_admin' => 1
-            ));
-
-            if($id)
+            if(Validate::passed())
             {
-                Message::ok('Installation completed successfully.');
-                Url::redirect('admin/login');
+                $id = User::user()->insert(array(
+                    'email' => Input::post('email'),
+                    'pass' => md5(Input::post('pass')),
+                    'is_admin' => 1
+                ));
+
+                if($id)
+                {
+                    Message::ok('Installation completed successfully.');
+                    Url::redirect('admin/login');
+                }
+                else
+                    Message::error('Error creating admin account, please try again.');
             }
-            else
-                Message::error('Error creating admin account, please try again.');
         }
-
-        $form = Html::form();
-
-        $form->addText('email', array(
-            'validate' => array('required', 'email'),
-            'attributes' => array(
-                'placeholder' => 'Email:',
-                'class' => 'span12'
-            )
-        ));
-
-        $form->addPassword('password', array(
-            'validate' => array('required', 'min:4'),
-            'attributes' => array(
-                'placeholder' => 'Password:',
-                'class' => 'span12'
-            )
-        ));
-
-        $form->addPassword('password', array(
-            'validate' => array('required', 'matches:password'),
-            'attributes' => array(
-                'placeholder' => 'Confirm Password:',
-                'class' => 'span12'
-            )
-        ));
-
-        $form->addSubmit('install', 'Install');
-
-        View::data('form', $form->render());
     }
 
 }
