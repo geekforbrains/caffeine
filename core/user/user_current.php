@@ -11,12 +11,7 @@ class User_Current extends Module {
      * Stores the current users details. Defaults to an anonymous user if no one is
      * logged in.
      */
-    private static $_user = array(
-        'id' => 0,
-        'email' => null,
-        'permissions' => array(),
-        'is_admin' => false
-    );
+    private static $_user = null;
 
     /**
      * Force class as singleton
@@ -32,8 +27,9 @@ class User_Current extends Module {
      */
     public function __get($name)
     {
-        if(isset(self::$_user[$name]))
-            return self::$_user[$name];
+        if(isset(self::$_user->{$name}))
+            return self::$_user->{$name};
+
         return null;
     }
 
@@ -43,7 +39,7 @@ class User_Current extends Module {
      */
     public function getData($name)
     {
-        $data = User::data()->where('user_id', '=', self::$_user['id'])
+        $data = User::data()->where('user_id', '=', self::$_user->id)
             ->andWhere('name', '=', $name)
             ->first();
 
@@ -56,7 +52,7 @@ class User_Current extends Module {
      * Returns all additional data set for the current user.
      */
     public function getAllData() {
-        return User::data()->where('user_id', '=', self::$_user['id'])->all();
+        return User::data()->where('user_id', '=', self::$_user->id);
     }
 
     /**
@@ -65,12 +61,12 @@ class User_Current extends Module {
      */
     public function setData($name, $value)
     {
-        if(self::$_user['id'] == 0) // Cant set data for anonymous user
+        if(self::$_user->id == 0)
             return false;
 
-        if(User::data()->where('user_id', '=', self::$_user['id'])->andWhere('name', '=', $name)->first())
+        if(User::data()->where('user_id', '=', self::$_user->id)->andWhere('name', '=', $name)->first())
         {
-            User::data()->where('user_id', '=', self::$_user['id'])
+            return User::data()->where('user_id', '=', self::$_user->id)
                 ->andWhere('name', '=', $name)
                 ->update(array(
                     'value' => $value
@@ -78,8 +74,8 @@ class User_Current extends Module {
         }
         else
         {
-            User::data()->insert(array(
-                'user_id' => self::$_user['id'],
+            return User::data()->insert(array(
+                'user_id' => self::$_user->id,
                 'name' => $name,
                 'value' => $value
             ));
@@ -102,9 +98,8 @@ class User_Current extends Module {
 
                 if($user)
                 {
-                    self::$_user['id'] = $user->id;
-                    self::$_user['email'] = $user->email;
-                    self::$_user['is_admin'] = $user->is_admin;
+                    self::$_user = $user;
+                    self::$_user->permissions = array();
 
                     $permissions = User::permission()
                         ->select('user_permissions.permission')->distinct()
@@ -115,12 +110,18 @@ class User_Current extends Module {
                     if($permissions)
                     {
                         foreach($permissions as $row)
-                            self::$_user['permissions'][] = $row->permission;
+                            self::$_user->permissions[] = $row->permission;
                     }
                 }
             }
 
-            Log::debug('user', 'Current user ID: ' . self::$_user['id']);
+            if(is_null(self::$_user))
+            {
+                self::$_user = User::user()->blank(); // Create empty user
+                self::$_user->permissions = array();
+            }
+
+            Log::debug('user', 'Current user ID: ' . self::$_user->id);
         }
 
         return self::$_instance;
@@ -132,7 +133,7 @@ class User_Current extends Module {
      */
     public static function isAnonymous()
     {
-        if(self::$_user['id'] > 0)
+        if(self::$_user->id > 0)
             return false;
         return true;
     }
@@ -144,7 +145,7 @@ class User_Current extends Module {
      */
     public function hasPermission($permission)
     {
-        if(self::$_user['is_admin'] > 0)
+        if(self::$_user->is_admin > 0)
             return true;
 
         if(is_array($permission))
@@ -156,7 +157,7 @@ class User_Current extends Module {
             }
         }
 
-        elseif(in_array($permission, self::$_user['permissions']))
+        elseif(in_array($permission, self::$_user->permissions))
             return true;
 
         return false;

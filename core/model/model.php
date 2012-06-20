@@ -28,4 +28,31 @@ class Model extends Db_Query {
         return $data;
     }
 
+    /**
+     * Returns an empty (blank) model with the defined fields for the model as
+     * null or "0" properties.
+     *
+     * Example: User::user()->blank(); // Get an empty User model 
+     */
+    public function blank()
+    {
+        $info = $this->describe();
+
+        foreach($info as $i)
+        {
+            if(strstr($i->Type, 'int'))
+                $val = 0;
+
+            elseif(strstr($i->Type, 'double') || strstr($i->Type, 'float'))
+                $val = 0.0;
+
+            else
+                $val = null;
+
+            $this->{$i->Field} = $val;
+        }
+
+        return $this;
+    }
+
 }

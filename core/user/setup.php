@@ -1,6 +1,16 @@
 <?php return array(
 
     'configs' => array(
+        /**
+         * Qbot specific.
+         *
+         * Defines how long a user has for their trial period when first registering. This value is passed to
+         * the "strtotime" method and should be formated as such. Example: "+30 days" would result in the trial
+         * period being 30 days from the registration date.
+         */
+        'user.trial_period' => '+30 days',
+
+        // Core
         'user.session_key' => 'user_id'
     ),
 
@@ -19,24 +29,30 @@
     ),
 
     'routes' => array(
+        // Qbot
+        'user/register' => array(
+            'callback' => array('user', 'register')
+        ),
+
+        // Admin
         'admin/login' => array(
             'title' => 'Login',
-            'callback' => array('login', 'login'),
+            'callback' => array('admin_login', 'login'),
             'hidden' => true
         ),
         'admin/reset-password' => array(
             'title' => 'Reset Password',
-            'callback' => array('login', 'resetPassword'),
+            'callback' => array('admin_login', 'resetPassword'),
             'hidden' => true
         ),
         'admin/set-password/:id/:slug' => array(
             'title' => 'Set Password',
-            'callback' => array('login', 'setPassword'),
+            'callback' => array('admin_login', 'setPassword'),
             'hidden' => true
         ),
         'admin/logout' => array(
             'title' => 'Logout',
-            'callback' => array('login', 'logout'),
+            'callback' => array('admin_login', 'logout'),
             'hidden' => true
         ),
 
@@ -96,6 +112,11 @@
     ),
 
     'events' => array(
+        'url.subdomain_detected' => function($subdomain)
+        {
+            echo "SUBDOMAIN: $subdomain<br />";
+        },
+
         'user.permission[user.edit_mine]' => function($route, $data)
         {
             $params = Router::getParams();
