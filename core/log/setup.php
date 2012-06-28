@@ -5,14 +5,7 @@
          * When enabled (true) all messages logged with the Log::debug() method will
          * either be displayed in the browser or written to file (see log.debug_to_file config).
          */
-        'log.debug_enabled' => false,
-
-        /**
-         * When enabled, messages logged with the Log::debug() method will be saved to a
-         * file instead of being output to the browser. Note that log.debug_enabled must
-         * be set to "true" as well.
-         */
-        'log.debug_to_file' => false,
+        'log.debug_enabled' => true,
 
         /**
          * The full file path to write debug messages to. This is "null" by default and will
@@ -25,20 +18,13 @@
          *
          * Note that you must ensure the path given exists and is writable.
          */
-        'log.debug_file' => null,
+        'log.debug_file' => '/tmp/caffeine_debug.log',
 
         /**
          * When enabled, all messages logged with the Log::error() method will either be
          * displayed in the browser or written to file (see log.error_to_file config).
          */
-        'log.error_enabled' => false,
-
-        /**
-         * When enabled, messages logged with the Log::error() method will be written to file
-         * instead of being output to the browser. Note that log.error_enabled must be set to
-         * "true" as well.
-         */
-        'log.error_to_file' => false,
+        'log.error_enabled' => true,
 
         /**
          * The full file path to write error messages to. This is "null" by default and will
@@ -51,13 +37,7 @@
          *
          * Note that you must ensure the path given exists and is writable.
          */
-        'log.error_file' => null,
+        'log.error_file' => '/tmp/caffeine_error.log',
     ),
-
-    'events' => array(
-        'caffeine.finished' => function() {
-            Log::output();
-        }
-    )
 
 );
