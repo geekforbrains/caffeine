@@ -17,81 +17,50 @@ class User_Admin_UserController extends Controller {
      */
     public static function create()
     {
-        if(Input::post('create_user') && Html::form()->validate())
+        if(Input::post('create_user'))
         {
-            $post = Input::clean($_POST);
+            Validate::check('email', array('required', 'email'));
+            Validate::check('pass', array('required', 'min:4'));
+            Validate::check('pass_conf', array('matches:pass'));
 
-            if(!User::user()->where('email', 'LIKE', $post['email'])->first())
+            if(Validate::passed())
             {
-                $userId = User::user()->insert(array(
-                    'email' => $post['email'],
-                    'pass' => md5($post['password'])
-                ));
+                $post = Input::clean($_POST);
 
-                if($userId && isset($post['role_id']))
+                if(!User::user()->emailInUse($post['email']))
                 {
-                    foreach($post['role_id'] as $roleId)
+                    $userId = User::user()->insert(array(
+                        'email' => $post['email'],
+                        'pass' => md5($post['password'])
+                    ));
+
+                    if($userId && isset($post['role_id']))
                     {
-                        Db::table('habtm_userroles_userusers')->insert(array(
-                            'user_role_id' => $roleId,
-                            'user_user_id' => $userId
-                        ));
+                        foreach($post['role_id'] as $roleId)
+                        {
+                            Db::habtm('user.role', 'user.user')->insert(array(
+                                'user_role_id' => $roleId,
+                                'user_user_id' => $userId
+                            ));
+                        }
                     }
-                }
 
-                if($userId)
-                {
-                    Message::ok('User created successfully.');
-                    Url::redirect('admin/user/manage');
+                    if($userId)
+                    {
+                        Message::ok('User created successfully.');
+                        Url::redirect('admin/user/manage');
+                    }
+                    else
+                        Message::error('Error creating user, please try again.');
                 }
                 else
-                    Message::error('Error creating user.');
+                    Message::error('That email is already in use.');
             }
-            else
-                Message::error('A user with that email exists.');
         }
 
-        /*
-        $form = Html::form()->addFieldset();
-
-        $form->addText('email', array(
-            'title' => 'Email',
-            'validate' => array('required', 'email')
-        ));
-
-        $form->addPassword('password', array(
-            'title' => 'Password',
-            'validate' => array('required', 'min:4')
-        ));
-
-        $form->addPassword('confirm_password', array(
-            'title' => 'Confirm Password',
-            'validate' => array('required', 'matches:password')
-        ));
-
-        $form->addSelect('role_id[]', array(
-            'title' => 'Roles',
-            'options' => User::role()->orderBy('name')->all(),
-            'option_key' => 'id',
-            'option_value' => 'name',
-            'attributes' => array(
-                'multiple' => 'multiple'
-            )
-        ));
-
-        $form->addCheckbox('is_admin', array(
-            'title' => 'Is Admin?'
-        ));
-
-        $form->addSubmit('create_user', 'Create User');
-        $form->addLink(Url::to('admin/user/manage'), 'Cancel');
-
-
         return array(
-            'title' => 'Create User',
-            'content' => $form->render()
+            'roles' => User::role()->orderBy('name')->all()
         );
-        */
     }
 
     /**

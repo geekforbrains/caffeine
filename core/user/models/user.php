@@ -32,7 +32,7 @@ class User_UserModel extends Model {
         )
     );
 
-    public $_indexes = array('reset_token', 'is_admin');
+    public $_indexes = array('email', 'pass', 'reset_token', 'is_admin');
 
     public function validate($email, $pass)
     {
@@ -52,6 +52,10 @@ class User_UserModel extends Model {
             return true;
 
         return false;
+    }
+
+    public function emailInUse($email) {
+        return $this->where('email', 'LIKE', $email)->first();
     }
 
 }

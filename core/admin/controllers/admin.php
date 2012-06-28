@@ -165,8 +165,10 @@ class Admin_AdminController extends Controller {
 
     public static function logout()
     {
-        unset($_SESSION[Config::get('user.session_key')]);
-        Url::redirect('admin/logout');
+        if(Input::sessionDel(Config::get('user.session_key')))
+            Message::ok('You\'ve been successfully logged out.');
+
+        Url::redirect('admin/login');
     }
 
 }
