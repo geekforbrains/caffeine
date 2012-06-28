@@ -1,4 +1,4 @@
-<? if(strstr(Url::current(), 'admin/login') || strstr(Url::current(), 'admin/reset') || strstr(Url::current(), 'admin/set-password')): ?>
+<? if(String::contains(Url::current(), array('admin/login', 'admin/reset', 'admin/set-password', 'admin/install'))): ?>
     <div class="row-fluid">
         <div class="span4"></div>
         <div class="span4">
@@ -23,7 +23,7 @@
     <? endforeach; ?>
 <? endif; ?>
 
-<? if(strstr(Url::current(), 'admin/login') || strstr(Url::current(), 'admin/reset') || strstr(Url::current(), 'admin/set-password')): ?>
+<? if(String::contains(Url::current(), array('admin/login', 'admin/reset', 'admin/set-password', 'admin/install'))): ?>
         </div>
         <div class="span4"></div>
     </div>

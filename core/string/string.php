@@ -315,4 +315,16 @@ class String extends Module {
         return $key;
     }
 
+    /**
+     * Checks if the given string contains any of the given segments.
+     */
+    public static function contains($string, $segments)
+    {
+        foreach($segments as $s)
+            if(strstr($string, $s))
+                return true;
+
+        return false;
+    }
+
 }
