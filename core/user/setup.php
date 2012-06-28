@@ -29,33 +29,6 @@
     ),
 
     'routes' => array(
-        // Qbot
-        'user/register' => array(
-            'callback' => array('user', 'register')
-        ),
-
-        // Admin
-        'admin/login' => array(
-            'title' => 'Login',
-            'callback' => array('admin_login', 'login'),
-            'hidden' => true
-        ),
-        'admin/reset-password' => array(
-            'title' => 'Reset Password',
-            'callback' => array('admin_login', 'resetPassword'),
-            'hidden' => true
-        ),
-        'admin/set-password/:id/:slug' => array(
-            'title' => 'Set Password',
-            'callback' => array('admin_login', 'setPassword'),
-            'hidden' => true
-        ),
-        'admin/logout' => array(
-            'title' => 'Logout',
-            'callback' => array('admin_login', 'logout'),
-            'hidden' => true
-        ),
-
         'admin/user' => array(
             'title' => 'Users',
             'redirect' => 'admin/user/manage',
@@ -112,11 +85,6 @@
     ),
 
     'events' => array(
-        'url.subdomain_detected' => function($subdomain)
-        {
-            echo "SUBDOMAIN: $subdomain<br />";
-        },
-
         'user.permission[user.edit_mine]' => function($route, $data)
         {
             $params = Router::getParams();

@@ -18,7 +18,27 @@
             'title' => 'Install',
             'callback' => array('admin', 'install'),
             'hidden' => true
-        )
+        ),
+        'admin/login' => array(
+            'title' => 'Login',
+            'callback' => array('admin', 'login'),
+            'hidden' => true
+        ),
+        'admin/reset-password' => array(
+            'title' => 'Reset Password',
+            'callback' => array('admin', 'resetPassword'),
+            'hidden' => true
+        ),
+        'admin/set-password/:id/:slug' => array(
+            'title' => 'Set Password',
+            'callback' => array('admin', 'setPassword'),
+            'hidden' => true
+        ),
+        'admin/logout' => array(
+            'title' => 'Logout',
+            'callback' => array('admin', 'logout'),
+            'hidden' => true
+        ),
     ),
 
     'events' => array(
@@ -59,15 +79,6 @@
                 View::setPath(ROOT . 'core/admin/');
             }
         },
-
-        /**
-         * If an admin method returns some data, load it into the current admin theme.
-        'module.response' => function($response = null)
-        {
-            if(Admin::inAdmin())
-                View::data('adminContent', $response);
-        },
-        */
 
         /**
          * Checks if the current module has a views directory with a custom admin view named after the controller

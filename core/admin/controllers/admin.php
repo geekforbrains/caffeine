@@ -39,4 +39,22 @@ class Admin_AdminController extends Controller {
         }
     }
 
+    public static function login()
+    {
+        if(Input::post('login'))
+        {
+            $user = User::user()->validate(
+                Input::post('email'),
+                Input::post('pass')
+            );
+
+            if($user)
+            {
+                Message::ok('Yay!');
+            }
+            else
+                Message::error('Invalid login details.');
+        }
+    }
+
 }
