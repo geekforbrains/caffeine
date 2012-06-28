@@ -1,16 +1,6 @@
 <?php return array(
 
     'configs' => array(
-        /**
-         * Qbot specific.
-         *
-         * Defines how long a user has for their trial period when first registering. This value is passed to
-         * the "strtotime" method and should be formated as such. Example: "+30 days" would result in the trial
-         * period being 30 days from the registration date.
-         */
-        'user.trial_period' => '+30 days',
-
-        // Core
         'user.session_key' => 'user_id'
     ),
 

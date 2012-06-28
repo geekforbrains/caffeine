@@ -41,4 +41,17 @@ class User_UserModel extends Model {
             ->first();
     }
 
+    public function hasRole($roleId)
+    {
+        $row = Db::habtm('user.user', 'user.role')
+            ->where('user_user_id', '=', $this->id)
+            ->andWhere('user_role_id', '=', $roleId)
+            ->first();
+
+        if($row)
+            return true;
+
+        return false;
+    }
+
 }
