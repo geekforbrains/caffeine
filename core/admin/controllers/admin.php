@@ -17,7 +17,7 @@ class Admin_AdminController extends Controller {
         if(Input::post('install'))
         {
             Validate::check('email', array('required', 'email'));
-            Validate::check('pass', array('required'));
+            Validate::check('pass', array('required', 'min:4'));
             Validate::check('pass_conf', array('matches:pass'));
 
             if(Validate::passed())

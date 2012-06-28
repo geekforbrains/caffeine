@@ -18,7 +18,7 @@ class Module {
     public static function m($name)
     {
         $module = ucfirst(strtolower(get_called_class()));
-        $model = sprintf('%s_%sModel', $module, ucfirst($name));
+        $model = sprintf('%s_%sModel', $module, ucfirst(strtolower($name)));
 
         if(class_exists($model))
             return new $model();

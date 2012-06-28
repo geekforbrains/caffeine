@@ -100,6 +100,9 @@ class Caffeine {
 
                             if(!is_numeric($response))
                             {
+                                if(is_array($response))
+                                    View::data($response);
+
                                 Event::trigger('module.response', array($response));
                                 View::load($module, $controller, $method);
                             }
@@ -170,6 +173,20 @@ class Caffeine {
         return $hasPermission;
     }
 
+}
+
+/**
+ * Specialty short-hand method for getting error information
+ * from the validation class. This is mostly used within HTML.
+ *
+ * Ex: <?= e('some_field')->message; ?>
+ */
+function e($field)
+{
+    if(Validate::error($field))
+        return Validate::error($field);
+
+    return new Validate_Error();
 }
 
 /**
