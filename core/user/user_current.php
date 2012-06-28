@@ -139,6 +139,13 @@ class User_Current extends Module {
     }
 
     /**
+     * Short-hand method for isAnonymous()
+     */
+    public function isAnon() {
+        return $this->isAnonymous();
+    }
+
+    /**
      * Checks of the current user has the given permission.
      *
      * Ex: User::current()->hasPermission('user.manage');
@@ -161,6 +168,13 @@ class User_Current extends Module {
             return true;
 
         return false;
+    }
+
+    /**
+     * Short-hand method for hasPermission().
+     */
+    public function hasPerm($permission) {
+        return $this->hasPermission($permission);
     }
 
 }
