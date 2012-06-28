@@ -2,6 +2,31 @@
 
 class Input extends Module {
 
+    private static $_put = null;
+
+    /**
+     * Returns the HTTP "verb" being used for the current page request.
+     */
+    public static function action() {
+        return $_SERVER['REQUEST_METHOD'];
+    }
+
+    public static function put($key, $defaultValue = null, $raw = false)
+    {
+        if(is_null(self::$_put))
+            parse_str(file_get_contents('php://input'), self::$_put);
+
+        if(isset(self::$_put[$key]))
+        {
+            if($raw)
+                return self::$_put[$key];
+
+            return self::clean(self::$_put[$key]);
+        }
+
+        return $defaultValue;
+    }
+
     public static function clean($data)
     {
         if(is_array($data))

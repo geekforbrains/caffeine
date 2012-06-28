@@ -34,4 +34,18 @@ class User_UserModel extends Model {
 
     public $_indexes = array('reset_token', 'is_admin');
 
+    /**
+     * Validates a users email/password against the given subdomain. All must match.
+     */
+    public function validateWithSubdomain($subdomain, $email, $pass)
+    {
+        $account = User::account()->getBySubdomain($subdomain);
+
+        return User::user()
+            ->where('account_id', '=', $account->id)
+            ->andWhere('email', '=', $email)
+            ->andWhere('pass', '=', md5($pass))
+            ->first();
+    }
+
 }

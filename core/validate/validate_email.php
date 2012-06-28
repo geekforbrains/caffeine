@@ -17,9 +17,9 @@ class Validate_Email {
     	}
 
         if(!$status)
-            Validate::setError(Config::get('validate.email_error'));
+            return Config::get('validate.email_error');
 
-        return $status;
+        return true;
     }
 
 }

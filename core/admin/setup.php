@@ -62,12 +62,12 @@
 
         /**
          * If an admin method returns some data, load it into the current admin theme.
-         */
         'module.response' => function($response = null)
         {
             if(Admin::inAdmin())
                 View::data('adminContent', $response);
         },
+        */
 
         /**
          * Checks if the current module has a views directory with a custom admin view named after the controller
