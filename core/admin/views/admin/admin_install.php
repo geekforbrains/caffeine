@@ -17,7 +17,6 @@
             <form class="well" method="post" action="<?= Url::current(); ?>">
                 <div class="<?= e('email')->getClass('control-group'); ?>">
                     <input type="text" name="email" class="span12" placeholder="Email" />
-                    <p class="help-block"><?= e('email')->getMessage('Some help text'); ?></p>
                 </div>
 
                 <div class="<?= e('pass')->getClass('control-group'); ?>">
