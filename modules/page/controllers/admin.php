@@ -10,7 +10,9 @@ class Page_AdminController extends Controller {
      */
     public static function manage()
     {
-
+        return array(
+            'pages' => Page::page()->getIndented()
+        );
     }
 
     /**

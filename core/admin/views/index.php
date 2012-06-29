@@ -2,7 +2,7 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <p><em>Nothing to display</em></p>
+            <p><em>No view found for this route.</em></p>
         </div>
     </div>
 

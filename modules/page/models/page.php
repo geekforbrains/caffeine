@@ -32,4 +32,12 @@ class Page_PageModel extends Model {
         return $this->where('page_id', '=', $this->page_id)->first();
     }
 
+    /**
+     * Get all pages, indented with the given indent string. Pages are indented based on their parent page.
+     */
+    public function getIndented($indent = '&nbsp;')
+    {
+        $pages = $this->orderBy('title')->all();
+    }
+
 }
