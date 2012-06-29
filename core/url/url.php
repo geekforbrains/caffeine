@@ -18,6 +18,11 @@ class Url extends Module {
     private static $_base = null;
 
     /**
+     * Stores the current subdomain, if any
+     */
+    private static $_subdomain = false; // Need to use false, because may always be null (avoids duplicate checks)
+
+    /**
      * Stores the current relative url.
      */
     private static $_current = null;
@@ -72,6 +77,25 @@ class Url extends Module {
         if($includeLang && !is_null(self::$_lang))
             return self::$_base . '/' . self::$_lang;
         return self::$_base;
+    }
+
+    /**
+     * The current subdomain is returned, if any. Null otherwise.
+     */
+    public static function subdomain()
+    {
+        if(self::$_subdomain === false)
+        {
+            $host = self::host();
+            $bits = explode('.', $host);
+
+            if(count($bits) > (Config::get('url.tld_count') + 1))
+                self::$_subdomain = strtolower($bits[0]);
+            else
+                self::$_subdomain = null;
+        }
+
+        return self::$_subdomain;
     }
 
     /**
