@@ -1,4 +1,4 @@
-Caffeine 1.1.0-RC1
+Caffeine 2.0.0-rc1
 ==============
 
 A simple PHP framework that combines modules through the use of routes and events to form an application.
@@ -119,14 +119,3 @@ them has been implemented into Caffeine, with my own twist.
 Gavin Vickery  
 <gavin@geekforbrains.com>  
 <http://geekforbrains.com>  
-
-Change Log
-----------
-1.0.2
-
-- Updated Url module to use SERVER_NAME instead of HTTP_HOST to determine current host.
-- Updated Log module to ensure the files and log directory is writable before creating file.
-
-1.0.1
-
-- Updated getBaseHref method in View module to return full url.
