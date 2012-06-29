@@ -14,4 +14,8 @@ class User_RoleModel extends Model {
         )
     );
 
+    public function nameInUse($name) {
+        return $this->where('name', 'LIKE', '%' . $name . '%')->first();
+    }
+
 }

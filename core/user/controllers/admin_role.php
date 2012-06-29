@@ -7,27 +7,8 @@ class User_Admin_RoleController extends Controller {
      */
     public static function manage()
     {
-        $table = Html::table();
-        $table->addHeader()->addCol('Role', array('colspan' => 2));
-
-        if($roles = User::role()->all())
-        {
-            foreach($roles as $role)
-            {
-                $row = $table->addRow();
-                $row->addCol(Html::a()->get($role->name, 'admin/role/edit/' . $role->id));
-                $row->addCol(
-                    Html::a('Delete', 'admin/role/delete/' . $role->id, array('onclick' => "return confirm('Delete this role?')")),
-                    array('class' => 'right')
-                );
-            }
-        }
-        else
-            $table->addRow()->addCol('<em>No roles.</em>', array('colspan' => 2));
-
         return array(
-            'title' => 'Manage Roles',
-            'content' => $table->render()
+            'roles' => User::role()->orderBy('name')->all()
         );
     }
 
@@ -36,42 +17,32 @@ class User_Admin_RoleController extends Controller {
      */
     public static function create()
     {
-        if(Input::post('create_role') && Html::form()->validate())
+        if(Input::post('create_role'))
         {
-            $post = Input::clean($_POST);
+            Validate::check('name', array('required'));
 
-            if(!User::role()->where('name', 'LIKE', '%' . $post['name'] . '%')->first())
+            if(Validate::passed())
             {
-                $roleId = User::role()->insert(array(
-                    'name' => $post['name']
-                ));
+                $post = Input::clean($_POST);
 
-                if($roleId)
+                if(!User::role()->nameInUse($post['name']))
                 {
-                    Message::ok('Role created successfully.');
-                    Url::redirect('admin/role/edit/' . $roleId);
+                    $roleId = User::role()->insert(array(
+                        'name' => $post['name']
+                    ));
+
+                    if($roleId)
+                    {
+                        Message::ok('Role created successfully.');
+                        Url::redirect('admin/role/edit/' . $roleId);
+                    }
+                    else
+                        Message::error('Error creating role.');
                 }
                 else
-                    Message::error('Error creating role.');
+                    Message::error('A role with that name is already in use.');
             }
-            else
-                Message::error('A role with that name already exists.');
         }
-
-        $form = Html::form()->addFieldset();
-
-        $form->addText('name', array(
-            'title' => 'Name',
-            'validate' => array('required')
-        ));
-
-        $form->addSubmit('create_role', 'Create Role');
-        $form->addLink(Url::to('admin/role/manage'), 'Cancel');
-
-        return array(
-            'title' => 'Create Role',
-            'content' => $form->render()
-        );
     }
 
     /**
@@ -80,28 +51,34 @@ class User_Admin_RoleController extends Controller {
      */
     public static function edit($id)
     {
-        $role = User::role()->find($id);
+        if(!$role = User::role()->find($id))
+            return 404;
 
-        if(Input::post('update_role') && Html::form()->validate())
+        if(Input::post('update_role'))
         {
-            $post = Input::clean($_POST);
+            Validate::check('name', array('required'));
 
-            if($post['name'] == $role->name || !User::role()->where('name', 'LIKE', $post['name'])->first())
+            if(Validate::passed())
             {
-                $status = User::role()->where('id', '=', $id)->update(array(
-                    'name' => $post['name']
-                ));
-                
-                if($status)
+                $post = Input::clean($_POST);
+
+                if($post['name'] == $role->name || !User::role()->nameInUse($post['name']))
                 {
-                    Message::ok('Role updated successfully.');
-                    Url::redirect('admin/role/manage');
+                    $status = User::role()->where('id', '=', $id)->update(array(
+                        'name' => $post['name']
+                    ));
+                    
+                    if($status || $status == 0)
+                    {
+                        Message::ok('Role updated successfully.');
+                        Url::redirect('admin/role/manage');
+                    }
+                    else
+                        Message::error('Error updating role, please try again.');
                 }
                 else
-                    Message::info('Nothing changed.');
+                    Message::error('A role with that name is already in use.');
             }
-            else
-                Message::error('A role with that name is already in use.');
         }
 
         if(Input::post('update_perms'))
@@ -124,6 +101,7 @@ class User_Admin_RoleController extends Controller {
             Message::ok('Permissions updated successfully.');
         }
 
+        /*
         $form = Html::form()->addFieldset();
 
         $form->addText('name', array(
@@ -189,6 +167,21 @@ class User_Admin_RoleController extends Controller {
                 'content' => $tableHtml
             )
         );
+        */
+
+        $currentPerms = User::permission()->where('role_id', '=', $id)->all();
+
+        $tmp = array();
+        foreach($currentPerms as $cp)
+            $tmp[] = $cp->permission;
+
+        $currentPerms = $tmp;
+
+        return array(
+            'role' => $role,
+            'permissions' => User::getSortedPermissions(),
+            'currentPermissions' => $currentPerms
+        );
     }
 
     /**
@@ -196,6 +189,8 @@ class User_Admin_RoleController extends Controller {
      */
     public static function delete($id)
     {
+        User::permission()->where('role_id', '=', $id)->delete();
+
         if(User::role()->delete($id))
             Message::ok('Role deleted successfully.');
         else

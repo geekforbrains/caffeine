@@ -14,17 +14,16 @@
         <div class="span4">&nbsp;</div>
         <div class="span4">
 
-            <form class="well" method="post" action="<?= Url::current(); ?>">
-                <div class="<?= e('email')->getClass('control-group'); ?>">
-                    <input type="text" name="email" class="span12" placeholder="Email" />
-                    <p class="help-block"><?= e('email')->getMessage('Some help text'); ?></p>
+            <form class="well" method="post" action="<?= _current(); ?>">
+                <div class="<?= _e('email')->getClass('control-group'); ?>">
+                    <input type="text" name="email" class="span12" placeholder="Email" value="<?= _p('email'); ?>" />
                 </div>
 
-                <div class="<?= e('pass')->getClass('control-group'); ?>">
+                <div class="<?= _e('pass')->getClass('control-group'); ?>">
                     <input type="password" name="pass" class="span12" placeholder="Password" />
                 </div>
 
-                <div class="<?= e('pass_conf')->getClass('control-group'); ?>">
+                <div class="<?= _e('pass_conf')->getClass('control-group'); ?>">
                     <input type="password" name="pass_conf" class="span12" placeholder="Confirm Password" />
                 </div>
 

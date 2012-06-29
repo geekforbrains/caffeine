@@ -32,20 +32,30 @@ class User_UserModel extends Model {
         )
     );
 
-    public $_indexes = array('reset_token', 'is_admin');
+    public $_indexes = array('email', 'pass', 'reset_token', 'is_admin');
 
-    /**
-     * Validates a users email/password against the given subdomain. All must match.
-     */
-    public function validateWithSubdomain($subdomain, $email, $pass)
+    public function validate($email, $pass)
     {
-        $account = User::account()->getBySubdomain($subdomain);
-
-        return User::user()
-            ->where('account_id', '=', $account->id)
-            ->andWhere('email', '=', $email)
+        return $this->where('email', '=', $email)
             ->andWhere('pass', '=', md5($pass))
             ->first();
+    }
+
+    public function hasRole($roleId)
+    {
+        $row = Db::habtm('user.user', 'user.role')
+            ->where('user_user_id', '=', $this->id)
+            ->andWhere('user_role_id', '=', $roleId)
+            ->first();
+
+        if($row)
+            return true;
+
+        return false;
+    }
+
+    public function emailInUse($email) {
+        return $this->where('email', 'LIKE', $email)->first();
     }
 
 }

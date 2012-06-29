@@ -1,24 +1,15 @@
 <?php return array(
 
     'configs' => array(
-        /**
-         * Qbot specific.
-         *
-         * Defines how long a user has for their trial period when first registering. This value is passed to
-         * the "strtotime" method and should be formated as such. Example: "+30 days" would result in the trial
-         * period being 30 days from the registration date.
-         */
-        'user.trial_period' => '+30 days',
-
-        // Core
         'user.session_key' => 'user_id'
     ),
 
     'permissions' => array(
-        'user.admin' => 'Administer users',
+        'user.access' => 'Access users',
         'user.create' => 'Create users',
         'user.edit' => 'Edit user profiles',
-        'user.edit_mine' => 'Edit my profile',
+        'user.edit_own' => 'Edit own profile',
+        'user.edit_profile_roles' => 'Edit profile roles',
         'user.delete' => 'Delete users',
 
         'user.admin_roles' => 'Administer roles',
@@ -29,42 +20,15 @@
     ),
 
     'routes' => array(
-        // Qbot
-        'user/register' => array(
-            'callback' => array('user', 'register')
-        ),
-
-        // Admin
-        'admin/login' => array(
-            'title' => 'Login',
-            'callback' => array('admin_login', 'login'),
-            'hidden' => true
-        ),
-        'admin/reset-password' => array(
-            'title' => 'Reset Password',
-            'callback' => array('admin_login', 'resetPassword'),
-            'hidden' => true
-        ),
-        'admin/set-password/:id/:slug' => array(
-            'title' => 'Set Password',
-            'callback' => array('admin_login', 'setPassword'),
-            'hidden' => true
-        ),
-        'admin/logout' => array(
-            'title' => 'Logout',
-            'callback' => array('admin_login', 'logout'),
-            'hidden' => true
-        ),
-
         'admin/user' => array(
             'title' => 'Users',
             'redirect' => 'admin/user/manage',
-            'permissions' => array('user.admin')
+            'permissions' => array('user.access')
         ),
         'admin/user/manage' => array(
             'title' => 'Manage Users',
             'callback' => array('admin_user', 'manage'),
-            'permissions' => array('user.admin')
+            'permissions' => array('user.access')
         ),
         'admin/user/create' => array(
             'title' => 'Create User',
@@ -75,7 +39,7 @@
             'title' => 'Edit User',
             'callback' => array('admin_user', 'edit'),
             'hidden' => true,
-            'permissions' => array('user.edit', 'user.edit_mine')
+            'permissions' => array('user.edit', 'user.edit_own')
         ),
         'admin/user/delete/%d' => array(
             'callback' => array('admin_user', 'delete'),
@@ -112,12 +76,7 @@
     ),
 
     'events' => array(
-        'url.subdomain_detected' => function($subdomain)
-        {
-            echo "SUBDOMAIN: $subdomain<br />";
-        },
-
-        'user.permission[user.edit_mine]' => function($route, $data)
+        'user.permission[user.edit_own]' => function($route, $data)
         {
             $params = Router::getParams();
             $userId = $params[0];

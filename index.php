@@ -39,6 +39,8 @@ class Caffeine {
         {
             self::$_inited = true;
 
+            require_once(ROOT . 'shorthand' . EXT);
+
             foreach(self::$_requiredCore as $module)
                 require_once(ROOT . 'core/' . $module . '/' . $module . EXT);
 
@@ -173,20 +175,6 @@ class Caffeine {
         return $hasPermission;
     }
 
-}
-
-/**
- * Specialty short-hand method for getting error information
- * from the validation class. This is mostly used within HTML.
- *
- * Ex: <?= e('some_field')->message; ?>
- */
-function e($field)
-{
-    if(Validate::error($field))
-        return Validate::error($field);
-
-    return new Validate_Error();
 }
 
 /**

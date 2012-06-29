@@ -14,7 +14,7 @@ class Validate extends Module {
         if(isset(self::$_errors[$field]))
             return self::$_errors[$field];
 
-        return null;
+        return new Validate_Error(); // Return empty object
     }
 
     public static function passed() {
