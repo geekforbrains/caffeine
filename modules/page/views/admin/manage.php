@@ -14,7 +14,7 @@
                 <? if($pages): ?>
                     <? foreach($pages as $page): ?>
                         <tr>
-                            <td><?= $page->title; ?></td>
+                            <td><?= _a($page->indent . $page->title, 'admin/page/edit/' . $page->id); ?></td>
                             <td class="right"><?= _a('Delete', 'admin/page/delete/' . $page->id); ?></td>
                         </tr>
                     <? endforeach; ?>

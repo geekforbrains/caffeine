@@ -2,7 +2,7 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <div class="page-header"><h2>Create Users</h2></div>
+        <div class="page-header"><h2>Create User</h2></div>
 
         <form class="form-horizontal" method="post" action="<?= _current(); ?>">
             <fieldset>

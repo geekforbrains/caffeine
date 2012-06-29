@@ -14,8 +14,10 @@ class Page_PageController extends Controller {
         if($page = Page::page()->find(Input::clean($slug)))
         {
             View::setTitle($page->title);
-            View::data('page', $page);
-            return;
+
+            return array(
+                'page' => $page
+            );
         }
 
         return 404;

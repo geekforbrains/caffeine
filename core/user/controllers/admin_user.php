@@ -31,7 +31,7 @@ class User_Admin_UserController extends Controller {
                 {
                     $userId = User::user()->insert(array(
                         'email' => $post['email'],
-                        'pass' => md5($post['password'])
+                        'pass' => md5($post['pass'])
                     ));
 
                     if($userId && isset($post['role_id']))
@@ -90,16 +90,19 @@ class User_Admin_UserController extends Controller {
                     'pass' => strlen($post['pass']) ? md5($post['pass']) : $user->pass
                 ));
 
-                Db::habtm('user.role', 'user.user')->where('user_user_id', '=', $user->id)->delete();
-
-                if(isset($post['role_id']))
+                if(User::current()->hasPerm('user.edit_profile_roles'))
                 {
-                    foreach($post['role_id'] as $roleId)
+                    Db::habtm('user.role', 'user.user')->where('user_user_id', '=', $user->id)->delete();
+
+                    if(isset($post['role_id']))
                     {
-                        Db::habtm('user.role', 'user.user')->insert(array(
-                            'user_role_id' => $roleId,
-                            'user_user_id' => $user->id
-                        ));
+                        foreach($post['role_id'] as $roleId)
+                        {
+                            Db::habtm('user.role', 'user.user')->insert(array(
+                                'user_role_id' => $roleId,
+                                'user_user_id' => $user->id
+                            ));
+                        }
                     }
                 }
 

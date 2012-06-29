@@ -1,8 +1,10 @@
 <?php return array(
 
     'configs' => array(
-        'admin.title' => 'Control Panel', // The main title displayed on admin pages
-        'admin.default_route' => 'admin/user' // The default route to redirect to when accessing "/admin"
+        /**
+         * The default route to redirect to when logging into admin or accessing route "admin/".
+         */
+        'admin.default_route' => 'admin/user/manage'
     ),
 
     'permissions' => array(

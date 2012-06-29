@@ -16,7 +16,7 @@
                         <tr>
                             <td><?= _a($user->email, 'admin/user/edit/' . $user->id); ?></td>
                             <td class="right">
-                                <? if(!$user->is_admin): ?>
+                                <? if(!$user->is_admin && User::current()->id != $user->id): ?>
                                     <?= _a('Delete', 'admin/user/delete/' . $user->id); ?>
                                 <? endif; ?>
                             </td>

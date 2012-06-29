@@ -22,9 +22,14 @@ class Page_PageModel extends Model {
             'size' => 'normal',
             'not null' => true
         ),
+        'is_published' => array(
+            'type' => 'int',
+            'length' => 1,
+            'not null' => true
+        )
     );
 
-    public $_indexes = array('slug');
+    public $_indexes = array('slug', 'is_published');
 
     public $_fulltext = array('title', 'body');
 
@@ -38,6 +43,11 @@ class Page_PageModel extends Model {
     public function getIndented($indent = '&nbsp;')
     {
         $pages = $this->orderBy('title')->all();
+
+        if($pages)
+            return MultiArray::load($pages, 'page_id')->indent();
+
+        return $pages;
     }
 
 }
