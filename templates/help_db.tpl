@@ -1,7 +1,6 @@
 Usage:
     caffeine db install
     caffeine db update
-    caffeine db seed
     caffeine db optimize
 
 Description:
@@ -12,9 +11,6 @@ Description:
     update:
         Updates any tables whos models have changed and creates any new model
         tables.
-
-    seed:
-        Installs "test" data into your database from the projects seed.php file.
 
     optimize:
         Runs a SQL optimize command on each table in the database.

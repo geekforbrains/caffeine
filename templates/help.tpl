@@ -8,7 +8,7 @@ Commands:
     caffeine module [module]
     caffeine controller [controller] [module]
     caffeine model [model] [module]
-    caffeine db [install|update|seed]
+    caffeine db [install|update|optimize]
 
 Help:
     For additional information on a command, type the command
