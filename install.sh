@@ -10,7 +10,7 @@ EXPORT_STR='export PATH=$PATH:$HOME/.caffeine # Caffeine Tools'
 
 if [ -d "$INSTALL_DIR" ]; then
     echo 'Looks like Caffeine Tools are already installed.'
-    echo 'To update, run: caffeine update tools'
+    echo "Installation directory: $INSTALL_DIR"
     exit 1;
 fi
 
