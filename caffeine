@@ -1,0 +1,410 @@
+#!/usr/bin/env php
+<?php
+
+define('CLI', true); // Set Caffeine into CLI mode if its loaded from index.php
+define('CLI_ROOT', __DIR__ . '/');
+define('CLI_TEMPLATES', CLI_ROOT . 'templates/');
+define('CLI_GIT_CLONE', 'git clone git://github.com/geekforbrains/caffeine.git');
+
+/**
+ * Write messages to STDOUT. DONT USE ECHO!!
+ *
+ * @param string The message to send to STDOUT.
+ */
+function outputInfo($message) {
+    fwrite(STDOUT, $message . "\n");
+}
+
+/**
+ * Write messages to STDOUT. DONT USE ECHO!!
+ *
+ * @param string The message to send to STDERR.
+ */
+function outputError($message) {
+    fwrite(STDERR, $message . "\n");
+}
+
+/**
+ * Ensures a class name is all upper case, even with underscores.
+ * Ex: my_controller = My_Controller
+ */
+function toUpperCase($string)
+{
+    $bits = explode('_', $string);
+
+    foreach($bits as &$b)
+        $b = ucfirst($b);
+
+    return implode('_', $bits);
+}
+
+/** 
+ * Replaces the tags in $template with the values in $tags.
+ */
+function replaceTags($template, $tags)
+{
+    foreach($tags as $tag => $value)
+        $template = str_replace('{' . $tag . '}', toUpperCase($value), $template); 
+
+    return $template;
+}
+
+/**
+ * Creates a file and writes some content to it.
+ *
+ * @param $file The full path to the file to create.
+ * @param $contents The contents to write to $file.
+ */
+function writeFile($file, $contents)
+{
+    if(!$handle = fopen($file, 'w'))
+    {
+         outputError('Cannot open file: ' . $file);
+         exit(1);
+    }
+
+    if(fwrite($handle, $contents) === false)
+    {
+        outputError('Unable to write to file: ' . $file);
+        exit(1);
+    }
+
+    fclose($handle);
+}
+
+/**
+ * Gets the raw contents of a template file.
+ *
+ * @param string $file The template file to load, without the '.tpl' extension.
+ * @return string The contents of the template file.
+ */
+function getTemplate($file) {
+    return file_get_contents(CLI_TEMPLATES . $file . '.tpl');  
+}
+
+/**
+ * Ensures git is installed. 
+ *
+ * @return boolean
+ */
+function hasGit() {
+    return strlen(trim(exec('which git')));
+}
+
+/**
+ * Downloads the latest code form GitHub and exports to the given directory.
+ * If the directory doesn't exist, it'll be created.
+ *
+ * This is the result of running the "caffeine new <project>" command.
+ *
+ * @param array The value of $argv originally passed to script.
+ */
+function makeNew($args)
+{
+    $project = $args[2];
+
+    if($project{0} !== '/' && substr($project, 0, 2) !== './')
+        $project = getcwd() . '/' . $project;
+
+    if(!hasGit())
+    {
+        outputError('Git is required to create a new project.');
+        exit(1);
+    }
+
+    if(!file_exists($project) && !mkdir($project))
+    {
+        outputError('Unable to create project directory: ' . $project);
+        exit(1);
+    }
+
+    // Clone and cleanup unwanted .git files/dirs
+    exec(CLI_GIT_CLONE . ' ' . $project);
+    exec('rm -rf ' . $project . '/.git');
+    exec('rm -rf ' . $project . '/.gitignore');
+}
+
+/**
+ * Gets the full path to the given module name in the current Caffeine
+ * project.
+ */
+function getModulePath($module)
+{
+    if($module{0} !== '/' && substr($module, 0, 2) !== './')
+        $module = getcwd() . '/modules/' . $module;
+
+    return $module;
+}
+
+/**
+ * Returns a modules name (directory) from the full path.
+ *
+ * @param string $modulePath The full module path to get the name from.
+ * @return string The module directory name.
+ */
+function getModuleName($modulePath) {
+    return trim(substr($modulePath, strrpos($modulePath, '/')), '/');
+}
+
+/**
+ * Creates a module in the modules/ directory of the current Caffeine
+ * project. Includes the main module file, setup.php, front-end and admin
+ * controller templates and a model template.
+ */
+function makeModule($args)
+{
+    $module = getModulePath($args[2]);
+    $moduleDir = implode('/', explode('/', $module, -1));
+
+    if(!file_exists($moduleDir))
+    {
+        outputError('The directory to your module doesnt exist: ' . $moduleDir);
+        exit(1);
+    }
+
+    if(!mkdir($module))
+    {
+        outputError('Unable to create module directory: ' . $module);
+        exit(1);
+    }
+
+    writeModule($module);
+    writeController($module, getModuleName($module));
+    writeController($module, 'admin_' . getModuleName($module));
+    writeModel($module, getModuleName($module));
+    writeSetup($module);
+}
+
+/**
+ * Creates a controller template based on the param given.
+ * See the writeController function.
+ *
+ * Command: caffeine controller [controller] [module]
+ */
+function makeController($args)
+{
+    if(!isset($args[3]))
+    {
+        outputError('Missing module name.');
+        outputError('Usage: caffeine controller [controller] [module]');
+        exit(1);
+    }
+
+    $controller = $args[2];
+    $module = getModulePath($args[3]);
+
+    if(!file_exists($module))
+    {
+        outputError('Module path doesn\'t exist: ' . $module);
+        exit(1);
+    }
+
+    writeController($module, $controller);
+}
+
+/**
+ * Creates a model template based on the param given.
+ * See the writeModel function.
+ *
+ * Command: caffeine model [model] [module]
+ */
+function makeModel($args)
+{
+    if(!isset($args[3]))
+    {
+        outputError('Missing module name.');
+        outputError('Usage: caffeine model [model] [module]');
+        exit(1);
+    }
+
+    $model = $args[2];
+    $module = getModulePath($args[3]);
+
+    if(!file_exists($module))
+    {
+        outputError('Module path doesn\'t exist: ' . $module);
+        exit(1);
+    }
+
+    writeModel($module, $model);
+}
+
+/**
+ * Creates a main module file based on the $module path given.
+ */
+function writeModule($module)
+{
+    $moduleName = getModuleName($module);
+    $moduleFile = $module . '/' . $moduleName . '.php';
+
+    $moduleTemplate = replaceTags(getTemplate('module'), array(
+        'Module' => $moduleName
+    ));
+   
+    writeFile($moduleFile, $moduleTemplate);
+}
+
+/**
+ * Creates a template setup.php file in the given $module dir.
+ */
+function writeSetup($module)
+{
+    $setupFile = $module . '/setup.php';
+    $setupTemplate = getTemplate('setup'); 
+    writeFile($setupFile, $setupTemplate);
+}
+
+/**
+ * Writes a template controller file in the $module directory with the
+ * name given in $controller. 
+ */
+function writeController($module, $controller)
+{
+    $controllerPath = $module . '/controllers';
+
+    if(!file_exists($controllerPath) && !mkdir($controllerPath))
+    {
+        outoutError('Unable to create controllers directory: ' . $controllerPath);
+        exit(1);
+    }
+
+    $controllerFile = $controllerPath . '/' . $controller . '.php';
+    $templateFile = (substr($controller, 0, 6) == 'admin_') ? 'controller_admin' : 'controller';
+
+    $controllerTemplate = replaceTags(getTemplate($templateFile), array(
+        'Module' => getModuleName($module),
+        'Controller' => $controller
+    ));
+
+    writeFile($controllerFile, $controllerTemplate);
+}
+
+/**
+ * Writes a template model file in the $module directory with the name
+ * given in $model.
+ */
+function writeModel($module, $model)
+{
+    $modelPath = $module . '/models';
+
+    if(!file_exists($modelPath) && !mkdir($modelPath))
+    {
+        outoutError('Unable to create models directory: ' . $modelPath);
+        exit(1);
+    }
+
+    $modelFile = $modelPath . '/' . $model . '.php';
+
+    $modelTemplate = replaceTags(getTemplate('model'), array(
+        'Module' => getModuleName($module),
+        'Model' => $model
+    ));
+
+    writeFile($modelFile, $modelTemplate);
+}
+
+/**
+ * Handle database commands. These commands load the current Caffeine project
+ * and calls methods on that projects db classes directly.
+ */
+function db($args)
+{
+    $index = getcwd() . '/index.php';
+
+    if(file_exists($index))
+    {
+        require_once($index);
+        
+        if(!class_exists('Caffeine'))
+        {
+            outputError('You must be within a valid Caffeine project.');
+            exit(1);
+        }
+    }
+    else
+    {
+        outputError('You must be within a valid Caffeine project.');
+        exit(1);
+    }
+    
+    switch($args[2])
+    {
+        case 'install':
+            require_once(getcwd() . '/index.php');
+            Db_Runner::install();
+            break;
+
+        case 'update':
+            require_once(getcwd() . '/index.php');
+            Db_Runner::update();
+            break;
+
+        case 'seed':
+            require_once(getcwd() . '/index.php');
+            Db_Runner::seed();
+            break;
+
+        case 'optimize':
+            require_once(getcwd() . '/index.php');
+            Db_Runner::optimize();
+            break;
+
+        default:
+            outputError('Invalid argument for db command.');
+            outputError('Usage: caffeine db [install|update|seed|optimize]');
+            exit(1);
+    }
+}
+
+/**
+ * If no params or first param is help, stop everything
+ * and output help info.
+ */
+if($argc <= 2)
+{
+    if($argc == 1)
+        outputInfo(getTemplate('help'));
+    else
+    {
+        $cmds = array('new', 'module', 'controller', 'model', 'db');
+        
+        if(in_array($argv[1], $cmds))
+            outputInfo(getTemplate('help_' . $argv[1]));
+        else
+        {
+            outputError('Invalid command. Type "caffeine" with no arguments for help.');
+            exit(1);
+        }
+    }
+
+    exit(0);
+}
+elseif($argc > 2)
+{
+    switch($argv[1])
+    {
+        case 'new':
+            makeNew($argv);
+            break;
+
+        case 'module':
+            makeModule($argv);
+            break;
+
+        case 'controller':
+            makeController($argv);
+            break;
+
+        case 'model':
+            makeModel($argv);
+            break;
+
+        case 'db':
+            db($argv);
+            break;
+
+        default:
+            outputError('Invalid arguments passed, please run "caffeine" with no arguments for more info.');
+            exit(1);
+    }
+}
