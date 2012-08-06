@@ -17,9 +17,11 @@ fi
 echo "Downloading latest Caffeine Tools from GitHub, please wait..."
 git clone -b tools git@github.com:geekforbrains/caffeine $INSTALL_DIR &> /dev/null
 
-echo "Adding installation directory to your PATH"
+echo "Caffeine Tools were installed to: $INSTALL_DIR"
+
+echo "Adding installation directory to your PATH (~/.bash_profile)"
 echo $EXPORT_STR >> ~/.bash_profile
 source ~/.bash_profile
 
 echo 'All done.'
-echo 'To start using Caffeine, type: caffeine'
+echo 'To start using Caffeine, run: caffeine'
