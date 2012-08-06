@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo 'Caffeine Installer v1.0'
 echo '-----------------------'
