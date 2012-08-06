@@ -1,19 +1,17 @@
 Caffeine Tools 1.0
 
 Usage:
-    caffeine [command] [params]
+    caffeine [command] [args]
 
 Commands:
-    caffeine new [project]
+    caffeine project [project]
     caffeine module [module]
     caffeine controller [controller] [module]
     caffeine model [model] [module]
-    caffeine db install
-    caffeine db update
-    caffeine db seed
+    caffeine db [install|update|seed]
 
 Help:
     For additional information on a command, type the command
-    without any parameters.
+    without any arguments.
 
     Example: caffeine module

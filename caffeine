@@ -95,11 +95,11 @@ function hasGit() {
  * Downloads the latest code form GitHub and exports to the given directory.
  * If the directory doesn't exist, it'll be created.
  *
- * This is the result of running the "caffeine new <project>" command.
+ * This is the result of running the "caffeine project <project>" command.
  *
  * @param array The value of $argv originally passed to script.
  */
-function makeNew($args)
+function makeProject($args)
 {
     $project = $args[2];
 
@@ -383,8 +383,8 @@ elseif($argc > 2)
 {
     switch($argv[1])
     {
-        case 'new':
-            makeNew($argv);
+        case 'project':
+            makeProject($argv);
             break;
 
         case 'module':
