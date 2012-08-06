@@ -3,6 +3,21 @@ Caffeine 1.0.2
 
 A simple PHP framework that combines modules through the use of routes and events to form an application.
 
+Installation
+------------
+
+The easiest way to use Caffeine is via the Caffeine Tools. This allows you to easily create new projects and modules right from the command line.
+
+To install Caffeine Tools, run this command from your terminal:
+
+    curl -L https://raw.github.com/geekforbrains/caffeine/installer/install.sh | bash
+
+Once installed, run `caffeine` with no arguments for usage details.
+
+For example, to create a new project run:
+
+    caffeine project myproject
+
 Requirements
 ------------
 * PHP 5.2+
@@ -61,6 +76,8 @@ There are number of route hooks that can be used when defining parameters. They 
     :slug - Matches letters, numbers and dashes
     :any - Matches anything, including forward slashes
 
+For advanced routes, you can also use regular expression patterns in your route defintion in place of hooks.
+
 ### Modules
 
 Modules are a collection of controllers, models and configurations that provide functionality to Caffeine. Modules can provide content such
@@ -111,6 +128,7 @@ Credits
 Below is a list of software and frameworks that have inpsired me along the way. A lot of what I've learned from
 them has been implemented into Caffeine, with my own twist.
 
+* [Bootstrap]('http://twitter.github.com/bootstrap/')
 * [CodeIgniter]('http://codeigniter.com')
 * [Drupal]('http://drupal.org')
 * [Ruby on Rails]('http://rubyonrails.org')
@@ -119,14 +137,3 @@ them has been implemented into Caffeine, with my own twist.
 Gavin Vickery  
 <gavin@geekforbrains.com>  
 <http://geekforbrains.com>  
-
-Change Log
-----------
-1.0.2
-
-- Updated Url module to use SERVER_NAME instead of HTTP_HOST to determine current host.
-- Updated Log module to ensure the files and log directory is writable before creating file.
-
-1.0.1
-
-- Updated getBaseHref method in View module to return full url.
